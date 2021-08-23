@@ -2,6 +2,8 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+const char* vertexShaderSource = "#version 330 core\nlayout (location - 0) in vec3 aPos;\nvoid main()\n{\bgl_Position = vec4(aPos.x, aPos.y, aPos.z, 1);\n}";
+
 const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
 float vertices[] = {
