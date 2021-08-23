@@ -3,6 +3,7 @@
 #include <iostream>
 
 const char* vertexShaderSource = "#version 330 core\nlayout (location - 0) in vec3 aPos;\nvoid main()\n{\bgl_Position = vec4(aPos.x, aPos.y, aPos.z, 1);\n}";
+const char* fragmentShaderSource = "#version 330 core\nout vec4 FragColor;\nvoid main()\n{\nFragColor = vec4(1.0f, 1.0f, .3f, 1.0f);\n}";
 
 const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
@@ -54,6 +55,9 @@ int main() {
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
+
+
+	// check for compilation errors
 	int success;
 	char infoLog[512];
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
