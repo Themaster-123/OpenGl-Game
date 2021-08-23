@@ -4,6 +4,11 @@
 
 const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
+float vertices[] = {
+	-.5f, -.5f, 0,
+	.5f, -.5f, 0,
+	0, .5f, 0
+};
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
@@ -35,6 +40,11 @@ int main() {
 		std::cout << "No glad just sad :(\n";
 		return -1;
 	}
+
+	unsigned int VBO;
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
