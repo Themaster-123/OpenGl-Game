@@ -55,22 +55,46 @@ int main() {
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
+
+	int success;
+	char infoLog[512];
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if (!success) {
+		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		std::cout << "SHADER COMPILAION FAILED: " << infoLog << std::endl;
+		return -1;
+	}
+
 	
 	// compiles the fragment shader
 	unsigned int fragmentShader;
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 
-	// check for compilation errors
-	int success;
-	char infoLog[512];
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cout << "SHADER COMPILAION FAILD: " << infoLog << std::endl;
+		std::cout << "SHADER COMPILAION FAILED: " << infoLog << std::endl;
 		return -1;
 	}
 
+	// creates a shader program object
+	unsigned int shaderProgram;
+	shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+	glGetProgramiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if (!success) {
+		glGetProgramInfoLog(vertexShader, 512, NULL, infoLog);
+		std::cout << "SHADER PROGRAM FAILED: " << infoLog << std::endl;
+		return -1;
+	}
+
+	glUseProgram(shaderProgram);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
