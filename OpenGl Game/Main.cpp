@@ -50,6 +50,7 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+
 	// compiles the vertex shader
 	unsigned int vertexShader;
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -64,6 +65,10 @@ int main() {
 		std::cout << "SHADER COMPILAION FAILED: " << infoLog << std::endl;
 		return -1;
 	}
+
+	// creates a vertex array object
+	unsigned int VAO;
+	glGenVertexArrays(1, &VAO);
 
 	
 	// compiles the fragment shader
@@ -94,10 +99,12 @@ int main() {
 		return -1;
 	}
 
+	// links vertex attributes to the VAO
+	glBindVertexArray(VAO);
+
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glUseProgram(shaderProgram);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -106,6 +113,9 @@ int main() {
 
 		glClearColor(1, 0, .2f, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		glUseProgram(shaderProgram);
+		glBindVertexArray(VAO);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
