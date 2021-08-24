@@ -8,9 +8,14 @@ const char* fragmentShaderSource = "#version 330 core\nout vec4 FragColor;\nvoid
 const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
 float vertices[] = {
-	-.5f, -.5f, 0,
+	.5f, .5f, 0,
 	.5f, -.5f, 0,
-	0, .5f, 0
+	-.5f, -.5f, 0,
+	-.5f, .5f, 0
+};
+unsigned int indices[] = {
+	0, 1, 3,
+	1, 2, 3
 };
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -44,13 +49,6 @@ int main() {
 		return -1;
 	}
 
-	// creates a vertex buffer object
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-
 	// compiles the vertex shader
 	unsigned int vertexShader;
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -65,11 +63,6 @@ int main() {
 		std::cout << "SHADER COMPILAION FAILED: " << infoLog << std::endl;
 		return -1;
 	}
-
-	// creates a vertex array object
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-
 	
 	// compiles the fragment shader
 	unsigned int fragmentShader;
@@ -99,11 +92,28 @@ int main() {
 		return -1;
 	}
 
-	// links vertex attributes to the VAO
+	// creates a vertex array object
+	// 
+	unsigned int VAO, VBO, EBO;
+	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
+	// creates a vertex buffer object
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	// creates a element buffer object
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	//links vertex attributes to the VAO
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
 	// render loop
@@ -116,7 +126,8 @@ int main() {
 
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
