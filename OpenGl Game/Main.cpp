@@ -2,25 +2,27 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-const char* vertexShaderSource = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nvoid main()\n{\ngl_Position = vec4(aPos.x, aPos.y, aPos.z, 1);\n}";
-const char* fragmentShaderSource = "#version 330 core\nout vec4 FragColor;\nvoid main()\n{\nFragColor = vec4(1.0f, 1.0f, .3f, 1.0f);\n}";
+const char* vertexShaderSource = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nlayout (location = 1) in vec3 aColor;\nout vec3 vertexColor;\nvoid main()\n{\ngl_Position = vec4(aPos, 1);\n vertexColor = aColor;\n}";
+const char* fragmentShaderSource = "#version 330 core\nout vec4 FragColor;\nin vec3 vertexColor;\nvoid main()\n{\nFragColor = vec4(vertexColor, 1);\n}";
 
 const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
 float vertices[] = {
-	.5f, .5f, 0,
-	.5f, -.5f, 0,
-	-.5f, -.5f, 0,
-	-.5f, .5f, 0
+	0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
+	-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   
+	0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
 };
 unsigned int indices[] = {
-	0, 1, 3,
-	1, 2, 3
+	0, 1, 2
 };
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 void processInput(GLFWwindow* window);
+
+GLFWwindow* createWindow(int width, int height, const char* title);
+
+void loadOpenGlFunctions();
 
 int main() {
 	// initialize and configure
@@ -32,22 +34,11 @@ int main() {
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif // __APPLE__
-
 	// window creation
-	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test", NULL, NULL);
-	if (window == NULL) {
-		std::cout << "LOZER ha ha you failed to create a window STUPID" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+	GLFWwindow* window = createWindow(SCREEN_HEIGHT, SCREEN_HEIGHT, "Test");
 
 	// load all OpenGl function pointers
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cout << "No glad just sad :(\n";
-		return -1;
-	}
+	loadOpenGlFunctions();
 
 	// compiles the vertex shader
 	unsigned int vertexShader;
@@ -109,41 +100,66 @@ int main() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	//links vertex attributes to the VAO
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
+	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+	int colorLocation = glGetUniformLocation(shaderProgram, "color");
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
 
-		glClearColor(1, 0, .2f, 1);
+		glClearColor(.3f, 0, .2f, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		float timeValue = glfwGetTime();
+		float value = (sin(timeValue) / 2) + .5;
 		glUseProgram(shaderProgram);
+		glUniform4f(colorLocation, 0, value, 0, 0);
 		glBindVertexArray(VAO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
 	glfwTerminate();
 	return 0;
 }
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
-	std::cout << "test \n";
 	glViewport(0, 0, width, height);
 }
 
 void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
+	}
+}
+
+GLFWwindow* createWindow(int width, int height, const char* title) {
+	GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
+	if (window == NULL) {
+		//std::cout << "LOZER ha ha you failed to create a window STUPID" << std::endl;
+		throw std::runtime_error("LOZER ha ha you failed to create a window STUPID");
+		glfwTerminate();
+		return nullptr;
+	}
+	glfwMakeContextCurrent(window);
+	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+	return window;
+}
+
+void loadOpenGlFunctions() {
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+		throw std::runtime_error("No glad just sad");
 	}
 }
