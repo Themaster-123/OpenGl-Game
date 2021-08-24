@@ -1,9 +1,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "shader.h"
 
-const char* vertexShaderSource = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nlayout (location = 1) in vec3 aColor;\nout vec3 vertexColor;\nvoid main()\n{\ngl_Position = vec4(aPos, 1);\n vertexColor = aColor;\n}";
-const char* fragmentShaderSource = "#version 330 core\nout vec4 FragColor;\nin vec3 vertexColor;\nvoid main()\n{\nFragColor = vec4(vertexColor, 1);\n}";
+using namespace OGG;
 
 const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
@@ -40,7 +40,7 @@ int main() {
 	// load all OpenGl function pointers
 	loadOpenGlFunctions();
 
-	// compiles the vertex shader
+/*	// compiles the vertex shader
 	unsigned int vertexShader;
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -81,7 +81,8 @@ int main() {
 		glGetProgramInfoLog(vertexShader, 512, NULL, infoLog);
 		std::cout << "SHADER PROGRAM FAILED: " << infoLog << std::endl;
 		return -1;
-	}
+	}*/
+	Shader shader("VertexShader.vert", "FragmentShader.frag");
 
 	// creates a vertex array object
 	// 
@@ -109,7 +110,7 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	int colorLocation = glGetUniformLocation(shaderProgram, "color");
+	int colorLocation = glGetUniformLocation(shader.ID, "color");
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -121,7 +122,7 @@ int main() {
 
 		float timeValue = glfwGetTime();
 		float value = (sin(timeValue) / 2) + .5;
-		glUseProgram(shaderProgram);
+		shader.use();
 		glUniform4f(colorLocation, 0, value, 0, 0);
 		glBindVertexArray(VAO);
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
