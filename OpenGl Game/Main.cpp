@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-const char* vertexShaderSource = "#version 330 core\nlayout (location - 0) in vec3 aPos;\nvoid main()\n{\bgl_Position = vec4(aPos.x, aPos.y, aPos.z, 1);\n}";
+const char* vertexShaderSource = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nvoid main()\n{\ngl_Position = vec4(aPos.x, aPos.y, aPos.z, 1);\n}";
 const char* fragmentShaderSource = "#version 330 core\nout vec4 FragColor;\nvoid main()\n{\nFragColor = vec4(1.0f, 1.0f, .3f, 1.0f);\n}";
 
 const unsigned int SCREEN_WIDTH = 800;
@@ -116,6 +116,7 @@ int main() {
 
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
