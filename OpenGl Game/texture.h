@@ -37,7 +37,7 @@ namespace GLG {
 			Magnifying = GL_TEXTURE_MAG_FILTER
 		};
 
-		Texture2D(const char* texturePath, int textureUnit, WrappingOption wrappingOption = WrappingOption::Repeat, FilterOption minFilterOption = FilterOption::NearestMipmapNearest, FilterOption magFilterOption = FilterOption::Nearest) {
+		Texture2D(const char* texturePath, int textureUnit, bool genMipMap = true, WrappingOption wrappingOption = WrappingOption::Repeat, FilterOption minFilterOption = FilterOption::NearestMipmapNearest, FilterOption magFilterOption = FilterOption::Nearest) {
 			this->textureUnit = textureUnit;
 			unsigned int texture;
 			glGenTextures(1, &texture);
@@ -63,7 +63,9 @@ namespace GLG {
 
 			if (data) {
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-				glGenerateMipmap(GL_TEXTURE_2D);
+				if (genMipMap) {
+					glGenerateMipmap(GL_TEXTURE_2D);
+				}
 			}
 			else {
 				std::cout << "Failed to load texture" << std::endl;
