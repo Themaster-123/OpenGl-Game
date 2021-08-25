@@ -35,8 +35,6 @@ namespace OGG {
 			const char* vShaderCode = vertexCode.c_str();
 			const char* fShaderCode = fragmentCode.c_str();
 			unsigned int vertexShader, fragmentShader;
-			int success;
-			char infoLog[512];
 			// Compiling Vertex Shader
 			vertexShader = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(vertexShader, 1, &vShaderCode, NULL);
