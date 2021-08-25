@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <stb_image.h>
 #include <iostream>
+#include <glm/glm.hpp>
 
 namespace GLG {
 	class Texture2D
