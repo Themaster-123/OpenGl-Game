@@ -2,9 +2,10 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "shader.h"
-#include "texture.h";
+#include "texture.h"
+#include "texture.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <stb_image.h>
 
 using namespace GLG;
 

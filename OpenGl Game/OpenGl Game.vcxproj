@@ -78,11 +78,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\glad\include;C:\glfw-3.3.4\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\glfw-3.3.4\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glad\include;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glfw-3.3.4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glfw-3.3.4\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glad\include;C:\glfw-3.3.4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\glfw-3.3.4\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -139,15 +141,15 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="glad\src\glad.c" />
+    <ClCompile Include="includes\glad\src\glad.c" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h" />
-    <ClInclude Include="stb_image.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
