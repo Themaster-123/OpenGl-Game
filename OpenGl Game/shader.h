@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 
-namespace OGG {
+namespace GLG {
 	class Shader
 	{
 	public:

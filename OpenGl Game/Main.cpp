@@ -2,10 +2,11 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "shader.h"
+#include "texture.h";
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-using namespace OGG;
+using namespace GLG;
 
 const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
@@ -18,11 +19,6 @@ float vertices[] = {
 unsigned int indices[] = {
 	0, 1, 3,
 	1, 2, 3
-};
-float texCoords[] = {
-	1, 0,
-	0, 0,
-	.5f, 1
 };
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -80,41 +76,43 @@ int main() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	// loads and creates texture data
-	stbi_set_flip_vertically_on_load(true);
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load("Assets/crate.jpg", &width, &height, &nrChannels, 0);
+	//stbi_set_flip_vertically_on_load(true);
+	//int width, height, nrChannels;
+	//unsigned char* data = stbi_load("Assets/crate.jpg", &width, &height, &nrChannels, 0);
 
-	unsigned int texture1, texture2;
-	glGenTextures(1, &texture1);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		std::cout << "Failed to load texture" << std::endl;
-		return -1;
-	}
-	stbi_image_free(data);
+	//unsigned int texture1, texture2;
+	//glGenTextures(1, &texture1);
+	//glBindTexture(GL_TEXTURE_2D, texture1);
+	//if (data) {
+	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	//	glGenerateMipmap(GL_TEXTURE_2D);
+	//}
+	//else {
+	//	std::cout << "Failed to load texture" << std::endl;
+	//	return -1;
+	//}
+	//stbi_image_free(data);
 
-	data = stbi_load("Assets/awesomeface.png", &width, &height, &nrChannels, 0);
-	glGenTextures(1, &texture2);
-	glBindTexture(GL_TEXTURE_2D, texture2);
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		std::cout << "Failed to load texture" << std::endl;
-		return -1;
-	}
-	stbi_image_free(data);
+	//data = stbi_load("Assets/awesomeface.png", &width, &height, &nrChannels, 0);
+	//glGenTextures(1, &texture2);
+	//glBindTexture(GL_TEXTURE_2D, texture2);
+	//if (data) {
+	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	//	glGenerateMipmap(GL_TEXTURE_2D);
+	//}
+	//else {
+	//	std::cout << "Failed to load texture" << std::endl;
+	//	return -1;
+	//}
+	//stbi_image_free(data);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
+	Texture2D texture1("Assets/crate.jpg", 0);
+	Texture2D texture2("Assets/awesomeface.png", 1);
 
 	shader.use();
 	shader.setInt("texture1", 0);
-	shader.setInt("texture1", 1);
+	shader.setInt("texture2", 1);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -124,10 +122,12 @@ int main() {
 		glClearColor(.3f, 0, .2f, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 		shader.use();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture2);
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_2D, texture1);
+		//glActiveTexture(GL_TEXTURE1);
+		//glBindTexture(GL_TEXTURE_2D, texture2);
+		texture1.activate();
+		texture2.activate();
 		glBindVertexArray(VAO);
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
