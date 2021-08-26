@@ -76,6 +76,8 @@ float pitch = 0;
 float lastMouseX;
 float lastMouseY;
 
+bool firstMouse = true;
+
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 void processInput(GLFWwindow* window);
@@ -225,6 +227,12 @@ void processInput(GLFWwindow* window) {
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	if (firstMouse) {
+		lastMouseX = xpos;
+		lastMouseY = ypos;
+		firstMouse = false;
+	}
+
 	float xOffset = xpos - lastMouseX;
 	float yOffset = lastMouseY - ypos;
 	lastMouseX = xpos;
