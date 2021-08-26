@@ -122,17 +122,7 @@ int main() {
 	shader.use();
 	shader.setInt("texture1", 0);
 	shader.setInt("texture2", 1);
-
-	//model = glm::scale(model, glm::vec3(2, sin((float)glfwGetTime()), .5));
-
-	glm::mat4 view = glm::mat4(1);
-	view = glm::translate(view, glm::vec3(0, 0, -3.0f));
-
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT, 0.1f, 100.0f);
-
-	unsigned int modelLoc = glGetUniformLocation(shader.ID, "model");
-	unsigned int viewLoc = glGetUniformLocation(shader.ID, "view");
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	unsigned int projectionLoc = glGetUniformLocation(shader.ID, "projection");
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 	glEnable(GL_DEPTH_TEST);
@@ -150,6 +140,10 @@ int main() {
 	glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
 
+	glm::vec3 cameraPos = glm::vec3(0, 0, 3);
+	glm::vec3 cameraFront = glm::vec3(0, 0, -1);
+	glm::vec3 cameraUp = glm::vec3(0, 1, 0);
+
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -165,12 +159,15 @@ int main() {
 		glBindVertexArray(VAO);
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+		glm::mat4 view = glm::mat4(1);
+		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		shader.setMat4("view", view);
+
 		for (int i = 0; i < sizeof(cubePositions) / sizeof(cubePositions[0]); i++) {
 			glm::mat4 model = glm::mat4(1);
 			model = glm::translate(model, cubePositions[i]);
 			model = glm::rotate(model, (float)glfwGetTime() / 4 + glm::radians(i * 20.0f), glm::vec3(.5, .5, 0));
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+			shader.setMat4("model", model);
 			glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 			glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 			glDrawArrays(GL_TRIANGLES, 0, 36/*6, GL_UNSIGNED_INT, 0*/);
