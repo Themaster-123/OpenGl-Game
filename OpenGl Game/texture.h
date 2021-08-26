@@ -3,9 +3,30 @@
 #include <glad/glad.h>
 #include <stb_image.h>
 #include <iostream>
-#include <glm/glm.hpp>
 
 namespace GLG {
+	enum class WrappingOption {
+		Repeat = GL_REPEAT,
+		MirroredRepeat = GL_MIRRORED_REPEAT,
+		ClampToEdge = GL_CLAMP_TO_EDGE,
+		ClampToBorder = GL_CLAMP_TO_BORDER
+	};
+
+	enum class FilterOption
+	{
+		Nearest = GL_NEAREST,
+		Linear = GL_LINEAR,
+		NearestMipmapNearest = GL_NEAREST_MIPMAP_NEAREST,
+		LinearMipmapNearest = GL_LINEAR_MIPMAP_NEAREST,
+		NearestMipmapLinear = GL_NEAREST_MIPMAP_LINEAR,
+		LinearMipmapLinear = GL_LINEAR_MIPMAP_LINEAR
+	};
+
+	enum class FilterType {
+		Minifying = GL_TEXTURE_MIN_FILTER,
+		Magnifying = GL_TEXTURE_MAG_FILTER
+	};
+
 	class Texture2D
 	{
 	public:
@@ -16,29 +37,7 @@ namespace GLG {
 			unsigned int TU;
 		};
 
-		enum class WrappingOption {
-			Repeat = GL_REPEAT,
-			MirroredRepeat = GL_MIRRORED_REPEAT,
-			ClampToEdge = GL_CLAMP_TO_EDGE,
-			ClampToBorder = GL_CLAMP_TO_BORDER
-		};
-
-		enum class FilterOption
-		{
-			Nearest = GL_NEAREST,
-			Linear = GL_LINEAR,
-			NearestMipmapNearest = GL_NEAREST_MIPMAP_NEAREST,
-			LinearMipmapNearest = GL_LINEAR_MIPMAP_NEAREST,
-			NearestMipmapLinear = GL_NEAREST_MIPMAP_LINEAR,
-			LinearMipmapLinear = GL_LINEAR_MIPMAP_LINEAR
-		};
-
-		enum class FilterType {
-			Minifying = GL_TEXTURE_MIN_FILTER,
-			Magnifying = GL_TEXTURE_MAG_FILTER
-		};
-
-		Texture2D(const char* texturePath, int textureUnit, bool genMipMap = true, WrappingOption wrappingOption = WrappingOption::Repeat, FilterOption minFilterOption = FilterOption::NearestMipmapNearest, FilterOption magFilterOption = FilterOption::Nearest) {
+		Texture2D(const char* texturePath, int textureUnit, WrappingOption wrappingOption = WrappingOption::Repeat, FilterOption minFilterOption = FilterOption::NearestMipmapNearest, FilterOption magFilterOption = FilterOption::Nearest) {
 			this->textureUnit = textureUnit;
 			unsigned int texture;
 			glGenTextures(1, &texture);
@@ -64,9 +63,7 @@ namespace GLG {
 
 			if (data) {
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-				if (genMipMap) {
-					glGenerateMipmap(GL_TEXTURE_2D);
-				}
+				glGenerateMipmap(GL_TEXTURE_2D);
 			}
 			else {
 				std::cout << "Failed to load texture" << std::endl;
