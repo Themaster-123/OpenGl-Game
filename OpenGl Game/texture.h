@@ -37,7 +37,7 @@ namespace GLG {
 			unsigned int TU;
 		};
 
-		Texture2D(const char* texturePath, int textureUnit, WrappingOption wrappingOption = WrappingOption::Repeat, FilterOption minFilterOption = FilterOption::NearestMipmapNearest, FilterOption magFilterOption = FilterOption::Nearest, float bias = -2) {
+		Texture2D(const char* texturePath, int textureUnit, WrappingOption wrappingOption = WrappingOption::Repeat, FilterOption minFilterOption = FilterOption::NearestMipmapNearest, FilterOption magFilterOption = FilterOption::Nearest, int bias = -2) {
 			this->textureUnit = textureUnit;
 			unsigned int texture;
 			glGenTextures(1, &texture);
