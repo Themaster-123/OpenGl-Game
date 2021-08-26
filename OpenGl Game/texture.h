@@ -37,7 +37,7 @@ namespace GLG {
 			unsigned int TU;
 		};
 
-		Texture2D(const char* texturePath, int textureUnit, WrappingOption wrappingOption = WrappingOption::Repeat, FilterOption minFilterOption = FilterOption::NearestMipmapNearest, FilterOption magFilterOption = FilterOption::Nearest) {
+		Texture2D(const char* texturePath, int textureUnit, WrappingOption wrappingOption = WrappingOption::Repeat, FilterOption minFilterOption = FilterOption::NearestMipmapNearest, FilterOption magFilterOption = FilterOption::Nearest, float bias = -2) {
 			this->textureUnit = textureUnit;
 			unsigned int texture;
 			glGenTextures(1, &texture);
@@ -45,6 +45,8 @@ namespace GLG {
 			setWrappingOption(wrappingOption);
 			setfilterOptions(minFilterOption, FilterType::Minifying);
 			setfilterOptions(magFilterOption, FilterType::Magnifying);
+			std::cout << GL_MAX_TEXTURE_LOD_BIAS;
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, bias);
 
 			int width, height, nrChannels;
 			stbi_set_flip_vertically_on_load(true);
