@@ -79,14 +79,28 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	Texture2D texture1("Assets/crate.jpg", 0, WrappingOption::Repeat, FilterOption::Linear);
-	Texture2D texture2("Assets/awesomeface.png", 1, WrappingOption::Repeat, FilterOption::Linear);
+	Texture2D texture1("Assets/crate.jpg", 0, WrappingOption::Repeat);
+	Texture2D texture2("Assets/awesomeface.png", 1, WrappingOption::Repeat);
 
 	shader.use();
 	shader.setInt("texture1", 0);
 	shader.setInt("texture2", 1);
-	unsigned int transformLoc = glGetUniformLocation(shader.ID, "transform");
 
+	glm::mat4 model = glm::mat4(1);
+	//model = glm::scale(model, glm::vec3(2, sin((float)glfwGetTime()), .5));
+	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(.5, .5, 0));
+
+	glm::mat4 view = glm::mat4(1);
+	view = glm::translate(view, glm::vec3(0, 0, -3.0f));
+
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT, 0.1f, 100.0f);
+
+	unsigned int modelLoc = glGetUniformLocation(shader.ID, "model");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+	unsigned int viewLoc = glGetUniformLocation(shader.ID, "view");
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+	unsigned int projectionLoc = glGetUniformLocation(shader.ID, "projection");
+	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -95,13 +109,13 @@ int main() {
 		glClearColor(.3f, 0, .2f, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 		shader.use();
-		glm::mat4 transform = glm::mat4(1);
-		//transform = glm::translate(transform, glm::vec3(.5f, -.5f, 0));
-		transform = glm::scale(transform, glm::vec3(2, sin((float)glfwGetTime()), .5));
-		//transform = glm::rotate(transform, , glm::vec3(1, 0, 0));
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 		texture1.activate();
 		texture2.activate();
+		model = glm::mat4(1);
+		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(.5, .5, 0));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glBindVertexArray(VAO);
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
