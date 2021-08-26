@@ -14,6 +14,7 @@ using namespace GLG;
 
 unsigned int SCREEN_WIDTH = 800;
 unsigned int SCREEN_HEIGHT = 800;
+
 float vertices[] = {
 	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -62,6 +63,19 @@ unsigned int indices[] = {
 	1, 2, 3
 };
 
+float deltaTime = 0;
+float lastFrame = 0;
+
+glm::vec3 cameraPos = glm::vec3(0, 0, 3);
+glm::vec3 cameraFront = glm::vec3(0, 0, -1);
+glm::vec3 cameraUp = glm::vec3(0, 1, 0);
+
+float yaw = -90;
+float pitch = 0;
+
+float lastMouseX;
+float lastMouseY;
+
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 void processInput(GLFWwindow* window);
@@ -69,6 +83,10 @@ void processInput(GLFWwindow* window);
 GLFWwindow* createWindow(int width, int height, const char* title);
 
 void loadOpenGlFunctions();
+
+void calculateDeltaTime();
+
+void lockCursor(GLFWwindow* window, bool locked);
 
 int main() {
 	// initialize and configure
@@ -82,7 +100,7 @@ int main() {
 #endif // __APPLE__
 	// window creation
 	GLFWwindow* window = createWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test");
-
+	lockCursor(window, true);
 	// load all OpenGl function pointers
 	loadOpenGlFunctions();
 
@@ -140,13 +158,10 @@ int main() {
 	glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
 
-	glm::vec3 cameraPos = glm::vec3(0, 0, 3);
-	glm::vec3 cameraFront = glm::vec3(0, 0, -1);
-	glm::vec3 cameraUp = glm::vec3(0, 1, 0);
-
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
+		calculateDeltaTime();
 		processInput(window);
 
 		glClearColor(.3f, 0, .2f, 1);
@@ -190,9 +205,46 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
 }
 
 void processInput(GLFWwindow* window) {
+	const float cameraSpeed = 2 * deltaTime;
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		cameraPos += glm::normalize(cameraFront) * cameraSpeed;
+	} 
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		cameraPos -= glm::normalize(cameraFront) * cameraSpeed;
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	}
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	float xOffset = xpos - lastMouseX;
+	float yOffset = lastMouseY - ypos;
+	lastMouseX = xpos;
+	lastMouseY = ypos;
+
+	const float sensitivity = 0.1;
+	xOffset *= sensitivity;
+	yOffset *= sensitivity;
+	yaw += xOffset;
+	pitch += yOffset;
+	if (pitch > 89.9f) {
+		pitch = 89.9f;
+	}
+	else if (pitch < -89.9f) {
+		pitch = -89.9f;
+	}
+	cameraFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	cameraFront.y = sin(glm::radians(pitch));
+	cameraFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	cameraFront = glm::normalize(cameraFront);
 }
 
 GLFWwindow* createWindow(int width, int height, const char* title) {
@@ -205,6 +257,10 @@ GLFWwindow* createWindow(int width, int height, const char* title) {
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+	glfwSetCursorPosCallback(window, mouse_callback);
+	lastMouseX = width / 2;
+	lastMouseY = height / 2;
+
 	return window;
 }
 
@@ -212,6 +268,23 @@ void loadOpenGlFunctions() {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		throw std::runtime_error("No glad just sad");
 	}
+}
+
+void calculateDeltaTime() {
+	float currentFrame = glfwGetTime();
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
+}
+
+void lockCursor(GLFWwindow* window, bool locked) {
+	int disabled;
+	if (locked) {
+		disabled = GLFW_CURSOR_DISABLED;
+	}
+	else {
+		disabled = GLFW_CURSOR_NORMAL;
+	}
+	glfwSetInputMode(window, GLFW_CURSOR, disabled);
 }
 
 //void setTextureSetting() {
