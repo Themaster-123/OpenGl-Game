@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace GLG {
+namespace glg {
 	class Shader
 	{
 	public:

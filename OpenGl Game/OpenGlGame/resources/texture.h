@@ -4,7 +4,7 @@
 #include <stb_image.h>
 #include <iostream>
 
-namespace GLG {
+namespace glg {
 	enum class WrappingOption {
 		Repeat = GL_REPEAT,
 		MirroredRepeat = GL_MIRRORED_REPEAT,

@@ -4,7 +4,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-using namespace GLG;
+using namespace glg;
 
 Camera::Camera(glm::vec3 position, glm::quat rotation, float fov, float screenAspectRatio) : Entity(position, rotation), worldUp(0, 1, 0), fov(fov), aspectRatio(screenAspectRatio), nearPlane(0.01f), farPlane(100) {
 }

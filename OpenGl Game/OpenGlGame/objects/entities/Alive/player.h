@@ -1,7 +1,7 @@
 #pragma once
 #include "../camera.h"
 
-namespace GLG {
+namespace glg {
 	class Player
 	{
 	public:

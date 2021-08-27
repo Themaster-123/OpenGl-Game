@@ -5,7 +5,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include "entity.h"
 
-namespace GLG {
+namespace glg {
 	class Camera : public Entity
 	{
 	public:
