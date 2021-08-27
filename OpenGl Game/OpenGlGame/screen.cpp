@@ -1,12 +1,17 @@
 #include <algorithm>
 #include "screen.h"
-#include "objects/entities/entity.h"
+#include "entities/entity.h"
 #include <iostream>
+#include <GLFW/glfw3.h>
 
-
+GLFWwindow* glg::GAME_WINDOW;
+unsigned int glg::SCREEN_WIDTH = 800;
+unsigned int glg::SCREEN_HEIGHT = 800;
+float glg::DELTA_TIME;
+static float lastMouseX;
+static float lastMouseY;
 
 void glg::loopThroughEntitys() {
-	std::cout << getEntityUpdateVector().size() << std::endl;
 	for (Entity* entity : getEntityUpdateVector()) {
 		(*entity).update();
 	}
@@ -14,7 +19,6 @@ void glg::loopThroughEntitys() {
 
 void glg::addEntityToUpdateCycle(glg::Entity& entity) {
 	getEntityUpdateVector().push_back(&entity);
-	std::cout << getEntityUpdateVector().size() << std::endl;
 }
 
 void glg::removeEntityFromUpdateCycle(const glg::Entity& entity) {
@@ -45,7 +49,7 @@ GLFWwindow* glg::createWindow(int width, int height, const char* title) {
 	glfwSetCursorPosCallback(window, mouse_callback);
 	lastMouseX = width / 2.0f;
 	lastMouseY = height / 2.0f;
-
+	GAME_WINDOW = window;
 	return window;
 }
 
@@ -53,4 +57,56 @@ void glg::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
 	SCREEN_WIDTH = width;
 	SCREEN_HEIGHT = height;
 	glViewport(0, 0, width, height);
+}
+
+void glg::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	static bool firstMouse = true;
+
+	if (firstMouse) {
+		lastMouseX = (float)xpos;
+		lastMouseY = (float)ypos;
+		firstMouse = false;
+	}
+
+	float xOffset = (float)xpos - lastMouseX;
+	float yOffset = (float)ypos - lastMouseY;
+	lastMouseX = (float)xpos;
+	lastMouseY = (float)ypos;
+
+	for (Entity* entity : getEntityUpdateVector()) {
+		(*entity).onMouseMovement(xOffset, yOffset, (float) xpos, (float) ypos);
+	}
+
+	//const float sensitivity = 0.2f;
+	//xOffset *= sensitivity;
+	//yOffset *= sensitivity;
+	//glm::vec3 euler = glm::degrees(glm::eulerAngles(camera.getRotation()));
+	//euler.y -= xOffset;
+	//euler.x += yOffset;
+	//euler.x = std::max(std::min(euler.x, 90.0f), -90.0f);
+	//camera.setRotation(euler);
+}
+
+void glg::calculateDeltaTime() {
+	static float lastFrame = 0;
+
+	float currentFrame = (float)glfwGetTime();
+	DELTA_TIME = currentFrame - lastFrame;
+	lastFrame = currentFrame;
+}
+
+void glg::lockCursor(GLFWwindow* window, bool locked) {
+	int disabled;
+	if (locked) {
+		disabled = GLFW_CURSOR_DISABLED;
+	}
+	else {
+		disabled = GLFW_CURSOR_NORMAL;
+	}
+	glfwSetInputMode(window, GLFW_CURSOR, disabled);
+}
+
+int glg::getKey(int key)
+{
+	return glfwGetKey(GAME_WINDOW, key);
 }
