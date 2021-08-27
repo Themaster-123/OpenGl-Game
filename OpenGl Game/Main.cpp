@@ -68,14 +68,10 @@ unsigned int indices[] = {
 float deltaTime = 0;
 float lastFrame = 0;
 
-glm::vec3 cameraPos = glm::vec3(0, 0, 3);
-glm::vec3 cameraFront = glm::vec3(0, 0, -1);
-glm::vec3 cameraUp = glm::vec3(0, 1, 0);
-
 float yaw = 0;
 float pitch = 0;
 
-Camera camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), 90, SCREEN_WIDTH / SCREEN_HEIGHT);
+Camera camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), 70, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT);
 
 float lastMouseX;
 float lastMouseY;
@@ -177,6 +173,7 @@ glm::vec3(-1.3f,  1.0f, -1.5f)
 		shader.use();
 		texture1.activate();
 		texture2.activate();
+		camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
 		glBindVertexArray(VAO);
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -189,7 +186,7 @@ glm::vec3(-1.3f,  1.0f, -1.5f)
 			model = glm::translate(model, cubePositions[i]);
 			model = glm::rotate(model, (float)glfwGetTime() / 4 + glm::radians(i * 20.0f), glm::vec3(.5, .5, 0));
 			shader.setMat4("model", model);
-			glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjectionMatrix()));
+			shader.setMat4("projection", camera.getProjectionMatrix());
 			glDrawArrays(GL_TRIANGLES, 0, 36/*6, GL_UNSIGNED_INT, 0*/);
 		}
 
@@ -247,13 +244,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	const float sensitivity = 0.2;
 	xOffset *= sensitivity;
 	yOffset *= sensitivity;
+	//glm::vec3 euler = glm::eulerAngles(camera.getRotation()) * glm::radians;
 	yaw += xOffset;
 	pitch += yOffset;
 	pitch = std::max(std::min(pitch, 90.0f), -90.0f);
-	cameraFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	cameraFront.y = sin(glm::radians(pitch));
-	cameraFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	cameraFront = glm::normalize(cameraFront);
 	camera.setRotation(glm::vec3(pitch, -yaw, 0));
 }
 
