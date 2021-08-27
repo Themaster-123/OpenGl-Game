@@ -13,68 +13,33 @@ namespace GLG {
 		float nearPlane;
 		float farPlane;
 
-		Camera(glm::vec3 position, glm::quat rotation, float fov, float screenAspectRatio) : worldUp(0, 1, 0), fov(fov), aspectRatio(screenAspectRatio), nearPlane(0.01f), farPlane(100) {
-			setPosition(position);
-			setRotation(rotation);
-			updateVectors();
-		}
+		Camera(glm::vec3 position, glm::quat rotation, float fov, float screenAspectRatio);
 
-		Camera(glm::vec3 position, glm::quat rotation, float fov, float screenAspectRatio, float nearPlane, float farPlane) : worldUp(0, 1, 0), fov(fov), aspectRatio(screenAspectRatio), nearPlane(nearPlane), farPlane(farPlane) {
-			setPosition(position);
-			setRotation(rotation);
-			updateVectors();
-		}
+		Camera(glm::vec3 position, glm::quat rotation, float fov, float screenAspectRatio, float nearPlane, float farPlane);
 
-		Camera(glm::vec3 position, glm::vec3 rotation, float fov, float screenAspectRatio) : Camera(position, glm::quat(glm::radians(rotation)), fov, screenAspectRatio) {
-		}
+		Camera(glm::vec3 position, glm::vec3 rotation, float fov, float screenAspectRatio);
 
-		Camera(glm::vec3 position, glm::vec3 rotation, float fov, float screenAspectRatio, float nearPlane, float farPlane) : Camera(position, glm::quat(glm::radians(rotation)), fov, screenAspectRatio, nearPlane, farPlane) {
-		}
+		Camera(glm::vec3 position, glm::vec3 rotation, float fov, float screenAspectRatio, float nearPlane, float farPlane);
 
-		glm::mat4 getViewMatrix() {
-			glm::mat4 view = glm::mat4(1);
-			view = glm::translate(view, -position);
-			view = glm::toMat4(glm::inverse(getRotation())) * view;
-			return view;
-		}
+		glm::mat4 getViewMatrix();
 
-		glm::mat4 getProjectionMatrix() {
-			return glm::perspective(glm::radians(fov), aspectRatio, nearPlane, farPlane);
-		}
+		glm::mat4 getProjectionMatrix();
 
-		glm::vec3 getPosition() {
-			return position;
-		}
+		glm::vec3 getPosition();
 
-		void setPosition(glm::vec3 position) {
-			this->position = position;
-		}
+		void setPosition(glm::vec3 position);
 
-		glm::quat getRotation() {
-			return rotation;
-		}
+		glm::quat getRotation();
 
-		void setRotation(glm::quat rotation) {
-			this->rotation = rotation;
-			updateVectors();
-		}
+		void setRotation(glm::quat rotation);
 
-		void setRotation(glm::vec3 rotation) {
-			this->rotation = glm::quat(glm::radians(rotation));
-			updateVectors();
-		}
+		void setRotation(glm::vec3 rotation);
 
-		glm::vec3 getFront() {
-			return front;
-		}
+		glm::vec3 getFront();
 
-		glm::vec3 getUp() {
-			return up;
-		}
+		glm::vec3 getUp();
 
-		glm::vec3 getRight() {
-			return right;
-		}
+		glm::vec3 getRight();
 	protected:
 		glm::vec3 position;
 		glm::quat rotation;
@@ -83,10 +48,6 @@ namespace GLG {
 		glm::vec3 right;
 		glm::vec3 worldUp;
 
-		void updateVectors() {
-			front = glm::normalize(getRotation() * glm::vec3(0, 0, -1));
-			right = glm::normalize(getRotation() * glm::vec3(1, 0, 0));
-			up = glm::normalize(getRotation() * glm::vec3(0, 1, 0));
-		}
+		void updateVectors();
 	};
 }
