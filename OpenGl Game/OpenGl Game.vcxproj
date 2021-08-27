@@ -145,20 +145,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="OpenGlGame\objects\camera.cpp" />
     <ClCompile Include="includes\glad\src\glad.c" />
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="OpenGlGame\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="shader.h" />
-    <ClInclude Include="texture.h" />
+    <ClInclude Include="OpenGlGame\objects\camera.h" />
+    <ClInclude Include="OpenGlGame\resources\shader.h" />
+    <ClInclude Include="OpenGlGame\resources\texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\FragmentShader.frag" />
     <None Include="assets\VertexShader.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\Downloads\crate.jpg" />
     <Image Include="assets\awesomeface.png" />
     <Image Include="assets\test_image.jpg" />
   </ItemGroup>

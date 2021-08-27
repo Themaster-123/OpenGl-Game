@@ -1,9 +1,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "shader.h"
-#include "texture.h"
-#include "camera.h"
+#include "resources/shader.h"
+#include "resources/texture.h"
+#include "objects/camera.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <glm/glm.hpp>
@@ -231,17 +231,17 @@ void processInput(GLFWwindow* window) {
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	if (firstMouse) {
-		lastMouseX = xpos;
-		lastMouseY = ypos;
+		lastMouseX = (float) xpos;
+		lastMouseY = (float) ypos;
 		firstMouse = false;
 	}
 
-	float xOffset = xpos - lastMouseX;
-	float yOffset = lastMouseY - ypos;
-	lastMouseX = xpos;
-	lastMouseY = ypos;
+	float xOffset = (float) xpos - lastMouseX;
+	float yOffset = lastMouseY - (float) ypos;
+	lastMouseX = (float) xpos;
+	lastMouseY = (float) ypos;
 
-	const float sensitivity = 0.2;
+	const float sensitivity = 0.2f;
 	xOffset *= sensitivity;
 	yOffset *= sensitivity;
 	//glm::vec3 euler = glm::eulerAngles(camera.getRotation()) * glm::radians;
@@ -262,8 +262,8 @@ GLFWwindow* createWindow(int width, int height, const char* title) {
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 	glfwSetCursorPosCallback(window, mouse_callback);
-	lastMouseX = width / 2;
-	lastMouseY = height / 2;
+	lastMouseX = width / 2.0f;
+	lastMouseY = height / 2.0f;
 
 	return window;
 }
@@ -275,7 +275,7 @@ void loadOpenGlFunctions() {
 }
 
 void calculateDeltaTime() {
-	float currentFrame = glfwGetTime();
+	float currentFrame = (float) glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 }
