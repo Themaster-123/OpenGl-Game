@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <GLFW/glfw3.h>
 //#include "../../screen.h"
 
 namespace glg {
@@ -45,9 +46,13 @@ namespace glg {
 
 		void update();
 
+		void onMouseMovement(float xOffset, float yOffset, float xPos, float yPos);
+
 		void addEntityToUpdateCycle();
 
 		friend void loopThroughEntitys();
+
+		friend void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	};
 }
 

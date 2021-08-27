@@ -85,6 +85,10 @@ void Entity::update()
 {
 }
 
+void glg::Entity::onMouseMovement(float xOffset, float yOffset, float xPos, float yPos)
+{
+}
+
 void Entity::addEntityToUpdateCycle()
 {
 	glg::addEntityToUpdateCycle((*this));
