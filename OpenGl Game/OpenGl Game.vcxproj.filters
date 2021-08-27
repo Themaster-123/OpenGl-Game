@@ -22,6 +22,12 @@
     <Filter Include="Source Files\objects">
       <UniqueIdentifier>{5f6f8063-44d0-45a5-a048-57e7d4bda7cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\objects\entities">
+      <UniqueIdentifier>{09d00883-0dd9-47ac-946c-9b6b000c9096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objects\entites">
+      <UniqueIdentifier>{cc8fab14-6714-432b-a814-ff7058fa32a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="includes\glad\src\glad.c">
@@ -30,19 +36,37 @@
     <ClCompile Include="OpenGlGame\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGlGame\objects\camera.cpp">
+    <ClCompile Include="OpenGlGame\screen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGlGame\entities\Alive\player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGlGame\entities\camera.cpp">
       <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGlGame\entities\entity.cpp">
+      <Filter>Source Files\objects\entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="OpenGlGame\objects\camera.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
     <ClInclude Include="OpenGlGame\resources\shader.h">
       <Filter>Header Files\resources</Filter>
     </ClInclude>
     <ClInclude Include="OpenGlGame\resources\texture.h">
       <Filter>Header Files\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGlGame\screen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGlGame\entities\Alive\player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGlGame\entities\camera.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGlGame\entities\entity.h">
+      <Filter>Header Files\objects\entites</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
