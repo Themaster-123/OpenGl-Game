@@ -25,10 +25,16 @@ namespace GLG {
 			updateVectors();
 		}
 
+		Camera(glm::vec3 position, glm::vec3 rotation, float fov, float screenAspectRatio) : Camera(position, glm::quat(glm::radians(rotation)), fov, screenAspectRatio) {
+		}
+
+		Camera(glm::vec3 position, glm::vec3 rotation, float fov, float screenAspectRatio, float nearPlane, float farPlane) : Camera(position, glm::quat(glm::radians(rotation)), fov, screenAspectRatio, nearPlane, farPlane) {
+		}
+
 		glm::mat4 getViewMatrix() {
 			glm::mat4 view = glm::mat4(1);
 			view = glm::translate(view, -position);
-			view = view * glm::toMat4(glm::inverse(getRotation()));
+			view = glm::toMat4(glm::inverse(getRotation())) * view;
 			return view;
 		}
 
@@ -53,16 +59,21 @@ namespace GLG {
 			updateVectors();
 		}
 
+		void setRotation(glm::vec3 rotation) {
+			this->rotation = glm::quat(glm::radians(rotation));
+			updateVectors();
+		}
+
 		glm::vec3 getFront() {
-			return position;
+			return front;
 		}
 
 		glm::vec3 getUp() {
-			return position;
+			return up;
 		}
 
 		glm::vec3 getRight() {
-			return position;
+			return right;
 		}
 	protected:
 		glm::vec3 position;
@@ -73,11 +84,7 @@ namespace GLG {
 		glm::vec3 worldUp;
 
 		void updateVectors() {
-			glm::vec3 euler = glm::eulerAngles(getRotation());
-			front.x = cos(euler.y) * cos(euler.x);
-			front.y = sin(euler.x);
-			front.z = sin(euler.y) * cos(euler.x);
-			front = glm::normalize(front);
+			front = glm::normalize(getRotation() * glm::vec3(0, 0, -1));
 			right = glm::normalize(glm::cross(front, worldUp));
 			up = glm::normalize(glm::cross(right, front));
 		}
