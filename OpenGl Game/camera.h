@@ -85,8 +85,8 @@ namespace GLG {
 
 		void updateVectors() {
 			front = glm::normalize(getRotation() * glm::vec3(0, 0, -1));
-			right = glm::normalize(glm::cross(front, worldUp));
-			up = glm::normalize(glm::cross(right, front));
+			right = glm::normalize(getRotation() * glm::vec3(1, 0, 0));
+			up = glm::normalize(getRotation() * glm::vec3(0, 1, 0));
 		}
 	};
 }
