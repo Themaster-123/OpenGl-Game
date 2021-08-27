@@ -2,14 +2,17 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+//#include "../../screen.h"
 
-namespace GLG {
+namespace glg {
 	class Entity
 	{
 	public:
 		Entity(glm::vec3 position, glm::quat rotation);
 
 		Entity(glm::vec3 position, glm::vec3 rotation);
+
+		~Entity();
 
 		glm::vec3 getPosition();
 
@@ -29,7 +32,7 @@ namespace GLG {
 
 		void move(glm::vec3 direction);
 
-		friend class ;
+		bool operator==(const Entity& other);
 
 	protected:
 		glm::vec3 position;
@@ -43,6 +46,8 @@ namespace GLG {
 		void update();
 
 		void addEntityToUpdateCycle();
+
+		friend void loopThroughEntitys();
 	};
 }
 

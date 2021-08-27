@@ -1,12 +1,15 @@
 #include "entity.h"
+#include "../../screen.h"
+#include <iostream>
 
-using namespace GLG;
+using namespace glg;
 
 Entity::Entity(glm::vec3 position, glm::quat rotation)
 {
 	setPosition(position);
 	setRotation(rotation);
 	updateVectors();
+	addEntityToUpdateCycle();
 }
 
 Entity::Entity(glm::vec3 position, glm::vec3 rotation)
@@ -14,6 +17,12 @@ Entity::Entity(glm::vec3 position, glm::vec3 rotation)
 	setPosition(position);
 	setRotation(rotation);
 	updateVectors();
+	addEntityToUpdateCycle();
+}
+
+glg::Entity::~Entity()
+{
+	glg::removeEntityFromUpdateCycle(*this);
 }
 
 glm::vec3 Entity::getPosition()
@@ -62,6 +71,9 @@ void Entity::move(glm::vec3 direction) {
 	setPosition(getPosition() + direction);
 }
 
+bool glg::Entity::operator==(const Entity& other) {
+	return this == &other;
+}
 void Entity::updateVectors()
 {
 	front = glm::normalize(getRotation() * glm::vec3(0, 0, -1));
@@ -75,4 +87,5 @@ void Entity::update()
 
 void Entity::addEntityToUpdateCycle()
 {
+	glg::addEntityToUpdateCycle((*this));
 }
