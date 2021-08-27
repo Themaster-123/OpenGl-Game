@@ -45,7 +45,6 @@ namespace GLG {
 			setWrappingOption(wrappingOption);
 			setfilterOptions(minFilterOption, FilterType::Minifying);
 			setfilterOptions(magFilterOption, FilterType::Magnifying);
-			std::cout << GL_MAX_TEXTURE_LOD_BIAS;
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, bias);
 
 			int width, height, nrChannels;
