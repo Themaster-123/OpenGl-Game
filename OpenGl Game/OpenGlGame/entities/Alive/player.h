@@ -1,7 +1,6 @@
 #pragma once
 #include "../camera.h"
 #include "../entity.h"
-#include "../lookable.h"
 
 namespace glg {
 	class Player : public Entity
