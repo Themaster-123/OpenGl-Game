@@ -83,6 +83,11 @@ namespace glg {
 			glBindTexture(GL_TEXTURE_2D, ID);
 		}
 
+		void activate(int textureUnit) {
+			TU = textureUnit;
+			activate();
+		}
+
 		int getWidth() {
 			return width;
 		}
