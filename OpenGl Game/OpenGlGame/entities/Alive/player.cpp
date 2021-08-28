@@ -42,6 +42,7 @@ void glg::Player::setLookRotation(glm::vec2 rotation)
 
 void Player::update()
 {
+	Entity::update();
 	processInput();
 }
 
