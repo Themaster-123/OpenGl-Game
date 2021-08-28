@@ -14,10 +14,6 @@ Entity::Entity(glm::vec3 position, glm::quat rotation)
 
 Entity::Entity(glm::vec3 position, glm::vec3 rotation) : Entity(position, glm::quat(glm::radians(rotation)))
 {
-	//setPosition(position);
-	//setRotation(rotation);
-	//updateVectors();
-	//addEntityToUpdateCycle();
 }
 
 Entity::Entity(const Entity& other)
@@ -81,6 +77,16 @@ void Entity::move(const glm::vec3& direction) {
 bool glg::Entity::operator==(const Entity& other) {
 	return this == &other;
 }
+
+glm::vec2 glg::Entity::getLookRotation() {
+	return lookRotation;
+}
+
+void glg::Entity::setLookRotation(glm::vec2 rotation) {
+	lookRotation = rotation;
+	setRotation(glm::vec3(rotation.x, rotation.y, 0));
+}
+
 void Entity::updateVectors()
 {
 	front = glm::normalize(getRotation() * glm::vec3(0, 0, -1));

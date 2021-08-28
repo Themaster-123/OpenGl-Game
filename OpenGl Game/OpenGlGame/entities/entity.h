@@ -37,14 +37,18 @@ namespace glg {
 
 		virtual bool operator==(const Entity& other);
 
+		virtual glm::vec2 getLookRotation();
+
+		virtual void setLookRotation(glm::vec2 rotation);
+
+
 	protected:
 		glm::vec3 position;
 		glm::quat rotation;
 		glm::vec3 front;
 		glm::vec3 up;
 		glm::vec3 right;
-		float pitch = 0;
-		float yaw = 0;
+		glm::vec2 lookRotation = glm::vec2(0.0f, 0.0f);
 
 		virtual void updateVectors();
 
