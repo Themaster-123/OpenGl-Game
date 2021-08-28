@@ -27,7 +27,23 @@ namespace glg {
 		}
 
 		void draw(Shader& shader) {
+			unsigned int diffuseNr = 1;
+			for (unsigned int i = 0; i < textures.size(); i++) {
+				std::string number;
+				std::string name = "diffuse";
+				if (name == "diffuse") {
+					number = std::to_string(diffuseNr);
+					diffuseNr++;
+				}
+
+				shader.setInt("texture_" + name + number, i);
+				textures[i].activate(i);
+			}
 			
+			glBindVertexArray(VAO);
+			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+			glActiveTexture(GL_TEXTURE0);
 		}
 
 	private:
