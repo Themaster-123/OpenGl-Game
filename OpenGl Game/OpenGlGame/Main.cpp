@@ -3,7 +3,7 @@
 #include <iostream>
 #include "resources/shader.h"
 #include "resources/texture.h"
-#include "objects/entities/camera.h"
+#include "entities/camera.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <glm/glm.hpp>
@@ -13,7 +13,7 @@
 #include <utility>
 #include <vector>
 #include "screen.h"
-#include "objects/entities/Alive/player.h"
+#include "entities/Alive/player.h"
 
 using namespace glg;
 
@@ -147,8 +147,6 @@ glm::vec3(-1.3f,  1.0f, -1.5f)
 	while (!glfwWindowShouldClose(window))
 	{
 		calculateDeltaTime();
-		processInput(window);
-		
 		loopThroughEntitys();
 
 		glClearColor(.3f, 0, .2f, 1);
@@ -183,29 +181,6 @@ glm::vec3(-1.3f,  1.0f, -1.5f)
 	}
 	glfwTerminate();
 	return 0;
-}
-
-void processInput(GLFWwindow* window) {
-	const float cameraSpeed = 3 * DELTA_TIME;
-
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, true);
-	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		camera.move(glm::normalize(camera.getFront()) * cameraSpeed);
-	} 
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		camera.move(glm::normalize(-camera.getFront()) * cameraSpeed);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		camera.move(glm::normalize(-camera.getRight()) * cameraSpeed);
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		camera.move(glm::normalize(camera.getRight()) * cameraSpeed);
-	}
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		camera.move(glm::normalize(camera.getUp()) * cameraSpeed);
-	}
 }
 
 void loadOpenGlFunctions() {
