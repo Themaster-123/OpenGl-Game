@@ -151,6 +151,7 @@
     <ClCompile Include="OpenGlGame\Main.cpp" />
     <ClCompile Include="OpenGlGame\entities\Alive\player.cpp" />
     <ClCompile Include="OpenGlGame\screen.cpp" />
+    <ClCompile Include="OpenGlGame\entities\visibleentity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\entities\entity.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="OpenGlGame\resources\texture.h" />
     <ClInclude Include="OpenGlGame\entities\Alive\player.h" />
     <ClInclude Include="OpenGlGame\screen.h" />
+    <ClInclude Include="OpenGlGame\entities\visibleentity.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\FragmentShader.frag" />

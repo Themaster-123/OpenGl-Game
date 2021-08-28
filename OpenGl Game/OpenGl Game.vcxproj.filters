@@ -48,6 +48,9 @@
     <ClCompile Include="OpenGlGame\entities\entity.cpp">
       <Filter>Source Files\objects\entities</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGlGame\entities\visibleentity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\resources\shader.h">
@@ -67,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="OpenGlGame\entities\entity.h">
       <Filter>Header Files\objects\entites</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGlGame\entities\visibleentity.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
