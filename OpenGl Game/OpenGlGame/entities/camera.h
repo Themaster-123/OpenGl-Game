@@ -22,9 +22,9 @@ namespace glg {
 
 		Camera(glm::vec3 position, glm::vec3 rotation, float fov, float screenAspectRatio, float nearPlane, float farPlane);
 
-		virtual glm::mat4 getViewMatrix();
+		virtual glm::mat4 getViewMatrix() const;
 
-		virtual glm::mat4 getProjectionMatrix();
+		virtual glm::mat4 getProjectionMatrix() const;
 
 	protected:
 		glm::vec3 worldUp;

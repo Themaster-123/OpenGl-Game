@@ -29,7 +29,7 @@ Entity::~Entity()
 	glg::removeEntityFromUpdateCycle(*this);
 }
 
-glm::vec3 Entity::getPosition()
+glm::vec3 Entity::getPosition() const
 {
 	return position;
 }
@@ -39,7 +39,7 @@ void Entity::setPosition(glm::vec3 position)
 	this->position = position;
 }
 
-glm::quat Entity::getRotation()
+glm::quat Entity::getRotation() const
 {
 	return rotation;
 }
@@ -55,17 +55,17 @@ void Entity::setRotation(glm::vec3 rotation)
 	setRotation(glm::quat(glm::radians(rotation)));
 }
 
-glm::vec3 Entity::getFront()
+glm::vec3 Entity::getFront() const
 {
 	return front;
 }
 
-glm::vec3 Entity::getUp()
+glm::vec3 Entity::getUp() const
 {
 	return up;
 }
 
-glm::vec3 Entity::getRight()
+glm::vec3 Entity::getRight() const
 {
 	return right;
 }
@@ -74,11 +74,11 @@ void Entity::move(const glm::vec3& direction) {
 	setPosition(getPosition() + direction);
 }
 
-bool glg::Entity::operator==(const Entity& other) {
+bool glg::Entity::operator==(const Entity& other) const {
 	return this == &other;
 }
 
-glm::vec2 glg::Entity::getLookRotation() {
+glm::vec2 glg::Entity::getLookRotation() const {
 	return lookRotation;
 }
 

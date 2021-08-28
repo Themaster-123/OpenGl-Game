@@ -17,27 +17,27 @@ namespace glg {
 
 		~Entity();
 
-		virtual glm::vec3 getPosition();
+		virtual glm::vec3 getPosition() const;
 
 		virtual void setPosition(glm::vec3 position);
 
-		virtual glm::quat getRotation();
+		virtual glm::quat getRotation() const;
 
 		virtual void setRotation(glm::quat rotation);
 
 		void setRotation(glm::vec3 rotation);
 
-		virtual glm::vec3 getFront();
+		virtual glm::vec3 getFront() const;
 
-		virtual glm::vec3 getUp();
+		virtual glm::vec3 getUp() const;
 
-		virtual glm::vec3 getRight();
+		virtual glm::vec3 getRight() const;
 
 		virtual void move(const glm::vec3& direction);
 
-		virtual bool operator==(const Entity& other);
+		virtual bool operator==(const Entity& other) const;
 
-		virtual glm::vec2 getLookRotation();
+		virtual glm::vec2 getLookRotation() const;
 
 		virtual void setLookRotation(glm::vec2 rotation);
 

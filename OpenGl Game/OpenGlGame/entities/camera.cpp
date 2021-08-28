@@ -18,13 +18,13 @@ Camera::Camera(glm::vec3 position, glm::vec3 rotation, float fov, float screenAs
 Camera::Camera(glm::vec3 position, glm::vec3 rotation, float fov, float screenAspectRatio, float nearPlane, float farPlane) : Camera(position, glm::quat(glm::radians(rotation)), fov, screenAspectRatio, nearPlane, farPlane) {
 }
 
-glm::mat4 Camera::getViewMatrix() {
+glm::mat4 Camera::getViewMatrix() const {
 	glm::mat4 view = glm::mat4(1);
 	view = glm::translate(view, -position);
 	view = glm::toMat4(glm::inverse(getRotation())) * view;
 	return view;
 }
 
-glm::mat4 Camera::getProjectionMatrix() {
+glm::mat4 Camera::getProjectionMatrix() const {
 	return glm::perspective(glm::radians(fov), aspectRatio, nearPlane, farPlane);
 }
