@@ -14,60 +14,91 @@
 #include <vector>
 #include "screen.h"
 #include "entities/Alive/player.h"
+#include "resources/model.h"
 
 using namespace glg;
 
+//float vertices[] = {
+//	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+//	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+//	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+//	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+//
+//	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+//	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+//	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+//	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//
+//	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//
+//	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//
+//	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+//	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//
+//	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+//	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+//	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+//};
+//unsigned int indices[] = {
+//	0, 1, 3,
+//	1, 2, 3
+//};
 float vertices[] = {
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	-1, -1, -1,
+	1, -1, -1,
+	1, 1, -1,
+	-1, 1, -1,
+	-1, -1, 1,
+	1, -1, 1,
+	1, 1, 1,
+	-1, 1, 1,
 };
+
+float texCoords[] = {
+	0, 0,
+	1, 0,
+	1, 1,
+	0, 1,
+};
+
 unsigned int indices[] = {
 	0, 1, 3,
-	1, 2, 3
+	3, 1, 2,
+	1, 5, 2,
+	2, 5, 6,
+	5, 4, 6,
+	6, 4, 7,
+	4, 0, 7,
+	7, 0, 3,
+	3, 2, 7,
+	7, 2, 6,
+	4, 5, 0,
+	0, 5, 1
 };
 
 Camera camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), 70, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT);
-
-void processInput(GLFWwindow* window);
 
 void loadOpenGlFunctions();
 
@@ -88,41 +119,41 @@ int main() {
 	loadOpenGlFunctions();
 
 	Shader shader("Assets/VertexShader.vert", "Assets/FragmentShader.frag");
-
 	// creates a vertex array object
 	// 
-	unsigned int VAO, VBO, EBO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+	//unsigned int VAO, VBO, TEX_VBO, EBO;
+	//glGenVertexArrays(1, &VAO);
+	//glBindVertexArray(VAO);
 
-	// creates a vertex buffer object
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	//// creates a vertex buffer object
+	//glGenBuffers(1, &VBO);
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	// creates a element buffer object
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//// creates a element buffer object
+	//glGenBuffers(1, &EBO);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	//links vertex attributes to the VAO
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	////links vertex attributes to the VAO
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(0);
+	////glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	////glEnableVertexAttribArray(1);
+	//glGenBuffers(1, &TEX_VBO);
+	//glBindBuffer(GL_ARRAY_BUFFER, TEX_VBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(0 * sizeof(float)));
 	//glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
 
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	//glBindVertexArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	Texture2D texture1("Assets/crate.jpg", 0, WrappingOption::Repeat);
-	Texture2D texture2("Assets/awesomeface.png", 1, WrappingOption::Repeat);
+	//Texture2D texture1("Assets/crate.jpg", 0, WrappingOption::Repeat);
+	//Texture2D texture2("Assets/awesomeface.png", 1, WrappingOption::Repeat);
 
 	shader.use();
-	shader.setInt("texture1", 0);
-	shader.setInt("texture2", 1);
 
 	glm::vec3 cubePositions[] = {
 glm::vec3(0.0f,  0.0f,  0.0f),
@@ -139,9 +170,12 @@ glm::vec3(-1.3f,  1.0f, -1.5f)
 
 	Player player(camera.getPosition(), camera.getRotation(), camera);
 
-	unsigned int projectionLoc = glGetUniformLocation(shader.ID, "projection");	
 
 	glEnable(GL_DEPTH_TEST);
+
+	Model model("assets/backpack/backpack.obj");
+	glm::mat4 modeli = glm::mat4(1);
+	shader.setMat4("model", modeli);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -154,24 +188,25 @@ glm::vec3(-1.3f,  1.0f, -1.5f)
 		glClearColor(0, 0, 0, 0);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		shader.use();
-		texture1.activate();
-		texture2.activate();
-		camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
-		glBindVertexArray(VAO);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//texture1.activate();
+		//texture2.activate();
+
+		////glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		glm::mat4 view = player.camera.getViewMatrix();
-		//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		shader.setMat4("view", view);
-
-		for (int i = 0; i < sizeof(cubePositions) / sizeof(cubePositions[0]); i++) {
-			glm::mat4 model = glm::mat4(1);
-			model = glm::translate(model, cubePositions[i]);
-			model = glm::rotate(model, (float)glfwGetTime() / 4 + glm::radians(i * 20.0f), glm::vec3(.5, .5, 0));
-			shader.setMat4("model", model);
-			shader.setMat4("projection", player.camera.getProjectionMatrix());
-			glDrawArrays(GL_TRIANGLES, 0, 36/*6, GL_UNSIGNED_INT, 0*/);
-		}
+		shader.setMat4("projection", player.camera.getProjectionMatrix());
+		model.draw(shader);
+		////view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+				//camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+		//glBindVertexArray(VAO);
+		//for (int i = 0; i < sizeof(cubePositions) / sizeof(cubePositions[0]); i++) {
+		//	
+		//	model = glm::translate(model, cubePositions[i]);
+		//	model = glm::rotate(model, (float)glfwGetTime() / 4 + glm::radians(i * 20.0f), glm::vec3(.5, .5, 0));
+		//	shader.setMat4("model", model);
+		//	glDrawElements(GL_TRIANGLES, /*0, 36*/36, GL_UNSIGNED_INT, 0);
+		//}
 
 
 		glBindVertexArray(0);
@@ -179,6 +214,7 @@ glm::vec3(-1.3f,  1.0f, -1.5f)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+
 	glfwTerminate();
 	return 0;
 }
