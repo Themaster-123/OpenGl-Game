@@ -37,6 +37,10 @@ namespace glg {
 			unsigned int TU;
 		};
 
+		Texture2D() {
+
+		}
+
 		Texture2D(const char* texturePath, int textureUnit, WrappingOption wrappingOption = WrappingOption::Repeat, FilterOption minFilterOption = FilterOption::NearestMipmapNearest, FilterOption magFilterOption = FilterOption::Nearest, int bias = -2) {
 			this->textureUnit = textureUnit;
 			unsigned int texture;
@@ -50,24 +54,30 @@ namespace glg {
 			int width, height, nrChannels;
 			stbi_set_flip_vertically_on_load(true);
 			unsigned char* data = stbi_load(texturePath, &width, &height, &nrChannels, 0);
-			int format = -1;
-			if (nrChannels == 3) {
-				format = GL_RGB;
-			}
-			else if (nrChannels == 4) {
-				format = GL_RGBA;
-			}
-			else {
-				std::cout << "Failed to load texture: Invailed amount of color channels";
-				return;
-			}
 
 			if (data) {
+				int format = -1;
+				if (nrChannels == 1)
+				{
+					format = GL_RED;
+				}
+				else if (nrChannels == 3) {
+					format = GL_RGB;
+				}
+				else if (nrChannels == 4) {
+					format = GL_RGBA;
+				}
+				else {
+					std::cout << "Failed to load texture: Invailed amount of color channels";
+					return;
+				}
+
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+				std::cout << glGetError() << texturePath << std::endl;
 				glGenerateMipmap(GL_TEXTURE_2D);
 			}
 			else {
-				std::cout << "Failed to load texture" << std::endl;
+				std::cout << "Failed to load texture: " << std::string(texturePath) << std::endl;
 				return;
 			}
 			stbi_image_free(data);
