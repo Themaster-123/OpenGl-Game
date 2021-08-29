@@ -88,7 +88,7 @@ namespace glg {
 			std::vector<Texture2D> textures;
 			for (size_t i = 0; i < mat->GetTextureCount(type); i++) {
 				aiString str;
-				mat->GetTexture(type, i, &str);
+				mat->GetTexture(type, (unsigned int) i, &str);
 				if (loadedTextures.find(str.C_Str()) != loadedTextures.end()) {
 					textures.push_back(loadedTextures[str.C_Str()]);
 				}
