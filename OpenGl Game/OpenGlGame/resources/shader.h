@@ -121,7 +121,7 @@ namespace glg {
 			switch (type)
 			{
 			case CompileErrorType::Program:
-				glGetProgramiv(shader, GL_COMPILE_STATUS, &success);
+				glGetProgramiv(shader, GL_LINK_STATUS, &success);
 				if (!success) {
 					glGetProgramInfoLog(ID, 512, NULL, infoLog);
 					std::cout << "Shader Program Failed: " << infoLog << std::endl;
