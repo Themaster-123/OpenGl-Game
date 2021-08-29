@@ -50,8 +50,46 @@ namespace glg {
 			}
 		}
 
-		Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+		Mesh processMesh(aiMesh* mesh, const aiScene* scene) {
+			std::vector<Vertex> vertices;
+			std::vector<unsigned int> indices;
+			std::vector<Texture2D> textures;
 
-		std::vector<Texture2D> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+			for (size_t i = 0; i < mesh->mNumVertices; i++) {
+				Vertex vertex;
+
+				vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+				
+				if (mesh->mTextureCoords[0]) {
+					vertex.texCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+				}
+				vertices.push_back(vertex);
+			}
+
+			for (size_t i = 0; i < mesh->mNumFaces; i++) {
+				aiFace face = mesh->mFaces[i];
+				for (size_t j = 0; j < face.mNumIndices; j++) {
+					indices.push_back(face.mIndices[j]);
+				}
+			}
+
+			if (mesh->mMaterialIndex >= 0) {
+				aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+				std::vector<Texture2D> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "diffuse");
+				textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+			}
+		}
+
+		std::vector<Texture2D> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {
+			std::vector<Texture2D> textures;
+			for (size_t i = 0; i < mat->GetTextureCount(type); i++) {
+				aiString str;
+				mat->GetTexture(type, i, &str);
+				const char* fullPath = (directory + '/' + std::string(str.C_Str())).c_str();
+				Texture2D texture(fullPath, 0);
+				textures.push_back(texture);
+			}
+			return textures;
+		}
 	};
 }
