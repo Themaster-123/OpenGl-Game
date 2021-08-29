@@ -5,6 +5,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <map>
 
 namespace glg {
 	class Model {
@@ -20,6 +21,7 @@ namespace glg {
 		}
 
 	private:
+		std::map<std::string, Texture2D> loadedTextures;
 		std::vector<Mesh> meshes;
 		std::string directory;
 
@@ -85,9 +87,15 @@ namespace glg {
 			for (size_t i = 0; i < mat->GetTextureCount(type); i++) {
 				aiString str;
 				mat->GetTexture(type, i, &str);
-				const char* fullPath = (directory + '/' + std::string(str.C_Str())).c_str();
-				Texture2D texture(fullPath, 0);
-				textures.push_back(texture);
+				if (loadedTextures.find(str.C_Str()) != loadedTextures.end()) {
+					textures.push_back(loadedTextures[str.C_Str()]);
+				}
+				else if (loadedTextures.find(str.C_Str()) == loadedTextures.end()){
+					const char* fullPath = (directory + '/' + std::string(str.C_Str())).c_str();
+					Texture2D texture(fullPath, 0);
+					textures.push_back(texture);
+					loadedTextures[str.C_Str()] = texture;
+				}
 			}
 			return textures;
 		}
