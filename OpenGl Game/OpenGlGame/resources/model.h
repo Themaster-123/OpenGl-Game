@@ -80,6 +80,8 @@ namespace glg {
 				std::vector<Texture2D> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "diffuse");
 				textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 			}
+
+			return Mesh(vertices, indices, textures);
 		}
 
 		std::vector<Texture2D> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {
@@ -91,8 +93,8 @@ namespace glg {
 					textures.push_back(loadedTextures[str.C_Str()]);
 				}
 				else if (loadedTextures.find(str.C_Str()) == loadedTextures.end()){
-					const char* fullPath = (directory + '/' + std::string(str.C_Str())).c_str();
-					Texture2D texture(fullPath, 0);
+					std::string fullPath = std::string((directory + '/' + std::string(str.C_Str())).c_str());
+					Texture2D texture(fullPath.c_str(), 0);
 					textures.push_back(texture);
 					loadedTextures[str.C_Str()] = texture;
 				}
