@@ -43,18 +43,12 @@ int main() {
 	shaders::registerShaders();
 	models::registerModels();
 
-	//Shader shader("Assets/VertexShader.vert", "Assets/FragmentShader.frag");
-
 	//shader.use();
 
 	Player player(camera.getPosition(), camera.getRotation(), camera);
 
 
 	glEnable(GL_DEPTH_TEST);
-	//shader.use();
-	//VisibleEntity visibleEntity(glm::vec3(1, 0, 0), glm::vec3(45, 0, 0), model, shaders::defaultShader);
-	
-	//Model model("assets/backpack/backpack.obj");
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
