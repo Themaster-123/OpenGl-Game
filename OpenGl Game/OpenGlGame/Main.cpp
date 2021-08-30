@@ -15,6 +15,8 @@
 #include "screen.h"
 #include "entities/Alive/player.h"
 #include "resources/model.h"
+#include "entities/visible_entity.h"
+#include "globals/shaders.h"
 
 using namespace glg;
 
@@ -37,19 +39,21 @@ int main() {
 	lockCursor(window, true);
 	// load all OpenGl function pointers
 	loadOpenGlFunctions();
+	shaders::registerShaders();
 
-	Shader shader("Assets/VertexShader.vert", "Assets/FragmentShader.frag");
+	//Shader shader("Assets/VertexShader.vert", "Assets/FragmentShader.frag");
 
-	shader.use();
+	//shader.use();
 
 	Player player(camera.getPosition(), camera.getRotation(), camera);
 
 
 	glEnable(GL_DEPTH_TEST);
-	shader.use();
-	//Model model("assets/test.fbx");
-	Model model("assets/backpack/backpack.obj");
-	Model model2(model);
+	//shader.use();
+	Model model("assets/test/test.obj");
+	VisibleEntity visibleEntity(glm::vec3(1, 0, 0), glm::vec3(45, 0, 0), model, shaders::defaultShader);
+	
+	//Model model("assets/backpack/backpack.obj");
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -61,24 +65,19 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0, 0, 0, 0);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		//shader.use();
-		//texture1.activate();
-		//texture2.activate();
-		glm::mat4 modeli = glm::mat4(1);
-		modeli = glm::rotate(modeli, (float)glfwGetTime(), glm::vec3(1, 1, 0));
-		shader.setMat4("model", modeli);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 		camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+		glm::mat4 modeli = glm::mat4(1);
+		//shader.setMat4("model", modeli);
+
 		glm::mat4 view = player.camera.getViewMatrix();
-		shader.setMat4("view", view);
-		shader.setMat4("projection", player.camera.getProjectionMatrix());
-		model.draw(shader);
-		modeli = glm::mat4(1);
-		modeli = glm::translate(modeli, glm::vec3(0, 5, 0));
-		modeli = glm::rotate(modeli, (float)glfwGetTime(), glm::vec3(1, 1, 0));
-		shader.setMat4("model", modeli);
-		model2.draw(shader);
-		//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+		shaders::defaultShader.setMat4("view", view);
+		shaders::defaultShader.setMat4("projection", player.camera.getProjectionMatrix());
+
+		visibleEntity.draw();
+		//visibleEntity.draw();
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		
 		glBindVertexArray(0);
