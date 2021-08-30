@@ -6,12 +6,17 @@
 #include <sstream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "shader.h"
 
 namespace glg {
 	class Shader
 	{
 	public:
 		unsigned int ID;
+
+		Shader() {
+
+		}
 
 		Shader(const char* vertexPath, const char* fragmentPath) {
 			std::string vertexCode;
@@ -57,6 +62,7 @@ namespace glg {
 
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
+			glUseProgram(ID);
 		}
 		void use() {
 			glUseProgram(ID);
@@ -115,6 +121,7 @@ namespace glg {
 		};
 
 	private:
+
 		void checkCompileErrors(unsigned int shader, CompileErrorType type) {
 			int success;
 			char infoLog[512];
