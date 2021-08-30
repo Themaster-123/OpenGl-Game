@@ -26,5 +26,4 @@ void glg::VisibleEntity::draw()
 void glg::VisibleEntity::update()
 {
 	draw();
-	std::cout << "eaa";
 }
