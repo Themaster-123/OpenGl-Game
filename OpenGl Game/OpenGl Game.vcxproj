@@ -17,14 +17,6 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="test|Win32">
-      <Configuration>test</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="test|x64">
-      <Configuration>test</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -47,13 +39,6 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='test|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -67,13 +52,6 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='test|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>false</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared">
@@ -84,16 +62,10 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='test|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='test|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -103,20 +75,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='test|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\assimp-5.0.1\include;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glad\include;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glfw-3.3.4\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glfw-3.3.4\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\assimp-5.0.1\include;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glad\include;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glfw-3.3.4\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glfw-3.3.4\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='test|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\assimp-5.0.1\include;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glad\include;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glfw-3.3.4\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes;C:\Users\thepu\Desktop\C++\OpenGl Game\OpenGl Game\includes\glfw-3.3.4\lib;$(LibraryPath)</LibraryPath>
@@ -134,22 +98,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='test|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -205,38 +153,12 @@
       <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='test|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>false</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <Optimization>Disabled</Optimization>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <SupportJustMyCode>true</SupportJustMyCode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>
-      </EnableCOMDATFolding>
-      <OptimizeReferences>
-      </OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreAllDefaultLibraries>
-      </IgnoreAllDefaultLibraries>
-      <LinkTimeCodeGeneration>
-      </LinkTimeCodeGeneration>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="OpenGlGame\entities\entity.cpp" />
     <ClCompile Include="OpenGlGame\entities\camera.cpp" />
     <ClCompile Include="includes\glad\src\glad.c" />
+    <ClCompile Include="OpenGlGame\globals\models.cpp" />
+    <ClCompile Include="OpenGlGame\globals\shaders.cpp" />
     <ClCompile Include="OpenGlGame\Main.cpp" />
     <ClCompile Include="OpenGlGame\entities\Alive\player.cpp" />
     <ClCompile Include="OpenGlGame\screen.cpp" />
@@ -245,6 +167,8 @@
   <ItemGroup>
     <ClInclude Include="OpenGlGame\entities\entity.h" />
     <ClInclude Include="OpenGlGame\entities\camera.h" />
+    <ClInclude Include="OpenGlGame\globals\models.h" />
+    <ClInclude Include="OpenGlGame\globals\shaders.h" />
     <ClInclude Include="OpenGlGame\resources\mesh.h" />
     <ClInclude Include="OpenGlGame\resources\model.h" />
     <ClInclude Include="OpenGlGame\resources\shader.h" />
@@ -254,8 +178,10 @@
     <ClInclude Include="OpenGlGame\entities\visible_entity.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\FragmentShader.frag" />
-    <None Include="assets\VertexShader.vert" />
+    <None Include="assets\shaders\default\FragmentShader.frag" />
+    <None Include="assets\shaders\default\VertexShader.vert" />
+    <None Include="assets\shaders\skybox\FragmentShader.frag" />
+    <None Include="assets\shaders\skybox\VertexShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\awesomeface.png" />

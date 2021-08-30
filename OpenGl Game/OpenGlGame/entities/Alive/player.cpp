@@ -2,16 +2,20 @@
 #include <utility>
 #include "../../screen.h"
 #include <iostream>
+#include "../../globals/shaders.h"
+#include "../../globals/models.h"
 
 using namespace glg;
 
-Player::Player(glm::vec3 position, glm::quat rotation, const Camera& camera, float sensitivity) : Entity(position, rotation), camera(camera), sensitivity(sensitivity)
+Player::Player(glm::vec3 position, glm::quat rotation, const Camera& camera, float sensitivity) : VisibleEntity(position, rotation), camera(camera), sensitivity(sensitivity)
 {
+	setPosition(position);
 	setRotation(rotation);
 }
 
-Player::Player(glm::vec3 position, glm::vec3 rotation, const Camera& camera, float sensitivity) : Entity(position, rotation), camera(camera), sensitivity(sensitivity)
+Player::Player(glm::vec3 position, glm::vec3 rotation, const Camera& camera, float sensitivity) : VisibleEntity(position, rotation), camera(camera), sensitivity(sensitivity)
 {
+	setPosition(position);
 	setRotation(rotation);
 }
 
@@ -40,9 +44,17 @@ void glg::Player::setLookRotation(glm::vec2 rotation)
 	lookRotation = rotation;
 }
 
+glm::mat4 glg::Player::getModelMatrix() const
+{
+	glm::mat4 modelMatrix = glm::mat4(1);
+	modelMatrix = glm::translate(modelMatrix, position);
+	modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime(), glm::vec3(0, 1, 0));
+	return modelMatrix;
+}
+
 void Player::update()
 {
-	Entity::update();
+	VisibleEntity::update();
 	processInput();
 }
 
@@ -79,4 +91,18 @@ void Player::onMouseMovement(float xOffset, float yOffset, float xPos, float yPo
 	lookRot.x -= yOffset;
 	lookRot.x = std::max(std::min(lookRot.x, 90.0f), -90.0f);
 	setLookRotation(lookRot);
+}
+
+void glg::Player::draw()
+{
+}
+
+Shader& glg::Player::getShader()
+{
+	return shaders::defaultShader;
+}
+
+Model& glg::Player::getModel()
+{
+	return models::defaultModel;
 }

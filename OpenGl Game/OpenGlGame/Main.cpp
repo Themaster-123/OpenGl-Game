@@ -17,10 +17,11 @@
 #include "resources/model.h"
 #include "entities/visible_entity.h"
 #include "globals/shaders.h"
+#include "globals/models.h"
 
 using namespace glg;
 
-Camera camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), 70, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT);
+Camera camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 70, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT);
 
 void loadOpenGlFunctions();
 
@@ -40,6 +41,7 @@ int main() {
 	// load all OpenGl function pointers
 	loadOpenGlFunctions();
 	shaders::registerShaders();
+	models::registerModels();
 
 	//Shader shader("Assets/VertexShader.vert", "Assets/FragmentShader.frag");
 
@@ -50,8 +52,7 @@ int main() {
 
 	glEnable(GL_DEPTH_TEST);
 	//shader.use();
-	Model model("assets/test/test.obj");
-	VisibleEntity visibleEntity(glm::vec3(1, 0, 0), glm::vec3(45, 0, 0), model, shaders::defaultShader);
+	//VisibleEntity visibleEntity(glm::vec3(1, 0, 0), glm::vec3(45, 0, 0), model, shaders::defaultShader);
 	
 	//Model model("assets/backpack/backpack.obj");
 
@@ -59,23 +60,25 @@ int main() {
 	while (!glfwWindowShouldClose(window))
 	{
 		calculateDeltaTime();
-		loopThroughEntitys();
 
 		glClearColor(.3f, 0, .2f, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0, 0, 0, 0);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
-		glm::mat4 modeli = glm::mat4(1);
-		//shader.setMat4("model", modeli);
+		loopThroughEntitys();
+
+		player.camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+
 
 		glm::mat4 view = player.camera.getViewMatrix();
 
 		shaders::defaultShader.setMat4("view", view);
 		shaders::defaultShader.setMat4("projection", player.camera.getProjectionMatrix());
-
-		visibleEntity.draw();
+		glm::mat4 modeli = glm::mat4(1);
+		shaders::defaultShader.setMat4("model", modeli);
+		models::defaultModel.draw(shaders::defaultShader);
+		//player.draw();
 		//visibleEntity.draw();
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 

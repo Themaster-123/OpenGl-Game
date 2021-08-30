@@ -1,9 +1,10 @@
 #pragma once
+#include "../visible_entity.h"
 #include "../camera.h"
-#include "../entity.h"
+
 
 namespace glg {
-	class Player : public Entity
+	class Player : public VisibleEntity
 	{
 	public:
 		Camera camera;
@@ -22,12 +23,20 @@ namespace glg {
 
 		virtual void setLookRotation(glm::vec2 rotation);
 
+		virtual glm::mat4 getModelMatrix() const;
+
 	protected:
 		virtual void update();
 
 		virtual void processInput();
 
 		virtual void onMouseMovement(float xOffset, float yOffset, float xPos, float yPos);
+
+		virtual void draw();
+
+		virtual Shader& getShader();
+
+		virtual Model& getModel();
 
 	};
 }
