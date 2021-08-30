@@ -48,6 +48,9 @@
     <ClCompile Include="OpenGlGame\entities\entity.cpp">
       <Filter>Source Files\objects\entities</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGlGame\entities\visible_entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\resources\shader.h">
@@ -68,6 +71,15 @@
     <ClInclude Include="OpenGlGame\entities\entity.h">
       <Filter>Header Files\objects\entites</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGlGame\entities\visible_entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGlGame\resources\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGlGame\resources\model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\FragmentShader.frag">
@@ -82,6 +94,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\awesomeface.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\crate.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
