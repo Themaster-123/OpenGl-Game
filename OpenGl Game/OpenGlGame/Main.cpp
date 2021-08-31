@@ -18,6 +18,7 @@
 #include "entities/visible_entity.h"
 #include "globals/shaders.h"
 #include "globals/models.h"
+#include <reactphysics3d/reactphysics3d.h>
 
 using namespace glg;
 
