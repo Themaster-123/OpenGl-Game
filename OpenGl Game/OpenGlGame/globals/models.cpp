@@ -6,5 +6,5 @@ Model models::defaultModel;
 
 void glg::models::registerModels()
 {
-	models::defaultModel = Model("assets/test/test.obj");
+	models::defaultModel = Model("assets/models/test/test.obj");
 }

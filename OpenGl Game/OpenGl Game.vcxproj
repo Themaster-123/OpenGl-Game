@@ -117,7 +117,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
@@ -134,7 +134,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <Optimization>MaxSpeed</Optimization>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -161,14 +161,17 @@
     <ClCompile Include="OpenGlGame\globals\shaders.cpp" />
     <ClCompile Include="OpenGlGame\Main.cpp" />
     <ClCompile Include="OpenGlGame\entities\Alive\player.cpp" />
+    <ClCompile Include="OpenGlGame\physics.cpp" />
     <ClCompile Include="OpenGlGame\screen.cpp" />
     <ClCompile Include="OpenGlGame\entities\visible_entity.cpp" />
+    <ClCompile Include="OpenGlGame\entities\test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\entities\entity.h" />
     <ClInclude Include="OpenGlGame\entities\camera.h" />
     <ClInclude Include="OpenGlGame\globals\models.h" />
     <ClInclude Include="OpenGlGame\globals\shaders.h" />
+    <ClInclude Include="OpenGlGame\physics.h" />
     <ClInclude Include="OpenGlGame\resources\mesh.h" />
     <ClInclude Include="OpenGlGame\resources\model.h" />
     <ClInclude Include="OpenGlGame\resources\shader.h" />
@@ -176,6 +179,7 @@
     <ClInclude Include="OpenGlGame\entities\Alive\player.h" />
     <ClInclude Include="OpenGlGame\screen.h" />
     <ClInclude Include="OpenGlGame\entities\visible_entity.h" />
+    <ClInclude Include="OpenGlGame\entities\test.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\default\FragmentShader.frag" />

@@ -4,6 +4,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include "entity.h"
+#include "../globals/shaders.h"
+#include "../globals/models.h"
 
 namespace glg {
 	class VisibleEntity : public Entity

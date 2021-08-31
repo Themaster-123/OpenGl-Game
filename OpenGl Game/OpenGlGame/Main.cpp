@@ -19,6 +19,7 @@
 #include "globals/shaders.h"
 #include "globals/models.h"
 #include <reactphysics3d/reactphysics3d.h>
+#include "physics.h"
 
 using namespace glg;
 
@@ -43,6 +44,7 @@ int main() {
 	loadOpenGlFunctions();
 	shaders::registerShaders();
 	models::registerModels();
+	registerPhysics();
 
 	//shader.use();
 
@@ -61,8 +63,6 @@ int main() {
 		glClearColor(0, 0, 0, 0);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		loopThroughEntitys();
-
 		player.camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
 
 
@@ -73,9 +73,13 @@ int main() {
 		glm::mat4 modeli = glm::mat4(1);
 		shaders::defaultShader.setMat4("model", modeli);
 		models::defaultModel.draw(shaders::defaultShader);
+
+		loopThroughEntitys();
+
 		//player.draw();
 		//visibleEntity.draw();
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		physicsFrame();
 
 		
 		glBindVertexArray(0);
