@@ -72,7 +72,7 @@ int main() {
 		shaders::defaultShader.setMat4("projection", player.camera.getProjectionMatrix());
 		glm::mat4 modeli = glm::mat4(1);
 		shaders::defaultShader.setMat4("model", modeli);
-		models::defaultModel.draw(shaders::defaultShader);
+		//models::defaultModel.draw(shaders::defaultShader);
 
 		loopThroughEntitys();
 
