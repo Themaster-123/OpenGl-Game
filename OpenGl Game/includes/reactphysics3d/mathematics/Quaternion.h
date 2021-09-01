@@ -172,6 +172,8 @@ struct Quaternion {
         /// Overloaded operator for equality condition
         bool operator==(const Quaternion& quaternion) const;
 
+        operator glm::quat() const { return glm::quat(w, x, y, z); }
+
         /// Return the string representation
         std::string to_string() const;
 

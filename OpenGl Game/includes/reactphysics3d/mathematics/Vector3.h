@@ -30,6 +30,10 @@
 #include <cassert>
 #include <reactphysics3d/mathematics/mathematics_functions.h>
 #include <reactphysics3d/decimal.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {
@@ -147,6 +151,8 @@ struct Vector3 {
 
         /// Overloaded less than operator for ordering to be used inside std::set for instance
         bool operator<(const Vector3& vector) const;
+
+        operator glm::vec3() const { return glm::vec3(x, y, z); }
 
         /// Get the string representation
         std::string to_string() const;
