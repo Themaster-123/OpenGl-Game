@@ -3,8 +3,10 @@
 using namespace glg;
 
 Model models::defaultModel;
+Model models::terrainModel;
 
-void glg::models::registerModels()
+void models::registerModels()
 {
 	models::defaultModel = Model("assets/models/test/test.obj");
+	models::terrainModel = Model("assets/models/terrain/terrain.obj");
 }

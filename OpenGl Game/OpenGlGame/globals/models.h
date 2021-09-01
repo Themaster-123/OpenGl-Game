@@ -4,6 +4,7 @@
 namespace glg {
 	namespace models {
 		extern Model defaultModel;
+		extern Model terrainModel;
 
 		void registerModels();
 	}
