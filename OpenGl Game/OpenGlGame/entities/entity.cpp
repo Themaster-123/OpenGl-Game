@@ -98,6 +98,10 @@ void Entity::update()
 {
 }
 
+void glg::Entity::physicsUpdate()
+{
+}
+
 void glg::Entity::onMouseMovement(float xOffset, float yOffset, float xPos, float yPos)
 {
 }

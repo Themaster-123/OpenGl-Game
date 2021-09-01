@@ -54,6 +54,8 @@ namespace glg {
 
 		virtual void update();
 
+		virtual void physicsUpdate();
+
 		virtual void onMouseMovement(float xOffset, float yOffset, float xPos, float yPos);
 
 		virtual void addEntityToUpdateCycle();
@@ -61,6 +63,8 @@ namespace glg {
 		friend void loopThroughEntitys();
 
 		friend void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+
+		friend void loopThroughEntitysPhysics();
 	};
 }
 
