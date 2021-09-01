@@ -10,6 +10,7 @@
 namespace glg {
 	class Model {
 	public:
+
 		Model() {
 
 		}
@@ -18,10 +19,14 @@ namespace glg {
 			loadModel(path);
 		}
 
-		void draw(Shader& shader) {
+		void draw(Shader& shader) const {
 			for (size_t i = 0; i < meshes.size(); i++) {
 				meshes[i].draw(shader);
 			}
+		}
+
+		std::vector<Mesh> getMeshes() const {
+			return meshes;
 		}
 
 	private:

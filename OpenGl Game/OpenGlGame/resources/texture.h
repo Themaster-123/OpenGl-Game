@@ -87,14 +87,14 @@ namespace glg {
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 
-		void activate() {
+		void activate() const {
 			glActiveTexture(GL_TEXTURE0 + TU);
 			glBindTexture(GL_TEXTURE_2D, ID);
 		}
 
-		void activate(int textureUnit) {
-			TU = textureUnit;
-			activate();
+		void activate(int textureUnit) const {
+			glActiveTexture(GL_TEXTURE0 + textureUnit);
+			glBindTexture(GL_TEXTURE_2D, ID);
 		}
 
 		int getWidth() {

@@ -26,7 +26,7 @@ namespace glg {
 			setupMesh();
 		}
 
-		void draw(Shader& shader) {
+		void draw(Shader& shader) const {
 			unsigned int diffuseNr = 1;
 			for (unsigned int i = 0; i < textures.size(); i++) {
 				std::string number;
