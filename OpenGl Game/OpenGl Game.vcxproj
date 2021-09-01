@@ -157,6 +157,7 @@
     <ClCompile Include="OpenGlGame\entities\entity.cpp" />
     <ClCompile Include="OpenGlGame\entities\camera.cpp" />
     <ClCompile Include="includes\glad\src\glad.c" />
+    <ClCompile Include="OpenGlGame\entities\object\test2.cpp" />
     <ClCompile Include="OpenGlGame\globals\models.cpp" />
     <ClCompile Include="OpenGlGame\globals\shaders.cpp" />
     <ClCompile Include="OpenGlGame\Main.cpp" />
@@ -164,11 +165,12 @@
     <ClCompile Include="OpenGlGame\physics.cpp" />
     <ClCompile Include="OpenGlGame\screen.cpp" />
     <ClCompile Include="OpenGlGame\entities\visible_entity.cpp" />
-    <ClCompile Include="OpenGlGame\entities\test.cpp" />
+    <ClCompile Include="OpenGlGame\entities\object\test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\entities\entity.h" />
     <ClInclude Include="OpenGlGame\entities\camera.h" />
+    <ClInclude Include="OpenGlGame\entities\object\test2.h" />
     <ClInclude Include="OpenGlGame\globals\models.h" />
     <ClInclude Include="OpenGlGame\globals\shaders.h" />
     <ClInclude Include="OpenGlGame\physics.h" />
@@ -179,7 +181,7 @@
     <ClInclude Include="OpenGlGame\entities\Alive\player.h" />
     <ClInclude Include="OpenGlGame\screen.h" />
     <ClInclude Include="OpenGlGame\entities\visible_entity.h" />
-    <ClInclude Include="OpenGlGame\entities\test.h" />
+    <ClInclude Include="OpenGlGame\entities\object\test.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\default\FragmentShader.frag" />

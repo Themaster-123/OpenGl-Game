@@ -11,6 +11,8 @@ namespace glg  {
 
 	void loopThroughEntitys();
 
+	void loopThroughEntitysPhysics();
+
 	void addEntityToUpdateCycle(glg::Entity& entity);
 
 	void removeEntityFromUpdateCycle(const glg::Entity& entity);

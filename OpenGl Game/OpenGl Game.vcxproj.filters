@@ -60,7 +60,10 @@
     <ClCompile Include="OpenGlGame\physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\test.cpp">
+    <ClCompile Include="OpenGlGame\entities\object\test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGlGame\entities\object\test2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,7 +104,10 @@
     <ClInclude Include="OpenGlGame\physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\test.h">
+    <ClInclude Include="OpenGlGame\entities\object\test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGlGame\entities\object\test2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -17,6 +17,13 @@ void glg::loopThroughEntitys() {
 	}
 }
 
+void glg::loopThroughEntitysPhysics()
+{
+	for (Entity* entity : getEntityUpdateVector()) {
+		(*entity).physicsUpdate();
+	}
+}
+
 void glg::addEntityToUpdateCycle(glg::Entity& entity) {
 	getEntityUpdateVector().push_back(&entity);
 }
