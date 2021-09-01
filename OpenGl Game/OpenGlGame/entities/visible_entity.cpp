@@ -12,8 +12,8 @@ glg::VisibleEntity::VisibleEntity(glm::vec3 position, glm::vec3 rotation) : Enti
 glm::mat4 glg::VisibleEntity::getModelMatrix() const
 {
 	glm::mat4 modelMatrix = glm::mat4(1);
-	modelMatrix = glm::translate(modelMatrix, position);
-	modelMatrix = glm::toMat4(rotation) * modelMatrix;
+	modelMatrix = glm::translate(modelMatrix, getPosition());
+	modelMatrix = modelMatrix * glm::toMat4(getRotation());
 	return modelMatrix;
 }
 
