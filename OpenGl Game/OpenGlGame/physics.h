@@ -1,5 +1,9 @@
 #pragma once
 
-void registerPhysics();
+namespace glg {
+	extern const float physicsTimeStep;
 
-void physicsFrame();
+	void registerPhysics();
+
+	void physicsFrame();
+}
