@@ -1,10 +1,10 @@
 #pragma once
-#include "../visible_entity.h"
+#include "../physics_entity.h"
 #include "../camera.h"
 
 
 namespace glg {
-	class Player : public VisibleEntity
+	class Player : public PhysicsEntity
 	{
 	public:
 		Camera camera;
@@ -28,6 +28,8 @@ namespace glg {
 	protected:
 		virtual void update();
 
+		virtual void physicsUpdate();
+
 		virtual void processInput();
 
 		virtual void onMouseMovement(float xOffset, float yOffset, float xPos, float yPos);
@@ -38,6 +40,9 @@ namespace glg {
 
 		virtual Model& getModel();
 
+		virtual rp3d::CollisionBody* getCollisionBody();
+
+		virtual void updateRotationToBodyRotation();
 	};
 }
 

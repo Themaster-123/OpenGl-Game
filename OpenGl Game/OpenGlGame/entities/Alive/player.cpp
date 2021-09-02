@@ -7,35 +7,38 @@
 
 using namespace glg;
 
-Player::Player(glm::vec3 position, glm::quat rotation, const Camera& camera, float sensitivity) : VisibleEntity(position, rotation), camera(camera), sensitivity(sensitivity)
+Player::Player(glm::vec3 position, glm::quat rotation, const Camera& camera, float sensitivity) : PhysicsEntity(position, rotation), camera(camera), sensitivity(sensitivity)
 {
+	this->collisionBody = getCollisionBody();
 	setPosition(position);
 	setRotation(rotation);
 }
 
-Player::Player(glm::vec3 position, glm::vec3 rotation, const Camera& camera, float sensitivity) : VisibleEntity(position, rotation), camera(camera), sensitivity(sensitivity)
+Player::Player(glm::vec3 position, glm::vec3 rotation, const Camera& camera, float sensitivity) : PhysicsEntity(position, rotation), camera(camera), sensitivity(sensitivity)
 {
+	this->collisionBody = getCollisionBody();
 	setPosition(position);
 	setRotation(rotation);
 }
 
 void Player::setPosition(glm::vec3 position)
 {
-	Entity::setPosition(position);
+	PhysicsEntity::setPosition(position);
 	camera.setPosition(position);
 }
 
 void Player::setRotation(glm::quat rotation)
 {
+	PhysicsEntity::setRotation(rotation);
 	glm::vec3 euler = glm::eulerAngles(rotation);
 	this->rotation = glm::quat(glm::vec3(0, euler.y, 0));
-	camera.setRotation(glm::quat(glm::vec3(euler.x, euler.y, 0)));
+	camera.setRotation(rotation);
 	updateVectors();
 }
 
 void Player::setRotation(glm::vec3 rotation)
 {
-	camera.setRotation(glm::quat(glm::radians(rotation)));
+	setRotation(glm::quat(glm::radians(rotation)));
 }
 
 void glg::Player::setLookRotation(glm::vec2 rotation)
@@ -54,8 +57,16 @@ glm::mat4 glg::Player::getModelMatrix() const
 
 void Player::update()
 {
-	VisibleEntity::update();
+	PhysicsEntity::update();
 	processInput();
+}
+
+void glg::Player::physicsUpdate()
+{
+	PhysicsEntity::physicsUpdate();
+	rp3d::Transform transform = collisionBody->getTransform();
+	transform.setOrientation(rp3d::Quaternion::identity());
+	collisionBody->setTransform(transform);
 }
 
 void glg::Player::processInput()
@@ -105,4 +116,21 @@ Shader& glg::Player::getShader()
 Model& glg::Player::getModel()
 {
 	return models::defaultModel;
+}
+
+rp3d::CollisionBody* glg::Player::getCollisionBody()
+{
+	rp3d::Transform transform = getTransform();
+	rp3d::RigidBody* body = physicsWorld->createRigidBody(transform);
+	body->addCollider(physicsCommon.createCapsuleShape(1.0f, 2.0f), rp3d::Transform::identity());
+	//rp3d::Material& mat = body->getCollider(0)->getMaterial();
+	//mat.setFrictionCoefficient(9999);
+	//mat.setBounciness(0);
+	//mat.setRollingResistance(9999);
+	//body->getCollider(0)->setMaterial(mat);
+	return body;
+}
+
+void glg::Player::updateRotationToBodyRotation()
+{
 }
