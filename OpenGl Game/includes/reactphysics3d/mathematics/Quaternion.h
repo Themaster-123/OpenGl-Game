@@ -82,6 +82,8 @@ struct Quaternion {
         /// Destructor
         ~Quaternion() = default;
 
+        Quaternion(const glm::quat quat) : Quaternion(quat.x, quat.y, quat.z, quat.w) {}
+
         /// Set all the values
         void setAllValues(decimal newX, decimal newY, decimal newZ, decimal newW);
 

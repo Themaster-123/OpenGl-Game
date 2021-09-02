@@ -68,6 +68,8 @@ struct Vector3 {
         /// Copy-constructor
         Vector3(const Vector3& vector);
 
+        Vector3(const glm::vec3 vec3) : Vector3(vec3.x, vec3.y, vec3.z) {}
+
         /// Destructor
         ~Vector3() = default;
 
