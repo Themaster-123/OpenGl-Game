@@ -20,6 +20,7 @@
 #include "globals/models.h"
 #include <reactphysics3d/reactphysics3d.h>
 #include "physics.h"
+#include "entities/object/sphere_entity.h"
 
 using namespace glg;
 
@@ -52,7 +53,8 @@ int main() {
 
 
 	glEnable(GL_DEPTH_TEST);
-
+	glm::quat q = glm::quat_identity<float, glm::defaultp>();
+	SphereEntity test(glm::vec3(0, 0, 0), rp3d::Quaternion::identity());
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -62,6 +64,8 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0, 0, 0, 0);
 		glClear(GL_DEPTH_BUFFER_BIT);
+
+		physicsFrame();
 
 		player.camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
 
@@ -79,7 +83,6 @@ int main() {
 		//player.draw();
 		//visibleEntity.draw();
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		physicsFrame();
 
 		
 		glBindVertexArray(0);
