@@ -31,9 +31,9 @@ namespace glg {
 
 		virtual void physicsUpdate();
 
-		virtual void updatePositionToBodyPosition();
+		virtual void updatePositionToBodyPosition(rp3d::Transform transform);
 
-		virtual void updateRotationToBodyRotation();
+		virtual void updateRotationToBodyRotation(rp3d::Transform transform);
 	};
 }
 

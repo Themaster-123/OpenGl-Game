@@ -43,25 +43,24 @@ glm::mat4 glg::PhysicsEntity::getModelMatrix() const
 void glg::PhysicsEntity::update()
 {
     VisibleEntity::update();
-    prevTransform = getTransform();
 }
 
 void glg::PhysicsEntity::physicsUpdate()
 {
-    updatePositionToBodyPosition();
-    updateRotationToBodyRotation();
+    prevTransform = getTransform();
+    rp3d::Transform transform = collisionBody->getTransform();
+    updatePositionToBodyPosition(transform);
+    updateRotationToBodyRotation(transform);
 }
 
-void glg::PhysicsEntity::updatePositionToBodyPosition()
+void glg::PhysicsEntity::updatePositionToBodyPosition(rp3d::Transform transform)
 {
-    rp3d::Transform collisionBodyTrans = collisionBody->getTransform();
-    setPosition(collisionBodyTrans.getPosition());
+    position = transform.getPosition();
 }
 
-void glg::PhysicsEntity::updateRotationToBodyRotation()
+void glg::PhysicsEntity::updateRotationToBodyRotation(rp3d::Transform transform)
 {
-    rp3d::Transform collisionBodyTrans = collisionBody->getTransform();
-    setRotation(collisionBodyTrans.getOrientation());
+    rotation = transform.getOrientation();
 }
 
 
