@@ -12,7 +12,7 @@ glg::Test2::Test2(glm::vec3 position, glm::vec3 rotation) : VisibleEntity(positi
 
 Shader& glg::Test2::getShader()
 {
-	return shaders::defaultShader;
+	return *shaders::defaultShader;
 }
 
 Model& glg::Test2::getModel()

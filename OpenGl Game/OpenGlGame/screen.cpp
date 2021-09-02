@@ -1,8 +1,10 @@
-#include <algorithm>
 #include "screen.h"
+#include <glad/glad.h>
+#include <algorithm>
 #include "entities/entity.h"
 #include <iostream>
 #include <GLFW/glfw3.h>
+#include "physics.h"
 
 GLFWwindow* glg::GAME_WINDOW;
 unsigned int glg::SCREEN_WIDTH = 800;
@@ -116,4 +118,34 @@ void glg::lockCursor(GLFWwindow* window, bool locked) {
 int glg::getKey(int key)
 {
 	return glfwGetKey(GAME_WINDOW, key);
+}
+
+void glg::startRenderLoop()
+{
+	while (!glfwWindowShouldClose(GAME_WINDOW))
+	{
+		calculateDeltaTime();
+
+		glClearColor(.3f, 0, .2f, 1);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(0, 0, 0, 0);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		physicsFrame();
+
+		glm::mat4 modeli = glm::mat4(1);
+		//models::defaultModel.draw(shaders::defaultShader);
+
+		loopThroughEntitys();
+
+		//player.draw();
+		//visibleEntity.draw();
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+		glBindVertexArray(0);
+
+		glfwSwapBuffers(GAME_WINDOW);
+		glfwPollEvents();
+	}
 }

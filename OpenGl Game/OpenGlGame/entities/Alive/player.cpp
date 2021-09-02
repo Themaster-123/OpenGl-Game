@@ -59,6 +59,8 @@ void Player::update()
 {
 	PhysicsEntity::update();
 	processInput();
+	setAspectRatio();
+	setShaderProperties();
 }
 
 void glg::Player::physicsUpdate()
@@ -110,7 +112,7 @@ void glg::Player::draw()
 
 Shader& glg::Player::getShader()
 {
-	return shaders::defaultShader;
+	return *shaders::defaultShader;
 }
 
 Model& glg::Player::getModel()
@@ -133,4 +135,18 @@ rp3d::CollisionBody* glg::Player::getCollisionBody()
 
 void glg::Player::updateRotationToBodyRotation(rp3d::Transform transform)
 {
+}
+
+void glg::Player::setAspectRatio()
+{
+	camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+}
+
+void glg::Player::setShaderProperties()
+{
+	for (Shader* shader : shaders::getShaders()) {
+		shader->setMat4("view", camera.getViewMatrix());
+		shader->setMat4("projection", camera.getProjectionMatrix());
+		//shader->setVec3("lightColor")
+	}
 }

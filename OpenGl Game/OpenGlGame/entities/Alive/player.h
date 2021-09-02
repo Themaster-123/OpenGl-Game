@@ -43,6 +43,10 @@ namespace glg {
 		virtual rp3d::CollisionBody* getCollisionBody();
 
 		virtual void updateRotationToBodyRotation(rp3d::Transform transform);
+
+		virtual void setAspectRatio();
+
+		virtual void setShaderProperties();
 	};
 }
 

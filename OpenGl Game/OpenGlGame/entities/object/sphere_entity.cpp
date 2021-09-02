@@ -18,7 +18,7 @@ glg::SphereEntity::SphereEntity(glm::vec3 position, glm::vec3 rotation) : Physic
 
 Shader& glg::SphereEntity::getShader()
 {
-	return shaders::defaultShader;
+	return *shaders::defaultShader;
 }
 
 Model& glg::SphereEntity::getModel()

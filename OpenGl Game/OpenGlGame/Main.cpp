@@ -50,46 +50,46 @@ int main() {
 	//shader.use();
 
 	Player player(camera.getPosition(), camera.getRotation(), camera);
-
+	SphereEntity test(glm::vec3(0, 0, 0), rp3d::Quaternion::identity());
 
 	glEnable(GL_DEPTH_TEST);
-	glm::quat q = glm::quat_identity<float, glm::defaultp>();
-	SphereEntity test(glm::vec3(0, 0, 0), rp3d::Quaternion::identity());
+
 	// render loop
-	while (!glfwWindowShouldClose(window))
-	{
-		calculateDeltaTime();
+	//while (!glfwWindowShouldClose(window))
+	//{
+	//	calculateDeltaTime();
 
-		glClearColor(.3f, 0, .2f, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(0, 0, 0, 0);
-		glClear(GL_DEPTH_BUFFER_BIT);
+	//	glClearColor(.3f, 0, .2f, 1);
+	//	glClear(GL_COLOR_BUFFER_BIT);
+	//	glClearColor(0, 0, 0, 0);
+	//	glClear(GL_DEPTH_BUFFER_BIT);
 
-		physicsFrame();
+	//	physicsFrame();
 
-		player.camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+	//	player.camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
 
 
-		glm::mat4 view = player.camera.getViewMatrix();
+	//	glm::mat4 view = player.camera.getViewMatrix();
 
-		shaders::defaultShader.setMat4("view", view);
-		shaders::defaultShader.setMat4("projection", player.camera.getProjectionMatrix());
-		glm::mat4 modeli = glm::mat4(1);
-		shaders::defaultShader.setMat4("model", modeli);
-		//models::defaultModel.draw(shaders::defaultShader);
+	//	shaders::defaultShader.setMat4("view", view);
+	//	shaders::defaultShader.setMat4("projection", player.camera.getProjectionMatrix());
+	//	glm::mat4 modeli = glm::mat4(1);
+	//	shaders::defaultShader.setMat4("model", modeli);
+	//	//models::defaultModel.draw(shaders::defaultShader);
 
-		loopThroughEntitys();
+	//	loopThroughEntitys();
 
-		//player.draw();
-		//visibleEntity.draw();
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//	//player.draw();
+	//	//visibleEntity.draw();
+	//	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-		
-		glBindVertexArray(0);
+	//	
+	//	glBindVertexArray(0);
 
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
+	//	glfwSwapBuffers(window);
+	//	glfwPollEvents();
+	//}
+	startRenderLoop();
 
 	glfwTerminate();
 	return 0;

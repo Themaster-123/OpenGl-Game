@@ -29,8 +29,7 @@ void glg::registerPhysics()
 	physicsWorld = physicsCommon.createPhysicsWorld();
 	//body = physicsWorld->createRigidBody(transform);
 	ground = physicsWorld->createRigidBody(groundTransform);
-	ground->setType(rp3d::BodyType::STATIC);
-	//Mesh m = ;
+	ground->setType(rp3d::BodyType::STATIC); 
 	mesh = new Mesh(models::terrainModel.getMeshes()[0]);
 	triangleArray = new rp3d::TriangleVertexArray(mesh->vertices.size(), &mesh->vertices[0], sizeof(Vertex), mesh->indices.size() / 3, &mesh->indices[0], 3 * sizeof(unsigned int),
 		rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
@@ -60,7 +59,7 @@ void glg::physicsFrame()
 		//const rp3d::Quaternion q = transform.getOrientation();
 		//test.setPosition(position);
 		//test.setRotation(q);
-		accumulator -= physicsTimeStep;
+		accumulator -= physicsTimeStep; 
 	}
 
 	factor = accumulator / physicsTimeStep;

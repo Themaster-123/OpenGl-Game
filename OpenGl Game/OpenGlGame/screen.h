@@ -30,4 +30,6 @@ namespace glg  {
 	void lockCursor(GLFWwindow* window, bool locked);
 
 	int getKey(int key);
+
+	void startRenderLoop();
 }

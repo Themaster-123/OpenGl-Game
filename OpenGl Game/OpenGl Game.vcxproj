@@ -163,6 +163,7 @@
     <ClCompile Include="OpenGlGame\Main.cpp" />
     <ClCompile Include="OpenGlGame\entities\Alive\player.cpp" />
     <ClCompile Include="OpenGlGame\physics.cpp" />
+    <ClCompile Include="OpenGlGame\resources\shader.cpp" />
     <ClCompile Include="OpenGlGame\screen.cpp" />
     <ClCompile Include="OpenGlGame\entities\visible_entity.cpp" />
     <ClCompile Include="OpenGlGame\entities\object\sphere_entity.cpp" />
