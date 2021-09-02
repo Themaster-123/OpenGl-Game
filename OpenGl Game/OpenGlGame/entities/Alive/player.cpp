@@ -63,7 +63,7 @@ void Player::update()
 
 void glg::Player::physicsUpdate()
 {
-	PhysicsEntity::physicsUpdate();
+	//PhysicsEntity::physicsUpdate();
 	rp3d::Transform transform = collisionBody->getTransform();
 	transform.setOrientation(rp3d::Quaternion::identity());
 	collisionBody->setTransform(transform);
@@ -131,6 +131,6 @@ rp3d::CollisionBody* glg::Player::getCollisionBody()
 	return body;
 }
 
-void glg::Player::updateRotationToBodyRotation()
+void glg::Player::updateRotationToBodyRotation(rp3d::Transform transform)
 {
 }
