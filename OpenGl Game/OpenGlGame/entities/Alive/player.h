@@ -9,7 +9,7 @@ namespace glg {
 	public:
 		Camera camera;
 		float sensitivity;
-		float speed = 3;
+		float speed = 10;
 
 		Player(glm::vec3 position, glm::quat rotation, const Camera& camera, float sensitivity = 0.2f);
 
@@ -42,7 +42,7 @@ namespace glg {
 
 		virtual rp3d::CollisionBody* getCollisionBody();
 
-		virtual void updateRotationToBodyRotation();
+		virtual void updateRotationToBodyRotation(rp3d::Transform transform);
 	};
 }
 
