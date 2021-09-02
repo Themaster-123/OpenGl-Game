@@ -3,8 +3,12 @@
 
 namespace glg {
 	namespace shaders {
-		extern Shader defaultShader;
+		extern Shader* defaultShader;
 
 		void registerShaders();
+
+		std::vector<glg::Shader*>& getShaders();
+
+		Shader* addShader(Shader* shader);
 	}
 }
