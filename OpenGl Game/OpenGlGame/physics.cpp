@@ -48,7 +48,6 @@ void glg::registerPhysics()
 void glg::physicsFrame()
 {
 	accumulator += DELTA_TIME;
-	factor = accumulator / physicsTimeStep;
 
 	while (accumulator >= physicsTimeStep) {
 		physicsWorld->update(physicsTimeStep);
@@ -63,6 +62,8 @@ void glg::physicsFrame()
 		//test.setRotation(q);
 		accumulator -= physicsTimeStep;
 	}
+
+	factor = accumulator / physicsTimeStep;
 }
 
 rp3d::Vector3 glg::toVector3(glm::vec3 vec3)
