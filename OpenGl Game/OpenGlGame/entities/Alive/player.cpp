@@ -149,7 +149,9 @@ void glg::Player::setShaderProperties()
 	for (Shader* shader : shaders::getShaders()) {
 		shader->setMat4("view", camera.getViewMatrix());
 		shader->setMat4("projection", camera.getProjectionMatrix());
-		shader->setVec3("lightColor", glm::vec3(1, 1, 1));
-		shader->setVec3("lightPos", getPosition());
+		shader->setVec3("light.position", glm::vec3(0, 0, 0));
+		shader->setVec3("light.ambient", glm::vec3(.1, .1, .1));
+		shader->setVec3("light.diffuse", glm::vec3(1, 1, 1));
+		shader->setVec3("light.specular", glm::vec3(1, 1, 1));
 	}
 }

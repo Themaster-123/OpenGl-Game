@@ -4,6 +4,7 @@
 #include <vector>
 #include "texture.h"
 #include "shader.h"
+#include "material.h"
 
 namespace glg {
 	struct Vertex {
@@ -17,11 +18,13 @@ namespace glg {
 		std::vector<Vertex>	vertices;
 		std::vector<unsigned int> indices;
 		std::vector<Texture2D> textures;
+		Material material;
 
-		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D>& textures) {
+		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D>& textures, Material material = Material()) {
 			this->vertices = vertices;
 			this->indices = indices;
 			this->textures = textures;
+			this->material = material;
 
 			setupMesh();
 		}
@@ -39,6 +42,7 @@ namespace glg {
 				shader.setInt("texture_" + name + number, i);
 				textures[i].activate(i);
 			}
+			shader.setMaterial("material", material);
 			
 			glBindVertexArray(VAO);
 			glDrawElements(GL_TRIANGLES, (int) indices.size(), GL_UNSIGNED_INT, 0);

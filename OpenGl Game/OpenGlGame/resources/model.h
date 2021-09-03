@@ -6,6 +6,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <map>
+#include "material.h"
 
 namespace glg {
 	class Model {
@@ -86,13 +87,25 @@ namespace glg {
 				}
 			}
 
+			Material mat(glm::vec3(1), glm::vec3(1), glm::vec3(1), 32);
+
 			if (mesh->mMaterialIndex >= 0) {
 				aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 				std::vector<Texture2D> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "diffuse");
 				textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
+				aiColor3D ambient;
+				material->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+				aiColor3D diffuse;
+				material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+				aiColor3D specular;
+				material->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+				float shininess;
+				material->Get(AI_MATKEY_SHININESS, shininess);
+				mat = Material(glm::vec3(ambient.r, ambient.g, ambient.b), glm::vec3(diffuse.r, diffuse.g, diffuse.b), glm::vec3(specular.r, specular.g, specular.b), shininess);
 			}
 
-			return Mesh(vertices, indices, textures);
+			return Mesh(vertices, indices, textures, mat);
 		}
 
 		std::vector<Texture2D> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {

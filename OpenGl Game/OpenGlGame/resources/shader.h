@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "shader.h"
 #include <vector>
+#include "material.h"
 
 namespace glg {
 
@@ -69,6 +70,12 @@ namespace glg {
 		void setMat4(const std::string& name, const glm::mat4& mat) const
 		{
 			glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+		}
+		void setMaterial(const std::string& name, const Material& material) const {
+			this->setVec3(name + ".ambient", material.ambient);
+			this->setVec3(name + ".diffuse", material.diffuse);
+			this->setVec3(name + ".specular", material.specular);
+			this->setFloat(name + ".shininess", material.shininess);
 		}
 
 		enum class CompileErrorType

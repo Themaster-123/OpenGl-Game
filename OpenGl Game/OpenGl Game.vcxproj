@@ -176,6 +176,7 @@
     <ClInclude Include="OpenGlGame\globals\models.h" />
     <ClInclude Include="OpenGlGame\globals\shaders.h" />
     <ClInclude Include="OpenGlGame\physics.h" />
+    <ClInclude Include="OpenGlGame\resources\material.h" />
     <ClInclude Include="OpenGlGame\resources\mesh.h" />
     <ClInclude Include="OpenGlGame\resources\model.h" />
     <ClInclude Include="OpenGlGame\resources\shader.h" />
