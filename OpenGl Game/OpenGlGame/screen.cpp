@@ -5,6 +5,7 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include "physics.h"
+#include "entities/Alive/player.h"
 
 GLFWwindow* glg::GAME_WINDOW;
 unsigned int glg::SCREEN_WIDTH = 800;
@@ -12,9 +13,11 @@ unsigned int glg::SCREEN_HEIGHT = 800;
 float glg::DELTA_TIME;
 static float lastMouseX;
 static float lastMouseY;
+glg::Player* glg::MAIN_PLAYER;
 
 void glg::loopThroughEntitys() {
-	for (Entity* entity : getEntityUpdateVector()) {
+	for (int i = 0; i < getEntityUpdateVector().size(); i++) {
+		Entity* entity = getEntityUpdateVector()[i];
 		(*entity).update();
 	}
 }
@@ -133,9 +136,11 @@ void glg::startRenderLoop()
 
 		physicsFrame();
 
-		glm::mat4 modeli = glm::mat4(1);
+		//glm::mat4 modeli = glm::mat4(1);
 		//models::defaultModel.draw(shaders::defaultShader);
-
+		if (MAIN_PLAYER != nullptr) {
+			MAIN_PLAYER->setShaderProperties();
+		}
 		loopThroughEntitys();
 
 		//player.draw();

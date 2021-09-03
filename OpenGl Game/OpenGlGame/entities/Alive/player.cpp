@@ -12,6 +12,7 @@ Player::Player(glm::vec3 position, glm::quat rotation, const Camera& camera, flo
 	this->collisionBody = getCollisionBody();
 	setPosition(position);
 	setRotation(rotation);
+	MAIN_PLAYER = this;
 }
 
 Player::Player(glm::vec3 position, glm::vec3 rotation, const Camera& camera, float sensitivity) : PhysicsEntity(position, rotation), camera(camera), sensitivity(sensitivity)
@@ -19,6 +20,7 @@ Player::Player(glm::vec3 position, glm::vec3 rotation, const Camera& camera, flo
 	this->collisionBody = getCollisionBody();
 	setPosition(position);
 	setRotation(rotation);
+	MAIN_PLAYER = this;
 }
 
 void Player::setPosition(glm::vec3 position)
@@ -60,7 +62,6 @@ void Player::update()
 	PhysicsEntity::update();
 	processInput();
 	setAspectRatio();
-	setShaderProperties();
 }
 
 void glg::Player::physicsUpdate()
@@ -124,6 +125,7 @@ rp3d::CollisionBody* glg::Player::getCollisionBody()
 {
 	rp3d::Transform transform = getTransform();
 	rp3d::RigidBody* body = physicsWorld->createRigidBody(transform);
+	body->setType(rp3d::BodyType::KINEMATIC);
 	body->addCollider(physicsCommon.createCapsuleShape(1.0f, 2.0f), rp3d::Transform::identity());
 	//rp3d::Material& mat = body->getCollider(0)->getMaterial();
 	//mat.setFrictionCoefficient(9999);
@@ -147,6 +149,7 @@ void glg::Player::setShaderProperties()
 	for (Shader* shader : shaders::getShaders()) {
 		shader->setMat4("view", camera.getViewMatrix());
 		shader->setMat4("projection", camera.getProjectionMatrix());
-		//shader->setVec3("lightColor")
+		shader->setVec3("lightColor", glm::vec3(1, 1, 1));
+		shader->setVec3("lightPos", getPosition());
 	}
 }

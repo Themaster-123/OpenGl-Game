@@ -25,6 +25,8 @@ namespace glg {
 
 		virtual glm::mat4 getModelMatrix() const;
 
+		virtual void setShaderProperties();
+
 	protected:
 		virtual void update();
 
@@ -45,8 +47,6 @@ namespace glg {
 		virtual void updateRotationToBodyRotation(rp3d::Transform transform);
 
 		virtual void setAspectRatio();
-
-		virtual void setShaderProperties();
 	};
 }
 
