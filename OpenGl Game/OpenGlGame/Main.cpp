@@ -24,6 +24,7 @@
 #include "entities/light/attenuation/point_light_entity.h"
 #include "entities/light/attenuation/spot_light_entity.h"
 #include "entities/light/directional_light_entity.h"
+#include <imgui/imgui.h>
 
 using namespace glg;
 
@@ -32,6 +33,7 @@ Camera camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 70, (float)SCREEN_WIDTH / 
 void loadOpenGlFunctions();
 
 int main() {
+	
 	// initialize and configure
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -54,7 +56,7 @@ int main() {
 
 	Player player(camera.getPosition(), camera.getRotation(), camera);
 	SphereEntity test(glm::vec3(0, 0, 0), rp3d::Quaternion::identity());
-	DirectionalLightEntity light(glm::vec3(0, 0, 0), glm::vec3(.1f), glm::vec3(1, 1, 1), glm::vec3(1));
+	DirectionalLightEntity light(glm::vec3(-56, 0, 0), glm::vec3(.1f), glm::vec3(1, 1, 1), glm::vec3(1));
 
 	glEnable(GL_DEPTH_TEST);
 
