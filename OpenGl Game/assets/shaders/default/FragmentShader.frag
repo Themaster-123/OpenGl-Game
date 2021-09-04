@@ -20,35 +20,8 @@ uniform Material material;
 
 #define MAX_LIGHTS 100
 
-struct DirectionalLight {
-	vec3 direction;
-
-	vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-};
-
-uniform DirectionalLight directionalLights[MAX_LIGHTS / 3];
-uniform int directionalLightsSize = 0;
-
-
-struct PointLight {
-	vec3 position;
-
-	vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-
-	float constant;
-	float linear;
-	float quadratic;
-};
-
-uniform PointLight pointLights[MAX_LIGHTS / 3];
-uniform int pointLightsSize = 0;
-
-struct SpotLight {
-	vec3 position;
+struct Light {
+	vec4 position;
 	vec3 direction;
 	float cutOff;
 	float outerCutOff;
@@ -62,71 +35,33 @@ struct SpotLight {
 	float quadratic;
 };
 
-uniform SpotLight spotLights[MAX_LIGHTS / 3];
-uniform int spotLightsSize = 0;
+uniform Light lights[MAX_LIGHTS];
+uniform int lightsSize = 0;
 
-vec3 calculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir);
+vec3 calculateDirectionalLight(Light light, vec3 normal, vec3 viewDir);
 
-vec3 calculatePointLight(PointLight light, vec3 normal, vec3 viewDir);
+vec3 calculatePointLight(Light light, vec3 normal, vec3 viewDir);
 
-vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 viewDir);
+vec3 calculateSpotLight(Light light, vec3 normal, vec3 viewDir);
+
+vec3 calculateLight(Light light, vec3 normal, vec3 viewDir);
 
 void main()
 {
-	/*vec3 viewLightPosition = vec3(view * vec4(light.position, 1));
-	vec3 viewLightDirection = normalize(mat3(view) * light.direction);
-
-	vec3 ambient = light.ambient * material.ambient;
-
-	vec3 norm = normalize(normal);
-
-	vec3 lightDir = normalize(viewLightPosition - fragPos);
-
-	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = light.diffuse * (material.diffuse * diff);
-
-	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(normalize(-fragPos), reflectDir), 0), material.shininess);
-	vec3 specular = light.specular * (material.specular * spec);
-	
-	float dist = length(viewLightPosition - fragPos);
-	float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
-
-	ambient *= attenuation;
-	diffuse *= attenuation;
-	specular *= attenuation;
-
-	vec3 result;
-
-	float theta = dot(lightDir, -viewLightDirection);
-	float epsilon = light.cutOff - light.outerCutOff;
-	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0, 1);
-
-	diffuse *= intensity;
-	specular *= intensity;*/
-
 	vec3 norm = normalize(normal);
 	vec3 viewDir = normalize(-fragPos);
 
 	vec3 result = vec3(0);
 
-	for(int i = 0; i < directionalLightsSize; i++) {
-		result += calculateDirectionalLight(directionalLights[i], norm, viewDir);
-	}
-
-	for(int i = 0; i < pointLightsSize; i++) {
-		result += calculatePointLight(pointLights[i], norm, viewDir);
-	}
-
-	for(int i = 0; i < spotLightsSize; i++) {
-		result += calculateSpotLight(spotLights[i], norm, viewDir);
+	for(int i = 0; i < lightsSize; i++) {
+		result += calculateLight(lights[i], norm, viewDir);
 	}
 
 	FragColor = texture(texture_diffuse1, texCoord) * vec4(result, 1);
 	
 }
 
-vec3 calculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir) {
+vec3 calculateDirectionalLight(Light light, vec3 normal, vec3 viewDir) {
 	vec3 viewLightDirection = normalize(mat3(view) * light.direction);
 
 	float diff = max(dot(normal, -viewLightDirection), 0);
@@ -140,8 +75,8 @@ vec3 calculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir
 	return (ambient + diffuse + specular);
 };
 
-vec3 calculatePointLight(PointLight light, vec3 normal, vec3 viewDir) {
-	vec3 viewLightPosition = vec3(view * vec4(light.position, 1));
+vec3 calculatePointLight(Light light, vec3 normal, vec3 viewDir) {
+	vec3 viewLightPosition = vec3(view * vec4(light.position.xyz, 1));
 
 	vec3 lightDir = normalize(viewLightPosition - fragPos);
 	
@@ -162,8 +97,8 @@ vec3 calculatePointLight(PointLight light, vec3 normal, vec3 viewDir) {
 	return (ambient + diffuse + specular);
 };
 
-vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 viewDir) {
-	vec3 viewLightPosition = vec3(view * vec4(light.position, 1));
+vec3 calculateSpotLight(Light light, vec3 normal, vec3 viewDir) {
+	vec3 viewLightPosition = vec3(view * vec4(light.position.xyz, 1));
 	vec3 viewLightDirection = normalize(mat3(view) * light.direction);
 
 	vec3 lightDir = normalize(viewLightPosition - fragPos);
@@ -191,4 +126,15 @@ vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 viewDir) {
 	specular *= intensity;
 
 	return (ambient + diffuse + specular);
+}
+
+vec3 calculateLight(Light light, vec3 normal, vec3 viewDir) {
+	if (light.position.w == 0) {
+		return calculateDirectionalLight(light, normal, viewDir);
+	} else if (light.position.w == 1) {
+		return calculatePointLight(light, normal, viewDir);
+	} else {
+		return calculateSpotLight(light, normal, viewDir);
+	}
+
 }
