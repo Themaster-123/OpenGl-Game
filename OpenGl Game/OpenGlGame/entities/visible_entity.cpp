@@ -25,5 +25,4 @@ void glg::VisibleEntity::draw()
 
 void glg::VisibleEntity::update()
 {
-	draw();
 }

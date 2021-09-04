@@ -6,6 +6,6 @@ namespace glg {
 	namespace scene {
 		extern Player* MAIN_PLAYER;
 
-		std::vector<LightEntity*> getLights();
+		std::vector<LightEntity*>& getLights();
 	}
 }
