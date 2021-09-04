@@ -1,6 +1,7 @@
 #include "player.h"
 #include <utility>
 #include "../../screen.h"
+#include "../../scene.h"
 #include <iostream>
 #include "../../globals/shaders.h"
 #include "../../globals/models.h"
@@ -12,7 +13,7 @@ Player::Player(glm::vec3 position, glm::quat rotation, const Camera& camera, flo
 	this->collisionBody = getCollisionBody();
 	setPosition(position);
 	setRotation(rotation);
-	MAIN_PLAYER = this;
+	scene::MAIN_PLAYER = this;
 }
 
 Player::Player(glm::vec3 position, glm::vec3 rotation, const Camera& camera, float sensitivity) : PhysicsEntity(position, rotation), camera(camera), sensitivity(sensitivity)
@@ -20,7 +21,7 @@ Player::Player(glm::vec3 position, glm::vec3 rotation, const Camera& camera, flo
 	this->collisionBody = getCollisionBody();
 	setPosition(position);
 	setRotation(rotation);
-	MAIN_PLAYER = this;
+	scene::MAIN_PLAYER = this;
 }
 
 void Player::setPosition(glm::vec3 position)
@@ -66,7 +67,7 @@ void Player::update()
 
 void glg::Player::physicsUpdate()
 {
-	//PhysicsEntity::physicsUpdate();
+	PhysicsEntity::physicsUpdate();
 	rp3d::Transform transform = collisionBody->getTransform();
 	transform.setOrientation(rp3d::Quaternion::identity());
 	collisionBody->setTransform(transform);
@@ -149,15 +150,25 @@ void glg::Player::setShaderProperties()
 	for (Shader* shader : shaders::getShaders()) {
 		shader->setMat4("view", camera.getViewMatrix());
 		shader->setMat4("projection", camera.getProjectionMatrix());
-		shader->setVec3("light.position", getPosition());
-		shader->setVec3("light.ambient", glm::vec3(.1, .1, .1));
-		shader->setVec3("light.diffuse", glm::vec3(1, 1, 1));
-		shader->setVec3("light.specular", glm::vec3(1, 1, 1));
-		shader->setFloat("light.constant", 1.0f);
-		shader->setFloat("light.linear", 0.045f);
-		shader->setFloat("light.quadratic", 0.0075f);
-		shader->setVec3("light.direction", camera.getFront());
-		shader->setFloat("light.cutOff", glm::cos(glm::radians(17.5f)));
-		shader->setFloat("light.outerCutOff", glm::cos(glm::radians(29.5f)));
+		shader->setVec3("pointLights[0].position", glm::vec3(0));
+		shader->setVec3("pointLights[0].ambient", glm::vec3(.1, .1, .1));
+		shader->setVec3("pointLights[0].diffuse", glm::vec3(1, 1, 1));
+		shader->setVec3("pointLights[0].specular", glm::vec3(1, 1, 1));
+		shader->setFloat("pointLights[0].constant", 1.0f);
+		shader->setFloat("pointLights[0].linear", 0.045f);
+		shader->setFloat("pointLights[0].quadratic", 0.0075f);
+		shader->setInt("pointLightsSize", 1);
+
+		shader->setVec3("spotLights[0].position", getPosition());
+		shader->setVec3("spotLights[0].ambient", glm::vec3(.1, .1, .1));
+		shader->setVec3("spotLights[0].diffuse", glm::vec3(1, 1, 1));
+		shader->setVec3("spotLights[0].specular", glm::vec3(1, 1, 1));
+		shader->setFloat("spotLights[0].constant", 1.0f);
+		shader->setFloat("spotLights[0].linear", 0.045f);
+		shader->setFloat("spotLights[0].quadratic", 0.0075f);
+		shader->setVec3("spotLights[0].direction", camera.getFront());
+		shader->setFloat("spotLights[0].cutOff", glm::cos(glm::radians(17.5f)));
+		shader->setFloat("spotLights[0].outerCutOff", glm::cos(glm::radians(29.5f)));
+		shader->setInt("spotLightsSize", 1);
 	}
 }
