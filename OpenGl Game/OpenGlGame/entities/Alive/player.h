@@ -1,6 +1,7 @@
 #pragma once
 #include "../physics_entity.h"
 #include "../camera.h"
+#include "../light/attenuation/spot_light_entity.h"
 
 
 namespace glg {
