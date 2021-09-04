@@ -200,6 +200,9 @@
     <ClInclude Include="OpenGlGame\entities\physics_entity.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\models\sphere\sphere.mtl" />
+    <None Include="assets\models\terrain\terrain.mtl" />
+    <None Include="assets\models\test\test.mtl" />
     <None Include="assets\shaders\default\FragmentShader.frag" />
     <None Include="assets\shaders\default\VertexShader.vert" />
     <None Include="assets\shaders\skybox\FragmentShader.frag" />
@@ -208,7 +211,16 @@
   <ItemGroup>
     <Image Include="assets\awesomeface.png" />
     <Image Include="assets\crate.jpg" />
+    <Image Include="assets\models\sphere\crate.jpg" />
+    <Image Include="assets\models\sphere\crate.png" />
+    <Image Include="assets\models\terrain\crate.jpg" />
+    <Image Include="assets\models\test\krtzq4v400002.jpg" />
     <Image Include="assets\test_image.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="assets\models\sphere\sphere.obj" />
+    <Object Include="assets\models\terrain\terrain.obj" />
+    <Object Include="assets\models\test\test.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
