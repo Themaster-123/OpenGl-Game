@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 #include "physics.h"
 #include "entities/Alive/player.h"
+#include "scene.h"
 
 GLFWwindow* glg::GAME_WINDOW;
 unsigned int glg::SCREEN_WIDTH = 800;
@@ -13,7 +14,6 @@ unsigned int glg::SCREEN_HEIGHT = 800;
 float glg::DELTA_TIME;
 static float lastMouseX;
 static float lastMouseY;
-glg::Player* glg::MAIN_PLAYER;
 
 void glg::loopThroughEntitys() {
 	for (int i = 0; i < getEntityUpdateVector().size(); i++) {
@@ -138,8 +138,8 @@ void glg::startRenderLoop()
 
 		//glm::mat4 modeli = glm::mat4(1);
 		//models::defaultModel.draw(shaders::defaultShader);
-		if (MAIN_PLAYER != nullptr) {
-			MAIN_PLAYER->setShaderProperties();
+		if (scene::MAIN_PLAYER != nullptr) {
+			scene::MAIN_PLAYER->setShaderProperties();
 		}
 		loopThroughEntitys();
 

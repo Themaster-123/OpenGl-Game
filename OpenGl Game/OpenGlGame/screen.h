@@ -9,7 +9,6 @@ namespace glg  {
 	extern unsigned int SCREEN_WIDTH;
 	extern unsigned int SCREEN_HEIGHT;
 	extern float DELTA_TIME;
-	extern Player* MAIN_PLAYER;
 
 	void loopThroughEntitys();
 
