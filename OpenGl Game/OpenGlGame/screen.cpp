@@ -15,24 +15,14 @@ float glg::DELTA_TIME;
 static float lastMouseX;
 static float lastMouseY;
 
-void glg::drawEntities()
-{
-	for (int i = 0; i < getEntityUpdateVector().size(); i++) {
-		VisibleEntity* entity = dynamic_cast<VisibleEntity*>(getEntityUpdateVector()[i]);
-		if (entity != nullptr) {
-			entity->draw();
-		}
-	}
-}
-
-void glg::loopThroughEntities() {
+void glg::loopThroughEntitys() {
 	for (int i = 0; i < getEntityUpdateVector().size(); i++) {
 		Entity* entity = getEntityUpdateVector()[i];
 		(*entity).update();
 	}
 }
 
-void glg::loopThroughEntitiesPhysics()
+void glg::loopThroughEntitysPhysics()
 {
 	for (Entity* entity : getEntityUpdateVector()) {
 		(*entity).physicsUpdate();
@@ -146,26 +136,21 @@ void glg::startRenderLoop()
 
 		physicsFrame();
 
-		loopThroughEntities();
+		//glm::mat4 modeli = glm::mat4(1);
+		//models::defaultModel.draw(shaders::defaultShader);
+		if (scene::MAIN_PLAYER != nullptr) {
+			scene::MAIN_PLAYER->setShaderProperties();
+		}
+		loopThroughEntitys();
 
-		setLightsUniforms();
-
-		drawEntities();
+		//player.draw();
+		//visibleEntity.draw();
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
 		glBindVertexArray(0);
 
 		glfwSwapBuffers(GAME_WINDOW);
 		glfwPollEvents();
-	}
-}
-
-void glg::setLightsUniforms()
-{
-	for (Shader* shader : shaders::getShaders()) {
-		shader->setInt("lightsSize", scene::getLights().size());
-		for (int i = 0; i < scene::getLights().size(); i++) {
-			scene::getLights()[i]->setShaderLightUniforms(shader, i);
-		}
 	}
 }

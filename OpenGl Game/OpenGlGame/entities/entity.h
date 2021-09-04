@@ -60,11 +60,11 @@ namespace glg {
 
 		virtual void addEntityToUpdateCycle();
 
-		friend void loopThroughEntities();
+		friend void loopThroughEntitys();
 
 		friend void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
-		friend void loopThroughEntitiesPhysics();
+		friend void loopThroughEntitysPhysics();
 	};
 }
 

@@ -21,9 +21,6 @@
 #include <reactphysics3d/reactphysics3d.h>
 #include "physics.h"
 #include "entities/object/sphere_entity.h"
-#include "entities/light/attenuation/point_light_entity.h"
-#include "entities/light/attenuation/spot_light_entity.h"
-#include "entities/light/directional_light_entity.h"
 
 using namespace glg;
 
@@ -54,10 +51,44 @@ int main() {
 
 	Player player(camera.getPosition(), camera.getRotation(), camera);
 	SphereEntity test(glm::vec3(0, 0, 0), rp3d::Quaternion::identity());
-	DirectionalLightEntity light(glm::vec3(0, 0, 0), glm::vec3(.1f), glm::vec3(1, 1, 1), glm::vec3(1));
 
 	glEnable(GL_DEPTH_TEST);
 
+	// render loop
+	//while (!glfwWindowShouldClose(window))
+	//{
+	//	calculateDeltaTime();
+
+	//	glClearColor(.3f, 0, .2f, 1);
+	//	glClear(GL_COLOR_BUFFER_BIT);
+	//	glClearColor(0, 0, 0, 0);
+	//	glClear(GL_DEPTH_BUFFER_BIT);
+
+	//	physicsFrame();
+
+	//	player.camera.aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+
+
+	//	glm::mat4 view = player.camera.getViewMatrix();
+
+	//	shaders::defaultShader.setMat4("view", view);
+	//	shaders::defaultShader.setMat4("projection", player.camera.getProjectionMatrix());
+	//	glm::mat4 modeli = glm::mat4(1);
+	//	shaders::defaultShader.setMat4("model", modeli);
+	//	//models::defaultModel.draw(shaders::defaultShader);
+
+	//	loopThroughEntitys();
+
+	//	//player.draw();
+	//	//visibleEntity.draw();
+	//	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	//	
+	//	glBindVertexArray(0);
+
+	//	glfwSwapBuffers(window);
+	//	glfwPollEvents();
+	//}
 	startRenderLoop();
 
 	glfwTerminate();
