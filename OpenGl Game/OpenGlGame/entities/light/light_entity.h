@@ -1,8 +1,9 @@
 #pragma once
 #include "../entity.h"
+#include "../../resources/shader.h"
 
 namespace glg {
-	class LightEntity : Entity
+	class LightEntity : public Entity
 	{
 	public:
 		float priority;
@@ -14,7 +15,9 @@ namespace glg {
 
 		LightEntity(glm::vec3 position, glm::vec3 rotation, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float priority);
 
-		
+		~LightEntity();
+
+		virtual void setShaderLightUniforms(Shader* shader, int index) const = 0;
 	};
 }
 

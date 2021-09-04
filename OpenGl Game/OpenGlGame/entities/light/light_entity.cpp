@@ -12,3 +12,14 @@ specular(specular), priority(priority)
 {
 	scene::getLights().push_back(this);
 }
+
+glg::LightEntity::~LightEntity()
+{
+	int eraseIndex = -1;
+	for (int i = 0; i < scene::getLights().size(); i++) {
+		if (this == scene::getLights()[i]) {
+			eraseIndex = i;
+		}
+	}
+	scene::getLights().erase(scene::getLights().begin() + eraseIndex);
+}
