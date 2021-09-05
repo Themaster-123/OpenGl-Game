@@ -1,5 +1,6 @@
 #include "entity.h"
 #include "../screen.h"
+#include "../scene.h"
 #include <iostream>
 
 using namespace glg;

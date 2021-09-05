@@ -4,6 +4,7 @@
 #include "entities/object/test2.h"
 #include <reactphysics3d/reactphysics3d.h> 
 #include <iostream> 
+#include "scene.h"
 
 rp3d::PhysicsCommon glg::physicsCommon;
 rp3d::PhysicsWorld* glg::physicsWorld;
@@ -50,7 +51,7 @@ void glg::physicsFrame()
 
 	while (accumulator >= physicsTimeStep) {
 		physicsWorld->update(physicsTimeStep);
-		loopThroughEntitiesPhysics();
+		scene::loopThroughEntitiesPhysics();
 
 		////body->applyTorque(rp3d::Vector3(1, 0, 0) * physicsTimeStep);
 		//const rp3d::Transform transform = body->getTransform();

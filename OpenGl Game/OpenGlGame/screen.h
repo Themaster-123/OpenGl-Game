@@ -14,13 +14,9 @@ namespace glg  {
 
 	void loopThroughEntities();
 
-	void loopThroughEntitiesPhysics();
-
 	void addEntityToUpdateCycle(glg::Entity& entity);
 
 	void removeEntityFromUpdateCycle(const glg::Entity& entity);
-
-	std::vector<Entity*>& getEntityUpdateVector();
 
 	GLFWwindow* createWindow(int width, int height, const char* title);
 

@@ -1,12 +1,12 @@
 #include "screen.h"
 #include <glad/glad.h>
 #include <algorithm>
+#include "scene.h"
 #include "entities/entity.h"
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include "physics.h"
 #include "entities/Alive/player.h"
-#include "scene.h"
 
 GLFWwindow* glg::GAME_WINDOW;
 unsigned int glg::SCREEN_WIDTH = 800;
@@ -17,8 +17,8 @@ static float lastMouseY;
 
 void glg::drawEntities()
 {
-	for (int i = 0; i < getEntityUpdateVector().size(); i++) {
-		VisibleEntity* entity = dynamic_cast<VisibleEntity*>(getEntityUpdateVector()[i]);
+	for (int i = 0; i < scene::getEntities().size(); i++) {
+		VisibleEntity* entity = dynamic_cast<VisibleEntity*>(scene::getEntities()[i]);
 		if (entity != nullptr) {
 			entity->draw();
 		}
@@ -26,36 +26,24 @@ void glg::drawEntities()
 }
 
 void glg::loopThroughEntities() {
-	for (int i = 0; i < getEntityUpdateVector().size(); i++) {
-		Entity* entity = getEntityUpdateVector()[i];
+	for (int i = 0; i < scene::getEntities().size(); i++) {
+		Entity* entity = scene::getEntities()[i];
 		(*entity).update();
 	}
 }
 
-void glg::loopThroughEntitiesPhysics()
-{
-	for (Entity* entity : getEntityUpdateVector()) {
-		(*entity).physicsUpdate();
-	}
-}
-
 void glg::addEntityToUpdateCycle(glg::Entity& entity) {
-	getEntityUpdateVector().push_back(&entity);
+	scene::getEntities().push_back(&entity);
 }
 
 void glg::removeEntityFromUpdateCycle(const glg::Entity& entity) {
 	int eraseIndex = -1;
-	for (int i = 0; i < getEntityUpdateVector().size(); i++) {
-		if (&entity == getEntityUpdateVector()[i]) {
+	for (int i = 0; i < scene::getEntities().size(); i++) {
+		if (&entity == scene::getEntities()[i]) {
 			eraseIndex = i;
 		}
 	}
-	getEntityUpdateVector().erase(getEntityUpdateVector().begin() + eraseIndex);
-}
-
-std::vector<glg::Entity*>& glg::getEntityUpdateVector() {
-	static std::vector<Entity*> vector;
-	return vector;
+	scene::getEntities().erase(scene::getEntities().begin() + eraseIndex);
 }
 
 GLFWwindow* glg::createWindow(int width, int height, const char* title) {
@@ -95,18 +83,9 @@ void glg::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	lastMouseX = (float)xpos;
 	lastMouseY = (float)ypos;
 
-	for (Entity* entity : getEntityUpdateVector()) {
+	for (Entity* entity : scene::getEntities()) {
 		(*entity).onMouseMovement(xOffset, yOffset, (float) xpos, (float) ypos);
 	}
-
-	//const float sensitivity = 0.2f;
-	//xOffset *= sensitivity;
-	//yOffset *= sensitivity;
-	//glm::vec3 euler = glm::degrees(glm::eulerAngles(camera.getRotation()));
-	//euler.y -= xOffset;
-	//euler.x += yOffset;
-	//euler.x = std::max(std::min(euler.x, 90.0f), -90.0f);
-	//camera.setRotation(euler);
 }
 
 void glg::calculateDeltaTime() {

@@ -3,7 +3,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <GLFW/glfw3.h>
-//#include "../../screen.h"
 
 namespace glg {
 	class Entity
@@ -41,6 +40,11 @@ namespace glg {
 
 		virtual void setLookRotation(glm::vec2 rotation);
 
+		virtual void update();
+
+		virtual void physicsUpdate();
+		
+		virtual void onMouseMovement(float xOffset, float yOffset, float xPos, float yPos);
 
 	protected:
 		glm::vec3 position;
@@ -52,19 +56,7 @@ namespace glg {
 
 		virtual void updateVectors();
 
-		virtual void update();
-
-		virtual void physicsUpdate();
-
-		virtual void onMouseMovement(float xOffset, float yOffset, float xPos, float yPos);
-
 		virtual void addEntityToUpdateCycle();
-
-		friend void loopThroughEntities();
-
-		friend void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-
-		friend void loopThroughEntitiesPhysics();
 	};
 }
 

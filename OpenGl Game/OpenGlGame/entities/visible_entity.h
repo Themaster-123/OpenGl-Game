@@ -1,9 +1,9 @@
 #pragma once
+#include "entity.h"
 #include "../resources/model.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include "entity.h"
 #include "../globals/shaders.h"
 #include "../globals/models.h"
 
