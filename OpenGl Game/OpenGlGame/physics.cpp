@@ -8,17 +8,12 @@
 
 rp3d::PhysicsCommon glg::physicsCommon;
 rp3d::PhysicsWorld* glg::physicsWorld;
-rp3d::Vector3 pos(0, 0, 0);
-rp3d::Quaternion rot = rp3d::Quaternion::identity();
-rp3d::Transform transform(pos, rot);
-//rp3d::RigidBody* body;
 rp3d::Transform groundTransform(rp3d::Vector3(0, -10, 0), rp3d::Quaternion::identity());
 rp3d::RigidBody* ground;
 rp3d::TriangleVertexArray* triangleArray;
 rp3d::TriangleMesh* triangleMesh;
 rp3d::ConcaveMeshShape* concaveMesh;
 glg::Mesh* mesh;
-//glg::SphereEntity* test;
 glg::Test2 test2(glm::vec3(0, -10, 0), glm::quat());
 const float glg::physicsTimeStep = 1.0f / 60.0f;
 float glg::factor = 0;
@@ -28,7 +23,7 @@ float glg::accumulator = 0;
 void glg::registerPhysics()
 {
 	physicsWorld = physicsCommon.createPhysicsWorld();
-	//body = physicsWorld->createRigidBody(transform);
+
 	ground = physicsWorld->createRigidBody(groundTransform);
 	ground->setType(rp3d::BodyType::STATIC); 
 	mesh = new Mesh(models::terrainModel.getMeshes()[0]);
@@ -38,11 +33,9 @@ void glg::registerPhysics()
 	triangleMesh = physicsCommon.createTriangleMesh();
 	triangleMesh->addSubpart(triangleArray);
 	concaveMesh = physicsCommon.createConcaveMeshShape(triangleMesh);
-	//concaveMesh->setScale(rp3d::Vector3(4, 4, 4));
 	float radius = 1.0f;
 	rp3d::SphereShape* sphereShape = physicsCommon.createSphereShape(radius);
 	ground->addCollider(concaveMesh, rp3d::Transform::identity());
-	//body->addCollider(sphereShape, rp3d::Transform::identity());
 }
 
 void glg::physicsFrame()
@@ -53,13 +46,6 @@ void glg::physicsFrame()
 		physicsWorld->update(physicsTimeStep);
 		scene::loopThroughEntitiesPhysics();
 
-		////body->applyTorque(rp3d::Vector3(1, 0, 0) * physicsTimeStep);
-		//const rp3d::Transform transform = body->getTransform();
-		//const rp3d::Vector3& position = transform.getPosition();
-		//std::cout << position.y << std::endl;
-		//const rp3d::Quaternion q = transform.getOrientation();
-		//test.setPosition(position);
-		//test.setRotation(q);
 		accumulator -= physicsTimeStep; 
 	}
 
