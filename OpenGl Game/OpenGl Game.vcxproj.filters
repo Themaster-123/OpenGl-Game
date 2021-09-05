@@ -159,45 +159,4 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\default\FragmentShader.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="assets\shaders\default\VertexShader.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="assets\shaders\skybox\FragmentShader.frag" />
-    <None Include="assets\shaders\skybox\VertexShader.vert" />
-    <None Include="assets\models\sphere\sphere.mtl" />
-    <None Include="assets\models\terrain\terrain.mtl" />
-    <None Include="assets\models\test\test.mtl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="assets\test_image.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\awesomeface.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\crate.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\models\sphere\crate.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\models\sphere\crate.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\models\terrain\crate.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\models\test\krtzq4v400002.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="assets\models\sphere\sphere.obj" />
-    <Object Include="assets\models\terrain\terrain.obj" />
-    <Object Include="assets\models\test\test.obj" />
-  </ItemGroup>
 </Project>
