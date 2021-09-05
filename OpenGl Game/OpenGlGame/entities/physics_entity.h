@@ -11,6 +11,8 @@ namespace glg {
 
 		PhysicsEntity(glm::vec3 position, glm::vec3 rotation);
 
+		~PhysicsEntity();
+
 		virtual void setPosition(glm::vec3 position);
 
 		virtual void setRotation(glm::quat rotation);

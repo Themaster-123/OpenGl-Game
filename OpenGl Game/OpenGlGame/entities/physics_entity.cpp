@@ -10,6 +10,17 @@ glg::PhysicsEntity::PhysicsEntity(glm::vec3 position, glm::vec3 rotation) : Visi
 {
 }
 
+glg::PhysicsEntity::~PhysicsEntity()
+{
+    rp3d::RigidBody* rigidbody = dynamic_cast<rp3d::RigidBody*>(collisionBody);
+    if (rigidbody != nullptr) {
+        physicsWorld->destroyRigidBody(rigidbody);
+    }
+    else {
+        physicsWorld->destroyCollisionBody(collisionBody);
+    }
+}
+
 void glg::PhysicsEntity::setPosition(glm::vec3 position)
 {
     VisibleEntity::setPosition(position);
