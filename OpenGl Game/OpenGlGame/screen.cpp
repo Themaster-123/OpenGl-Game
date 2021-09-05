@@ -6,6 +6,7 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include "physics.h"
+#include "world/world.h"
 #include "entities/Alive/player.h"
 
 GLFWwindow* glg::GAME_WINDOW;
