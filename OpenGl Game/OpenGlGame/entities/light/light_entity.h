@@ -18,6 +18,9 @@ namespace glg {
 		~LightEntity();
 
 		virtual void setShaderLightUniforms(Shader* shader, int index) const = 0;
+
+	protected:
+		static bool sortLightByPriority(LightEntity* light1, LightEntity* light2);
 	};
 }
 
