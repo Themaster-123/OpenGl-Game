@@ -1,5 +1,6 @@
 #pragma once
 #include <entt/entt.hpp>
+#include "../scene.h"
 
 namespace glg {
 	class Object
@@ -12,7 +13,7 @@ namespace glg {
 		entt::entity getEntityId();
 
 		template<typename Component, typename... Args>
-		decltype(auto) addComponent(Component component, Args**... args);
+		decltype(auto) addComponent(Args**... args);
 
 	private:
 		entt::entity entityId;
@@ -20,8 +21,8 @@ namespace glg {
 	};
 
 	template<typename Component, typename... Args>
-	decltype(auto) Object::addComponent(Component component, Args**... args)
+	decltype(auto) Object::addComponent(Args**... args)
 	{
-		return scene::REGISTRY.emplace<component>(entityId, args);
+		return scene::REGISTRY.emplace<Component>(entityId, args...);
 	}
 }
