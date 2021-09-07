@@ -29,7 +29,7 @@ Model& glg::SphereEntity::getModel()
 rp3d::CollisionBody* glg::SphereEntity::getCollisionBody()
 {
 	rp3d::Transform transform = getTransform();
-	rp3d::RigidBody* body = physicsWorld->createRigidBody(transform);
-	body->addCollider(physicsCommon.createSphereShape(1.0f), rp3d::Transform::identity());
+	rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(transform);
+	body->addCollider(PHYSICS_COMMON.createSphereShape(1.0f), rp3d::Transform::identity());
 	return body;
 }

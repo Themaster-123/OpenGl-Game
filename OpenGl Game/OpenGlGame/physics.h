@@ -2,11 +2,11 @@
 #include <reactphysics3d/reactphysics3d.h>
 
 namespace glg {
-	extern const float physicsTimeStep;
-	extern rp3d::PhysicsCommon physicsCommon;
-	extern rp3d::PhysicsWorld* physicsWorld;
-	extern float accumulator;
-	extern float factor;
+	extern const float PHYSICS_TIME_STEP;
+	extern rp3d::PhysicsCommon PHYSICS_COMMON;
+	extern rp3d::PhysicsWorld* PHYSICS_WORLD;
+	extern float ACCUMULATOR;
+	extern float FACTOR;
 
 	void registerPhysics();
 

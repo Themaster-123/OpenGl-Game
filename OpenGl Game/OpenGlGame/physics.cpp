@@ -6,8 +6,8 @@
 #include <iostream> 
 #include "scene.h"
 
-rp3d::PhysicsCommon glg::physicsCommon;
-rp3d::PhysicsWorld* glg::physicsWorld;
+rp3d::PhysicsCommon glg::PHYSICS_COMMON;
+rp3d::PhysicsWorld* glg::PHYSICS_WORLD;
 rp3d::Transform groundTransform(rp3d::Vector3(0, -10, 0), rp3d::Quaternion::identity());
 rp3d::RigidBody* ground;
 rp3d::TriangleVertexArray* triangleArray;
@@ -15,41 +15,41 @@ rp3d::TriangleMesh* triangleMesh;
 rp3d::ConcaveMeshShape* concaveMesh;
 glg::Mesh* mesh;
 glg::Test2 test2(glm::vec3(0, -10, 0), glm::quat());
-const float glg::physicsTimeStep = 1.0f / 60.0f;
-float glg::factor = 0;
-float glg::accumulator = 0;
+const float glg::PHYSICS_TIME_STEP = 1.0f / 60.0f;
+float glg::FACTOR = 0;
+float glg::ACCUMULATOR = 0;
 
 
 void glg::registerPhysics()
 {
-	physicsWorld = physicsCommon.createPhysicsWorld();
+	PHYSICS_WORLD = PHYSICS_COMMON.createPhysicsWorld();
 
-	ground = physicsWorld->createRigidBody(groundTransform);
+	ground = PHYSICS_WORLD->createRigidBody(groundTransform);
 	ground->setType(rp3d::BodyType::STATIC); 
 	mesh = new Mesh(models::terrainModel.getMeshes()[0]);
 	triangleArray = new rp3d::TriangleVertexArray(mesh->vertices.size(), &mesh->vertices[0], sizeof(Vertex), mesh->indices.size() / 3, &mesh->indices[0], 3 * sizeof(unsigned int),
 		rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
 		rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
-	triangleMesh = physicsCommon.createTriangleMesh();
+	triangleMesh = PHYSICS_COMMON.createTriangleMesh();
 	triangleMesh->addSubpart(triangleArray);
-	concaveMesh = physicsCommon.createConcaveMeshShape(triangleMesh);
+	concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
 	float radius = 1.0f;
-	rp3d::SphereShape* sphereShape = physicsCommon.createSphereShape(radius);
+	rp3d::SphereShape* sphereShape = PHYSICS_COMMON.createSphereShape(radius);
 	ground->addCollider(concaveMesh, rp3d::Transform::identity());
 }
 
 void glg::physicsFrame()
 {
-	accumulator += DELTA_TIME;
+	ACCUMULATOR += DELTA_TIME;
 
-	while (accumulator >= physicsTimeStep) {
-		physicsWorld->update(physicsTimeStep);
+	while (ACCUMULATOR >= PHYSICS_TIME_STEP) {
+		PHYSICS_WORLD->update(PHYSICS_TIME_STEP);
 		scene::loopThroughEntitiesPhysics();
 
-		accumulator -= physicsTimeStep; 
+		ACCUMULATOR -= PHYSICS_TIME_STEP; 
 	}
 
-	factor = accumulator / physicsTimeStep;
+	FACTOR = ACCUMULATOR / PHYSICS_TIME_STEP;
 }
 
 rp3d::Vector3 glg::toVector3(glm::vec3 vec3)

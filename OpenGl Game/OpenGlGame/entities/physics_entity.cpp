@@ -14,10 +14,10 @@ glg::PhysicsEntity::~PhysicsEntity()
 {
     rp3d::RigidBody* rigidbody = dynamic_cast<rp3d::RigidBody*>(collisionBody);
     if (rigidbody != nullptr) {
-        physicsWorld->destroyRigidBody(rigidbody);
+        PHYSICS_WORLD->destroyRigidBody(rigidbody);
     }
     else {
-        physicsWorld->destroyCollisionBody(collisionBody);
+        PHYSICS_WORLD->destroyCollisionBody(collisionBody);
     }
 }
 
@@ -39,7 +39,7 @@ rp3d::Transform glg::PhysicsEntity::getTransform() const
 }
 
 rp3d::Transform glg::PhysicsEntity::getInterpolatedTransform() const {
-    return rp3d::Transform::interpolateTransforms(prevTransform, getTransform(), std::min(factor, 1.0f));
+    return rp3d::Transform::interpolateTransforms(prevTransform, getTransform(), std::min(FACTOR, 1.0f));
 }
 
 glm::mat4 glg::PhysicsEntity::getModelMatrix() const
