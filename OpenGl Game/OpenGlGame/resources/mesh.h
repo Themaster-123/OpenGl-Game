@@ -12,9 +12,7 @@ namespace glg {
 		glm::vec3 normal;
 		glm::vec2 texCoords;
 
-		Vertex() {
-
-		}
+		Vertex() = default;
 
 		Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 texCoords) {
 			this->position = position;
