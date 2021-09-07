@@ -3,6 +3,7 @@
 using namespace glg;
 
 glg::Player* scene::MAIN_PLAYER;
+entt::registry scene::REGISTRY;
 
 std::vector<LightEntity*>& scene::getLights()
 {
