@@ -126,9 +126,9 @@ Model& glg::Player::getModel()
 rp3d::CollisionBody* glg::Player::getCollisionBody()
 {
 	rp3d::Transform transform = getTransform();
-	rp3d::RigidBody* body = physicsWorld->createRigidBody(transform);
+	rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(transform);
 	body->setType(rp3d::BodyType::KINEMATIC);
-	body->addCollider(physicsCommon.createCapsuleShape(1.0f, 2.0f), rp3d::Transform::identity());
+	body->addCollider(PHYSICS_COMMON.createCapsuleShape(1.0f, 2.0f), rp3d::Transform::identity());
 	//rp3d::Material& mat = body->getCollider(0)->getMaterial();
 	//mat.setFrictionCoefficient(9999);
 	//mat.setBounciness(0);
