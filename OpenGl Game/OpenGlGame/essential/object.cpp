@@ -8,6 +8,11 @@ Object::Object()
 	entityId = scene::REGISTRY.create();
 }
 
+glg::Object::Object(entt::entity entity)
+{
+	entityId = entity;
+}
+
 Object::~Object()
 {
 	scene::REGISTRY.destroy(entityId);

@@ -121,6 +121,7 @@
       <ConformanceMode>true</ConformanceMode>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,6 +142,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <SupportJustMyCode>false</SupportJustMyCode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -154,6 +156,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="OpenGlGame\components\dependencies.cpp" />
+    <ClCompile Include="OpenGlGame\components\model_component.cpp" />
+    <ClCompile Include="OpenGlGame\components\transform_component.cpp" />
     <ClCompile Include="OpenGlGame\entities\light\attenuation\attenuation_light_entity.cpp" />
     <ClCompile Include="OpenGlGame\entities\light\attenuation\spot_light_entity.cpp" />
     <ClCompile Include="OpenGlGame\entities\light\directional_light_entity.cpp" />
@@ -163,6 +168,7 @@
     <ClCompile Include="includes\glad\src\glad.c" />
     <ClCompile Include="OpenGlGame\entities\light\attenuation\point_light_entity.cpp" />
     <ClCompile Include="OpenGlGame\entities\object\test2.cpp" />
+    <ClCompile Include="OpenGlGame\essential\object.cpp" />
     <ClCompile Include="OpenGlGame\globals\models.cpp" />
     <ClCompile Include="OpenGlGame\globals\shaders.cpp" />
     <ClCompile Include="OpenGlGame\Main.cpp" />
@@ -178,6 +184,10 @@
     <ClCompile Include="OpenGlGame\world\world_chunk.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="OpenGlGame\components\components.h" />
+    <ClInclude Include="OpenGlGame\components\dependencies.h" />
+    <ClInclude Include="OpenGlGame\components\model_component.h" />
+    <ClInclude Include="OpenGlGame\components\transform_component.h" />
     <ClInclude Include="OpenGlGame\entities\light\attenuation\attenuation_light_entity.h" />
     <ClInclude Include="OpenGlGame\entities\light\attenuation\spot_light_entity.h" />
     <ClInclude Include="OpenGlGame\entities\light\directional_light_entity.h" />
@@ -186,6 +196,7 @@
     <ClInclude Include="OpenGlGame\entities\camera.h" />
     <ClInclude Include="OpenGlGame\entities\light\attenuation\point_light_entity.h" />
     <ClInclude Include="OpenGlGame\entities\object\test2.h" />
+    <ClInclude Include="OpenGlGame\essential\object.h" />
     <ClInclude Include="OpenGlGame\globals\models.h" />
     <ClInclude Include="OpenGlGame\globals\shaders.h" />
     <ClInclude Include="OpenGlGame\physics.h" />

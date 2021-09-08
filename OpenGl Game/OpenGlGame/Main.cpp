@@ -24,6 +24,8 @@
 #include "entities/light/attenuation/point_light_entity.h"
 #include "entities/light/attenuation/spot_light_entity.h"
 #include "entities/light/directional_light_entity.h"
+#include "essential/object.h"
+#include "components/components.h"
 
 using namespace glg;
 
@@ -50,14 +52,18 @@ int main() {
 	shaders::registerShaders();
 	models::registerModels();
 	registerPhysics();
-
+	
 	//shader.use();
 
 	Player player(camera.getPosition(), camera.getRotation(), camera);
 	SphereEntity test(glm::vec3(0, 0, 0), rp3d::Quaternion::identity());
 	DirectionalLightEntity light(glm::vec3(-53, 0, 0), glm::vec3(.1f), glm::vec3(1, 1, 1), glm::vec3(1));
 
+	Object obj;
+	obj.addComponent<TransformComponent>();
+
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	startRenderLoop();
 
