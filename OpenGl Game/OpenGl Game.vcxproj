@@ -156,7 +156,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="OpenGlGame\components\dependencies.cpp" />
     <ClCompile Include="OpenGlGame\components\model_component.cpp" />
     <ClCompile Include="OpenGlGame\components\transform_component.cpp" />
     <ClCompile Include="OpenGlGame\entities\light\attenuation\attenuation_light_entity.cpp" />
@@ -185,8 +184,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\components\components.h" />
-    <ClInclude Include="OpenGlGame\components\dependencies.h" />
     <ClInclude Include="OpenGlGame\components\model_component.h" />
+    <ClInclude Include="OpenGlGame\components\testComponent.h" />
     <ClInclude Include="OpenGlGame\components\transform_component.h" />
     <ClInclude Include="OpenGlGame\entities\light\attenuation\attenuation_light_entity.h" />
     <ClInclude Include="OpenGlGame\entities\light\attenuation\spot_light_entity.h" />

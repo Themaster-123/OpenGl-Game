@@ -105,9 +105,6 @@
     <ClCompile Include="OpenGlGame\components\model_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGlGame\components\dependencies.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\resources\shader.h">
@@ -194,7 +191,7 @@
     <ClInclude Include="OpenGlGame\components\model_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGlGame\components\dependencies.h">
+    <ClInclude Include="OpenGlGame\components\testComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
