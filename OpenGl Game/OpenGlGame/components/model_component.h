@@ -4,9 +4,10 @@
 #include <entt/entt.hpp>
 #include <iostream>
 #include "../scene.h"
+#include "testComponent.h"
 
 namespace glg {
-	class ModelComponent {
+	class ModelComponent : testComponent {
 	public:
 		ModelComponent() = default;
 
