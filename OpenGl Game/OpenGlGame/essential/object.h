@@ -28,6 +28,9 @@ namespace glg {
 		template<typename Component, typename... Args>
 		decltype(auto) addComponent(Args&&... args);
 
+		template<typename Component, typename... Args>
+		decltype(auto) getOrAddComponent(Args&&... args);
+
 	private:
 		entt::entity entityId;
 
@@ -37,5 +40,10 @@ namespace glg {
 	inline decltype(auto) Object::addComponent(Args&&... args)
 	{
 		return scene::REGISTRY.emplace<Component>(entityId, *this, args...);
+	}
+	template<typename Component, typename ...Args>
+	inline decltype(auto) Object::getOrAddComponent(Args && ...args)
+	{
+		return scene::REGISTRY.get_or_emplace<Component>(entityId, *this, args...);
 	}
 }
