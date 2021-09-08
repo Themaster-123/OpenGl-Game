@@ -1,21 +1,22 @@
 #include "transform_component.h"
 #include <iostream>
+#include "../essential/object.h"
 
 using namespace glg;
 
-glg::TransformComponent::TransformComponent()
+glg::TransformComponent::TransformComponent(Object& object)
 {
 	setPosition(glm::vec3());
 	setRotation(glm::identity<glm::quat>());
 }
 
-glg::TransformComponent::TransformComponent(glm::vec3 position, glm::quat rotation)
+glg::TransformComponent::TransformComponent(Object& object, glm::vec3 position, glm::quat rotation)
 {
 	setPosition(position);
 	setRotation(rotation);
 }
 
-glg::TransformComponent::TransformComponent(glm::vec3 position, glm::vec3 rotation)
+glg::TransformComponent::TransformComponent(Object& object, glm::vec3 position, glm::vec3 rotation)
 {
 	setPosition(position);
 	setRotation(rotation);
@@ -64,9 +65,17 @@ glm::vec3 TransformComponent::getRight() const
 
 bool TransformComponent::operator==(const TransformComponent& other) const
 {
-	if (this->position == other.position && this->rotation == other.rotation) {
-		return true;
-	}
+	return this->position == other.position && this->rotation == other.rotation;
+}
+
+TransformComponent& glg::TransformComponent::operator=(const TransformComponent& other)
+{
+	position = other.position;
+	rotation = other.rotation;
+	front = other.front;
+	right = other.right;
+	up = other.up;
+	return *this;
 }
 
 void TransformComponent::updateVectors()

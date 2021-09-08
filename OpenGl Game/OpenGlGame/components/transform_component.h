@@ -1,17 +1,22 @@
 #pragma once
+#include "components.h"
+#include "../essential/object.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <entt/entt.hpp>
 
 namespace glg {
 	class TransformComponent
 	{
 	public:
-		TransformComponent();
+		TransformComponent() = default;
 
-		TransformComponent(glm::vec3 position, glm::quat rotation);
+		TransformComponent(Object& object);
 
-		TransformComponent(glm::vec3 position, glm::vec3 rotation);
+		TransformComponent(Object& object, glm::vec3 position, glm::quat rotation);
+
+		TransformComponent(Object& object, glm::vec3 position, glm::vec3 rotation);
 
 		virtual glm::vec3 getPosition() const;
 
@@ -30,6 +35,8 @@ namespace glg {
 		virtual glm::vec3 getRight() const;
 
 		virtual bool operator==(const TransformComponent& other) const;
+
+		virtual TransformComponent& operator=(const TransformComponent& other);
 
 	protected:
 		glm::vec3 position;
