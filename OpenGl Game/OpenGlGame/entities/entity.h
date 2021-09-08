@@ -24,7 +24,7 @@ namespace glg {
 
 		virtual void setRotation(glm::quat rotation);
 
-		void setRotation(glm::vec3 rotation);
+		virtual void setRotation(glm::vec3 rotation);
 
 		virtual glm::vec3 getFront() const;
 
