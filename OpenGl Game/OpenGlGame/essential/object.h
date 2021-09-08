@@ -15,11 +15,18 @@ namespace glg {
 
 		entt::entity getEntityId();
 
-		template<typename Component, typename... Args>
-		decltype(auto) addComponent(Args**... args);
+		template <typename... Component>
+		decltype(auto) get() const {
+			return ((const entt::registry) scene::REGISTRY).get<Component...>(entityId);
+		}
 
-		template<typename Component, typename Other, typename... Args>
-		static void addDependency(Args**... args);
+		template <typename... Component>
+		decltype(auto) get() {
+			return scene::REGISTRY.get<Component...>(entityId);
+		}
+
+		template<typename Component, typename... Args>
+		decltype(auto) addComponent(Args&&... args);
 
 	private:
 		entt::entity entityId;
@@ -27,14 +34,8 @@ namespace glg {
 	};
 
 	template<typename Component, typename... Args>
-	inline decltype(auto) Object::addComponent(Args**... args)
+	inline decltype(auto) Object::addComponent(Args&&... args)
 	{
-		return scene::REGISTRY.emplace<Component>(entityId, args...);
-	}
-
-	template<typename Component, typename Other, typename... Args>
-	inline void Object::addDependency(Args**... args)
-	{
-		scene::REGISTRY.on_construct<Component>().connect<&entt::invoke<&Component::addDependencies>>();
+		return scene::REGISTRY.emplace<Component>(entityId, *this, args...);
 	}
 }
