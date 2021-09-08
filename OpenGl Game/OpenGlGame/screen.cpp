@@ -8,6 +8,8 @@
 #include "physics.h"
 #include "world/world.h"
 #include "entities/Alive/player.h"
+#include <entt/entt.hpp>
+#include "components/components.h"
 
 GLFWwindow* glg::GAME_WINDOW;
 unsigned int glg::SCREEN_WIDTH = 800;
@@ -115,6 +117,9 @@ int glg::getKey(int key)
 
 void glg::startRenderLoop()
 {
+	Object obj;
+	obj.addComponent<ModelComponent>(models::sphereModel, *shaders::defaultShader);
+	//obj.addComponent<testComponent>();
 	while (!glfwWindowShouldClose(GAME_WINDOW))
 	{
 		calculateDeltaTime();
@@ -132,6 +137,8 @@ void glg::startRenderLoop()
 
 		drawEntities();
 
+		//obj.get<ModelComponent>().draw();
+		obj.get<testComponent>();
 
 		glBindVertexArray(0);
 

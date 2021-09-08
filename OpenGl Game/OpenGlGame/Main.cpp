@@ -59,9 +59,6 @@ int main() {
 	SphereEntity test(glm::vec3(0, 0, 0), rp3d::Quaternion::identity());
 	DirectionalLightEntity light(glm::vec3(-53, 0, 0), glm::vec3(.1f), glm::vec3(1, 1, 1), glm::vec3(1));
 
-	Object obj;
-	obj.addComponent<TransformComponent>();
-
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
