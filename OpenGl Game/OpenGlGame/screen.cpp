@@ -10,6 +10,7 @@
 #include "entities/Alive/player.h"
 #include <entt/entt.hpp>
 #include "components/components.h"
+#include "component_systems/component_system.h"
 
 GLFWwindow* glg::GAME_WINDOW;
 unsigned int glg::SCREEN_WIDTH = 800;
@@ -32,6 +33,12 @@ void glg::loopThroughEntities() {
 	for (int i = 0; i < scene::getEntities().size(); i++) {
 		Entity* entity = scene::getEntities()[i];
 		(*entity).update();
+	}
+
+	auto systems = scene::getSystems();
+
+	for (int i = 0; i < systems.size(); i++) {
+		systems[i]->update();
 	}
 }
 
@@ -138,7 +145,6 @@ void glg::startRenderLoop()
 		drawEntities();
 
 		//obj.get<ModelComponent>().draw();
-		obj.get<testComponent>();
 
 		glBindVertexArray(0);
 
