@@ -16,6 +16,12 @@ std::vector<Entity*>& scene::getEntities() {
 	return vector;
 }
 
+std::vector<ComponentSystem*>& scene::getSystems()
+{
+	static std::vector<ComponentSystem*> vector;
+	return vector;
+}
+
 void scene::loopThroughEntitiesPhysics()
 {
 	for (Entity* entity : getEntities()) {

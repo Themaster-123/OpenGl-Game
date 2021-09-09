@@ -3,6 +3,7 @@
 #include "entities/Alive/player.h"
 #include "entities/light/light_entity.h"
 #include <entt/entt.hpp>
+#include "component_systems/component_system.h"
 
 namespace glg {
 	namespace scene {
@@ -12,6 +13,8 @@ namespace glg {
 		std::vector<LightEntity*>& getLights();
 
 		std::vector<Entity*>& getEntities();
+
+		std::vector<ComponentSystem*>& getSystems();
 
 		void loopThroughEntitiesPhysics();
 	}
