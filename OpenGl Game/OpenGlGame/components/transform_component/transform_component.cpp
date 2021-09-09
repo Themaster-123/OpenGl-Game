@@ -1,6 +1,6 @@
 #include "transform_component.h"
 #include <iostream>
-#include "../essential/object.h"
+#include "../../essential/object.h"
 
 using namespace glg;
 

@@ -1,11 +1,10 @@
-#include "components.h"
+#include "../components.h"
 
 using namespace glg;
 
 glg::ModelComponent::ModelComponent(Object& object, Model& model, Shader& shader) : model(model), shader(shader)
 {
 	this->object = &object;
-	object.getOrAddComponent<TransformComponent>();
 }
 
 glm::mat4 glg::ModelComponent::getModelMatrix() const

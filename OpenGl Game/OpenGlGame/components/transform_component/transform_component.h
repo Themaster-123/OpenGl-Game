@@ -1,13 +1,13 @@
 #pragma once
-#include "components.h"
-#include "../essential/object.h"
+#include "../components.h"
+#include "../../essential/object.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <entt/entt.hpp>
 
 namespace glg {
-	class TransformComponent
+	struct TransformComponent
 	{
 	public:
 		TransformComponent() = default;

@@ -1,13 +1,12 @@
 #pragma once
-#include "components.h"
-#include "../essential/object.h"
+#include "../components.h"
+#include "../../essential/object.h"
 #include <entt/entt.hpp>
 #include <iostream>
-#include "../scene.h"
-#include "testComponent.h"
+#include "../../scene.h"
 
 namespace glg {
-	class ModelComponent : testComponent {
+	class ModelComponent {
 	public:
 		ModelComponent() = default;
 
