@@ -156,8 +156,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="OpenGlGame\components\model_component.cpp" />
-    <ClCompile Include="OpenGlGame\components\transform_component.cpp" />
+    <ClCompile Include="OpenGlGame\components\model_component\model_component.cpp" />
+    <ClCompile Include="OpenGlGame\components\physics_component\physics_component.cpp" />
+    <ClCompile Include="OpenGlGame\components\transform_component\transform_component.cpp" />
+    <ClCompile Include="OpenGlGame\component_systems\component_system.cpp" />
+    <ClCompile Include="OpenGlGame\component_systems\renderer_system\renderer_system.cpp" />
     <ClCompile Include="OpenGlGame\entities\light\attenuation\attenuation_light_entity.cpp" />
     <ClCompile Include="OpenGlGame\entities\light\attenuation\spot_light_entity.cpp" />
     <ClCompile Include="OpenGlGame\entities\light\directional_light_entity.cpp" />
@@ -184,9 +187,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\components\components.h" />
-    <ClInclude Include="OpenGlGame\components\model_component.h" />
-    <ClInclude Include="OpenGlGame\components\testComponent.h" />
-    <ClInclude Include="OpenGlGame\components\transform_component.h" />
+    <ClInclude Include="OpenGlGame\components\model_component\model_component.h" />
+    <ClInclude Include="OpenGlGame\components\physics_component\physics_component.h" />
+    <ClInclude Include="OpenGlGame\components\transform_component\transform_component.h" />
+    <ClInclude Include="OpenGlGame\component_systems\component_system.h" />
+    <ClInclude Include="OpenGlGame\component_systems\renderer_system\renderer_system.h" />
     <ClInclude Include="OpenGlGame\entities\light\attenuation\attenuation_light_entity.h" />
     <ClInclude Include="OpenGlGame\entities\light\attenuation\spot_light_entity.h" />
     <ClInclude Include="OpenGlGame\entities\light\directional_light_entity.h" />

@@ -26,6 +26,7 @@
 #include "entities/light/directional_light_entity.h"
 #include "essential/object.h"
 #include "components/components.h"
+#include "component_systems/component_system.h"
 
 using namespace glg;
 
@@ -52,6 +53,7 @@ int main() {
 	shaders::registerShaders();
 	models::registerModels();
 	registerPhysics();
+	ComponentSystem::addSystems();
 	
 	//shader.use();
 
