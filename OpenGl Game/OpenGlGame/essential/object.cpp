@@ -14,6 +14,12 @@ glg::Object::Object(entt::entity entity)
 	entityId = entity;
 }
 
+glg::Object::Object(Object& obj)
+{
+	entityId = obj.entityId;
+	deleteEntity = false;
+}
+
 Object::~Object()
 {
 	if (deleteEntity) {
