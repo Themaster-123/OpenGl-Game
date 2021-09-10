@@ -6,13 +6,15 @@ namespace glg {
 	public:
 		ComponentSystem();
 
+		virtual void draw();
+
 		virtual void update();
 
 		virtual void physicsUpdate();
 
 		virtual void onMouseMovement(float xOffset, float yOffset, float xPos, float yPos);
 
-		static void addDependencies(entt::registry& registry, entt::entity entity);
+		static void onConstruct(entt::registry& registry, entt::entity entity);
 
 		static void addSystems();
 	};

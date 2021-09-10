@@ -7,6 +7,10 @@ glg::ComponentSystem::ComponentSystem()
 	scene::getSystems().push_back(this);
 }
 
+void glg::ComponentSystem::draw()
+{
+}
+
 void glg::ComponentSystem::update()
 {
 }
@@ -19,7 +23,7 @@ void glg::ComponentSystem::onMouseMovement(float xOffset, float yOffset, float x
 {
 }
 
-void glg::ComponentSystem::addDependencies(entt::registry& registry, entt::entity entity)
+void glg::ComponentSystem::onConstruct(entt::registry& registry, entt::entity entity)
 {
 }
 
