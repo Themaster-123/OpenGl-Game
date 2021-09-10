@@ -1,25 +1,27 @@
 #include "transform_component.h"
 #include <iostream>
 #include "../../essential/object.h"
+#include "../../component_systems/transform_system/transform_system.h"
 
 using namespace glg;
 
-glg::TransformComponent::TransformComponent(Object& object)
+glg::TransformComponent::TransformComponent()
 {
 	setPosition(glm::vec3());
 	setRotation(glm::identity<glm::quat>());
 }
 
-glg::TransformComponent::TransformComponent(Object& object, glm::vec3 position, glm::quat rotation)
+glg::TransformComponent::TransformComponent(glm::vec3 position, glm::quat rotation)
 {
-	setPosition(position);
-	setRotation(rotation);
+	this->position = position;
+	this->rotation = rotation;
+	this->front = glm::normalize(rotation * glm::vec3(0, 0, -1));
+	this->right = glm::normalize(rotation * glm::vec3(1, 0, 0));
+	this->up = glm::normalize(rotation * glm::vec3(0, 1, 0));
 }
 
-glg::TransformComponent::TransformComponent(Object& object, glm::vec3 position, glm::vec3 rotation)
+glg::TransformComponent::TransformComponent(glm::vec3 position, glm::vec3 rotation) : TransformComponent(position, glm::quat(glm::radians(rotation)))
 {
-	setPosition(position);
-	setRotation(rotation);
 }
 
 glm::vec3 TransformComponent::getPosition() const
@@ -63,6 +65,14 @@ glm::vec3 TransformComponent::getRight() const
 	return right;
 }
 
+glm::mat4 glg::TransformComponent::getModelMatrix() const
+{
+	glm::mat4 modelMatrix = glm::mat4(1);
+	modelMatrix = glm::translate(modelMatrix, getPosition());
+	modelMatrix = modelMatrix * glm::toMat4(getRotation());
+	return modelMatrix;
+}
+
 bool TransformComponent::operator==(const TransformComponent& other) const
 {
 	return this->position == other.position && this->rotation == other.rotation;
@@ -78,9 +88,13 @@ TransformComponent& glg::TransformComponent::operator=(const TransformComponent&
 	return *this;
 }
 
+TransformComponent glg::TransformComponent::interpolateTransforms(const TransformComponent& prevTransform, const TransformComponent& currentTransform, float factor)
+{
+	glm::vec3 position = prevTransform.getPosition() * (1.0f - factor) + currentTransform.getPosition() * factor;
+	glm::quat rotation = glm::slerp(prevTransform.getRotation(), currentTransform.getRotation(), factor);
+	return TransformComponent(position, rotation);
+}
+
 void TransformComponent::updateVectors()
 {
-	front = glm::normalize(getRotation() * glm::vec3(0, 0, -1));
-	right = glm::normalize(getRotation() * glm::vec3(1, 0, 0));
-	up = glm::normalize(getRotation() * glm::vec3(0, 1, 0));
 }
