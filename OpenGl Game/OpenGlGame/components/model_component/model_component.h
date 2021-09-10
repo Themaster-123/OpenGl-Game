@@ -16,8 +16,6 @@ namespace glg {
 
 		ModelComponent(Model& model, Shader& shader);
 
-		virtual void draw(const glm::mat4& modelMatrix) const;
-
 		virtual ModelComponent& operator=(const ModelComponent& other);
 	};
 }

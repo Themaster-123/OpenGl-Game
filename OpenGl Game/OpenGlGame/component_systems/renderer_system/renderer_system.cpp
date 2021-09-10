@@ -15,9 +15,7 @@ void glg::RendererSystem::draw()
 
 	for (auto entity : view) {
 		Object obj(entity);
-		auto& model = obj.get<ModelComponent>();
-
-		model.draw(TransformSystem::getModelMatrix(obj.get<TransformComponent>()));
+		drawModel(obj);
 	}
 }
 
@@ -26,3 +24,12 @@ void glg::RendererSystem::onConstruct(entt::registry& registry, entt::entity ent
 	Object obj(entity);
 	obj.getOrAddComponent<TransformComponent>();
 }
+
+void glg::RendererSystem::drawModel(const Object& object)
+{
+	const auto [modelComponent, transformComponent] = object.get<ModelComponent, TransformComponent>();
+
+	modelComponent.shader.setMat4("model", TransformSystem::getModelMatrix(transformComponent));
+	modelComponent.model.draw(modelComponent.shader);
+}
+
