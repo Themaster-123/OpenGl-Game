@@ -1,6 +1,7 @@
 #include "component_system.h"
 #include "../scene.h"
 #include "renderer_system/renderer_system.h"
+#include "transform_system/transform_system.h"
 
 glg::ComponentSystem::ComponentSystem()
 {
@@ -30,4 +31,5 @@ void glg::ComponentSystem::onConstruct(entt::registry& registry, entt::entity en
 void glg::ComponentSystem::addSystems()
 {
 	new RendererSystem();
+	new TransformSystem();
 }
