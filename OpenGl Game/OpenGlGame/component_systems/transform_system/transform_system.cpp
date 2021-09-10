@@ -1,4 +1,5 @@
 #include "transform_system.h"
+#include "../../scene.h"
 
 glg::TransformSystem::TransformSystem() : ComponentSystem()
 {
@@ -6,24 +7,33 @@ glg::TransformSystem::TransformSystem() : ComponentSystem()
 
 void glg::TransformSystem::setPosition(Object& object, glm::vec3 position)
 {
-	object.get<TransformComponent>().position = position;
+	auto& transformComponent = object.get<TransformComponent>();
+	transformComponent.position = position;
+	scene::DISPATCHER.trigger<TransformSystem::onTransformUpdate>(object, transformComponent);
 }
 
 void glg::TransformSystem::setRotation(Object& object, glm::quat rotation)
 {
-	object.get<TransformComponent>().rotation = rotation;
+	auto& transformComponent = object.get<TransformComponent>();
+	transformComponent.rotation = rotation;
 	updateVectors(object);
+	scene::DISPATCHER.trigger<TransformSystem::onTransformUpdate>(object, transformComponent);
 }
 
 void glg::TransformSystem::setRotation(Object& object, glm::vec3 rotation)
 {
 	setRotation(object, glm::quat(glm::radians(rotation)));
+
 }
 
 void glg::TransformSystem::setTransform(Object& object, TransformComponent& transform)
 {
-	setPosition(object, transform.position);
-	setRotation(object, transform.rotation);
+	auto& transformComponent = object.get<TransformComponent>();
+	transformComponent.position = transform.position;
+	transformComponent.rotation = transform.rotation;
+	updateVectors(object);
+	
+	scene::DISPATCHER.trigger<TransformSystem::onTransformUpdate>(object, transformComponent);
 }
 
 void glg::TransformSystem::updateVectors(Object& object)

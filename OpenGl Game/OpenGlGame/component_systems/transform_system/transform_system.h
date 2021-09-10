@@ -26,6 +26,11 @@ namespace glg {
 
 		static TransformComponent interpolateTransforms(const TransformComponent& prevTransform, const TransformComponent& currentTransform, float factor);
 
+		struct onTransformUpdate {
+			Object object;
+			TransformComponent transform;
+		};
+
 	protected:
 	};
 }
