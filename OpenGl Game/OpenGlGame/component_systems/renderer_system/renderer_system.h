@@ -7,8 +7,8 @@ namespace glg {
 	public:
 		RendererSystem();
 
-		virtual void update();
+		virtual void draw();
 
-		static void addDependencies(entt::registry& registry, entt::entity entity);
+		static void onConstruct(entt::registry& registry, entt::entity entity);
 	};
 }

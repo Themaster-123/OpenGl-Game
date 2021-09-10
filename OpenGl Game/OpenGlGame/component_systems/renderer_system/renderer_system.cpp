@@ -5,10 +5,10 @@
 
 glg::RendererSystem::RendererSystem() : ComponentSystem()
 {
-	Object::addDependency<ModelComponent, RendererSystem>();
+	Object::addConstruct<ModelComponent, RendererSystem>();
 }
 
-void glg::RendererSystem::update()
+void glg::RendererSystem::draw()
 {
 	auto view = scene::REGISTRY.view<ModelComponent>();
 
@@ -16,11 +16,11 @@ void glg::RendererSystem::update()
 		Object obj(entity);
 		auto& model = obj.get<ModelComponent>();
 
-		model.draw();
+		model.draw(obj.get<TransformComponent>().getModelMatrix());
 	}
 }
 
-void glg::RendererSystem::addDependencies(entt::registry& registry, entt::entity entity)
+void glg::RendererSystem::onConstruct(entt::registry& registry, entt::entity entity)
 {
 	Object obj(entity);
 	obj.getOrAddComponent<TransformComponent>();
