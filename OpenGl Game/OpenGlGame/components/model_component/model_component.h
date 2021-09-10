@@ -7,8 +7,11 @@
 #include <iostream>
 
 namespace glg {
-	class ModelComponent {
-	public:
+	struct ModelComponent {
+
+		Model& model;
+		Shader& shader;
+
 		ModelComponent() = default;
 
 		ModelComponent(Model& model, Shader& shader);
@@ -16,10 +19,5 @@ namespace glg {
 		virtual void draw(const glm::mat4& modelMatrix) const;
 
 		virtual ModelComponent& operator=(const ModelComponent& other);
-
-	protected:
-		Model& model;
-		Shader& shader;
-
 	};
 }
