@@ -185,6 +185,7 @@
     <ClCompile Include="OpenGlGame\entities\physics_entity.cpp" />
     <ClCompile Include="OpenGlGame\world\world.cpp" />
     <ClCompile Include="OpenGlGame\world\world_chunk.cpp" />
+    <ClCompile Include="OpenGlGame\component_systems\physics_system\physics_system.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\components\components.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="OpenGlGame\entities\physics_entity.h" />
     <ClInclude Include="OpenGlGame\world\world_chunk.h" />
     <ClInclude Include="OpenGlGame\world\world.h" />
+    <ClInclude Include="OpenGlGame\component_systems\physics_system\physics_system.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

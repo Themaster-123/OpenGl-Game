@@ -8,7 +8,10 @@
 namespace glg {
 	namespace scene {
 		extern Player* MAIN_PLAYER;
+
 		extern entt::registry REGISTRY;
+
+		extern entt::dispatcher DISPATCHER;
 
 		std::vector<LightEntity*>& getLights();
 
