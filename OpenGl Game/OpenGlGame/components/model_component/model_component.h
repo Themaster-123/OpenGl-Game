@@ -1,25 +1,23 @@
 #pragma once
-#include "../components.h"
 #include "../../essential/object.h"
+#include "../../scene.h"
+#include "../transform_component/transform_component.h"
+#include "../components.h"
 #include <entt/entt.hpp>
 #include <iostream>
-#include "../../scene.h"
 
 namespace glg {
 	class ModelComponent {
 	public:
 		ModelComponent() = default;
 
-		ModelComponent(Object& object, Model& model, Shader& shader);
+		ModelComponent(Model& model, Shader& shader);
 
-		virtual glm::mat4 getModelMatrix() const;
-
-		virtual void draw() const;
+		virtual void draw(const glm::mat4& modelMatrix) const;
 
 		virtual ModelComponent& operator=(const ModelComponent& other);
 
 	protected:
-		Object* object;
 		Model& model;
 		Shader& shader;
 
