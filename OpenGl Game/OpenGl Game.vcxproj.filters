@@ -114,6 +114,9 @@
     <ClCompile Include="OpenGlGame\components\physics_component\physics_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGlGame\component_systems\transform_system\transform_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\resources\shader.h">
@@ -207,6 +210,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OpenGlGame\components\physics_component\physics_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGlGame\component_systems\transform_system\transform_system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

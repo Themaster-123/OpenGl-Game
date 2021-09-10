@@ -27,6 +27,12 @@ void glg::drawEntities()
 			entity->draw();
 		}
 	}
+
+	auto systems = scene::getSystems();
+
+	for (int i = 0; i < systems.size(); i++) {
+		systems[i]->draw();
+	}
 }
 
 void glg::loopThroughEntities() {
