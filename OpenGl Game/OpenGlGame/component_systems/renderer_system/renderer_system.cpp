@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../../scene.h"
 #include "../../components/components.h"
+#include "../transform_system/transform_system.h"
 
 glg::RendererSystem::RendererSystem() : ComponentSystem()
 {
@@ -16,7 +17,7 @@ void glg::RendererSystem::draw()
 		Object obj(entity);
 		auto& model = obj.get<ModelComponent>();
 
-		model.draw(obj.get<TransformComponent>().getModelMatrix());
+		model.draw(TransformSystem::getModelMatrix(obj.get<TransformComponent>()));
 	}
 }
 
