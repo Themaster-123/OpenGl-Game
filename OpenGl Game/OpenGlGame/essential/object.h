@@ -19,7 +19,7 @@ namespace glg {
 
 		template <typename... Component>
 		decltype(auto) get() const {
-			return ((const entt::registry) scene::REGISTRY).get<Component...>(entityId);
+			return const_cast<entt::registry*>(&scene::REGISTRY)->get<Component...>(entityId);
 		}
 
 		template <typename... Component>
