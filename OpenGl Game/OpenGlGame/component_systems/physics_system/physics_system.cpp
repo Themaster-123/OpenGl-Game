@@ -5,6 +5,7 @@
 glg::PhysicsSystem::PhysicsSystem() : ComponentSystem()
 {
 	Object::addConstruct<PhysicsComponent, PhysicsSystem>();
+	scene::DISPATCHER.sink<TransformSystem::onTransformUpdate>().connect<&PhysicsSystem::onTransformUpdate>();
 }
 
 void glg::PhysicsSystem::physicsUpdate()
@@ -33,4 +34,10 @@ void glg::PhysicsSystem::drawModel(const Object& object)
 
 	modelComponent.shader.setMat4("model", TransformSystem::getModelMatrix(TransformSystem::interpolateTransforms(physicsComponent.prevTransform, transformComponent, std::min(FACTOR, 1.0f))));
 	modelComponent.model.draw(modelComponent.shader);
+}
+
+void glg::PhysicsSystem::onTransformUpdate(const TransformSystem::onTransformUpdate& transformUpdate)
+{
+	auto& physicsComponent = transformUpdate.object.get<PhysicsComponent>();
+	physicsComponent.collisionBody->setTransform(transformUpdate.transform);
 }

@@ -13,6 +13,8 @@ namespace glg {
 		static void onConstruct(entt::registry& registry, entt::entity entity);
 
 		static void drawModel(const Object& object);
+
+		static void onTransformUpdate(const TransformSystem::onTransformUpdate& transformUpdate);
 	};
 }
 
