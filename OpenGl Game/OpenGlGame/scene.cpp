@@ -28,4 +28,10 @@ void scene::loopThroughEntitiesPhysics()
 	for (Entity* entity : getEntities()) {
 		entity->physicsUpdate();
 	}
+
+	auto systems = scene::getSystems();
+
+	for (int i = 0; i < systems.size(); i++) {
+		systems[i]->physicsUpdate();
+	}
 }
