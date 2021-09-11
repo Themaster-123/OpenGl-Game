@@ -26,3 +26,13 @@ entt::entity Object::getEntityId()
 {
 	return entityId;
 }
+
+void glg::Object::destory()
+{
+	scene::REGISTRY.destroy(entityId);
+}
+
+bool glg::Object::isValid()
+{
+	return scene::REGISTRY.valid(entityId);
+}

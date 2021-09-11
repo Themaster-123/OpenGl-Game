@@ -17,6 +17,10 @@ namespace glg {
 
 		entt::entity getEntityId();
 
+		void destory();
+
+		bool isValid();
+
 		template <typename... Component>
 		decltype(auto) get() const {
 			return const_cast<entt::registry*>(&scene::REGISTRY)->get<Component...>(entityId);
@@ -33,8 +37,17 @@ namespace glg {
 		template<typename Component, typename... Args>
 		decltype(auto) getOrAddComponent(Args&&... args);
 
-		template<typename Component, typename ComponentSystem>
+		template <typename... Component>
+		bool allOf() const;
+
+		template <typename... Component>
+		bool anyOf() const;
+
+		template<typename Component, typename ComponentSys>
 		static void addConstruct();
+
+		template<typename Component, typename ComponentSys>
+		static void addDestroy();
 
 	private:
 		entt::entity entityId;
@@ -51,9 +64,28 @@ namespace glg {
 	{
 		return scene::REGISTRY.get_or_emplace<Component>(entityId, args...);
 	}
+
+	template<typename ...Component>
+	inline bool Object::allOf() const
+	{
+		return scene::REGISTRY.all_of<Component...>(entityId);
+	}
+
+	template<typename ...Component>
+	inline bool Object::anyOf() const
+	{
+		return scene::REGISTRY.any_of<Component...>(entityId);
+	}
+
 	template<typename Component, typename ComponentSys>
 	inline void Object::addConstruct()
 	{
 		scene::REGISTRY.on_construct<Component>().connect<&ComponentSys::onConstruct>();
+	}
+
+	template<typename Component, typename ComponentSys>
+	inline void Object::addDestroy()
+	{
+		scene::REGISTRY.on_destroy<Component>().connect<&ComponentSys::onDestroy>();
 	}
 }

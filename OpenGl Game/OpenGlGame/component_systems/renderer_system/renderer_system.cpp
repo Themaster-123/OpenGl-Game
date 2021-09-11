@@ -12,14 +12,14 @@ glg::RendererSystem::RendererSystem() : ComponentSystem()
 
 void glg::RendererSystem::draw()
 {
-	auto modelView = scene::REGISTRY.view<ModelComponent>(entt::exclude<PhysicsComponent>);
+	auto modelView = scene::REGISTRY.view<ModelComponent, TransformComponent>(entt::exclude<PhysicsComponent>);
 
 	for (auto entity : modelView) {
 		Object obj(entity);
 		drawModel(obj);
 	}
 
-	auto physicsModelView = scene::REGISTRY.view<ModelComponent, PhysicsComponent>();
+	auto physicsModelView = scene::REGISTRY.view<ModelComponent, PhysicsComponent, TransformComponent>();
 
 	for (auto entity : physicsModelView) {
 		Object obj(entity);
