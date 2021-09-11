@@ -7,6 +7,8 @@ namespace glg {
 	public:
 		PhysicsSystem();
 
+		virtual void physicsUpdate();
+
 		static void onConstruct(entt::registry& registry, entt::entity entity);
 	};
 }
