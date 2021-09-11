@@ -11,7 +11,5 @@ namespace glg {
 
 		PhysicsComponent(rp3d::CollisionBody* collisionBody);;
 
-		TransformComponent getInterpolatedTransform(const TransformComponent& transform);
-
 	};
 }
