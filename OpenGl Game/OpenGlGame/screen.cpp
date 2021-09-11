@@ -132,7 +132,11 @@ void glg::startRenderLoop()
 {
 	Object obj;
 	obj.addComponent<ModelComponent>(models::sphereModel, *shaders::defaultShader);
-	//obj.addComponent<testComponent>();
+	rp3d::Transform transform(obj.get<TransformComponent>().position, obj.get<TransformComponent>().rotation);
+	rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(transform);
+	body->addCollider(PHYSICS_COMMON.createSphereShape(1.0f), rp3d::Transform::identity());
+	obj.addComponent<PhysicsComponent>(body);
+
 	while (!glfwWindowShouldClose(GAME_WINDOW))
 	{
 		calculateDeltaTime();
