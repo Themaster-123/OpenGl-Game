@@ -38,7 +38,6 @@ namespace glg {
 
 	private:
 		entt::entity entityId;
-		bool deleteEntity = false;
 
 	};
 

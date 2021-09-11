@@ -11,6 +11,7 @@
 #include <entt/entt.hpp>
 #include "components/components.h"
 #include "component_systems/component_system.h"
+#include "component_systems/transform_system/transform_system.h"
 
 GLFWwindow* glg::GAME_WINDOW;
 unsigned int glg::SCREEN_WIDTH = 800;
@@ -132,10 +133,10 @@ void glg::startRenderLoop()
 {
 	Object obj;
 	obj.addComponent<ModelComponent>(models::sphereModel, *shaders::defaultShader);
-	rp3d::Transform transform(obj.get<TransformComponent>().position, obj.get<TransformComponent>().rotation);
-	rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(transform);
+	rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(obj.get<TransformComponent>());
 	body->addCollider(PHYSICS_COMMON.createSphereShape(1.0f), rp3d::Transform::identity());
 	obj.addComponent<PhysicsComponent>(body);
+	TransformSystem::setPosition(obj, glm::vec3(0, 10, 0));
 
 	while (!glfwWindowShouldClose(GAME_WINDOW))
 	{
