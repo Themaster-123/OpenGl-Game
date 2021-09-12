@@ -103,6 +103,12 @@ void glg::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	for (Entity* entity : scene::getEntities()) {
 		(*entity).onMouseMovement(xOffset, yOffset, (float) xpos, (float) ypos);
 	}
+
+	auto systems = scene::getSystems();
+
+	for (int i = 0; i < systems.size(); i++) {
+		systems[i]->onMouseMovement(xOffset, yOffset, (float)xpos, (float)ypos);
+	}
 }
 
 void glg::calculateDeltaTime() {
@@ -133,8 +139,7 @@ void glg::startRenderLoop()
 {
 	Object camera;
 	camera.addComponent<CameraComponent>();
-	TransformSystem::setPosition(camera, glm::vec3(0, 10, 0));
-	TransformSystem::setRotation(camera, glm::vec3(-90, 0, 0));
+	camera.addComponent<PlayerComponent>();
 
 	for (int i = 0; i < 100; i++) {
 		Object obj;
