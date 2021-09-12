@@ -3,6 +3,8 @@
 #include "renderer_system/renderer_system.h"
 #include "transform_system/transform_system.h"
 #include "physics_system/physics_system.h"
+#include "player_system/player_system.h"
+
 
 glg::ComponentSystem::ComponentSystem()
 {
@@ -34,4 +36,5 @@ void glg::ComponentSystem::addSystems()
 	new RendererSystem();
 	new TransformSystem();
 	new PhysicsSystem();
+	new PlayerSystem();
 }
