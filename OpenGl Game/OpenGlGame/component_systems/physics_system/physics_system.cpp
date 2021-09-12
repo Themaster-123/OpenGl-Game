@@ -44,14 +44,6 @@ void glg::PhysicsSystem::onDestroy(entt::registry& registry, entt::entity entity
 	}
 }
 
-void glg::PhysicsSystem::drawModel(const Object& object)
-{
-	const auto [modelComponent, transformComponent, physicsComponent] = object.get<ModelComponent, TransformComponent, PhysicsComponent>();
-
-	modelComponent.shader.setMat4("model", TransformSystem::getModelMatrix(TransformSystem::interpolateTransforms(physicsComponent.prevTransform, transformComponent, std::min(FACTOR, 1.0f))));
-	modelComponent.model.draw(modelComponent.shader);
-}
-
 void glg::PhysicsSystem::onTransformUpdate(const TransformSystem::onTransformUpdate& transformUpdate)
 {
 	if (transformUpdate.object.allOf<PhysicsComponent>()) {

@@ -55,7 +55,3 @@ glg::TransformComponent::operator rp3d::Transform() const
 {
 	return rp3d::Transform(position, rotation);
 }
-
-void TransformComponent::updateVectors()
-{
-}

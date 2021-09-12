@@ -31,6 +31,16 @@ namespace glg {
 			return scene::REGISTRY.get<Component...>(entityId);
 		}
 
+		template <typename... Component, typename View>
+		decltype(auto) get(View view) const {
+			return const_cast<View*>(&view)->get<Component...>(entityId);
+		}
+
+		template <typename... Component, typename View>
+		decltype(auto) get(View view) {
+			return view.get<Component...>(entityId);
+		}
+
 		template<typename Component, typename... Args>
 		decltype(auto) addComponent(Args&&... args);
 
@@ -47,6 +57,12 @@ namespace glg {
 		static void addConstruct();
 
 		template<typename Component, typename ComponentSys>
+		static void addDestroy();
+
+		template<typename Component, auto Function>
+		static void addConstruct();
+
+		template<typename Component, auto Function>
 		static void addDestroy();
 
 	private:
@@ -87,5 +103,17 @@ namespace glg {
 	inline void Object::addDestroy()
 	{
 		scene::REGISTRY.on_destroy<Component>().connect<&ComponentSys::onDestroy>();
+	}
+
+	template<typename Component, auto Function>
+	inline void Object::addConstruct()
+	{
+		scene::REGISTRY.on_construct<Component>().connect<Function>();
+	}
+
+	template<typename Component, auto Function>
+	inline void Object::addDestroy()
+	{
+		scene::REGISTRY.on_destroy<Component>().connect<Function>();
 	}
 }

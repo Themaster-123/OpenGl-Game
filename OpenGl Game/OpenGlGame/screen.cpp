@@ -131,12 +131,18 @@ int glg::getKey(int key)
 
 void glg::startRenderLoop()
 {
-	Object obj;
-	obj.addComponent<ModelComponent>(models::sphereModel, *shaders::defaultShader);
-	rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(obj.get<TransformComponent>());
-	body->addCollider(PHYSICS_COMMON.createSphereShape(1.0f), rp3d::Transform::identity());
-	obj.addComponent<PhysicsComponent>(body);
-	TransformSystem::setPosition(obj, glm::vec3(0, 10, 0));
+	Object camera;
+	camera.addComponent<CameraComponent>();
+	TransformSystem::setPosition(camera, glm::vec3(0, 10, 0));
+	TransformSystem::setRotation(camera, glm::vec3(-90, 0, 0));
+
+	for (int i = 0; i < 100; i++) {
+		Object obj;
+		obj.addComponent<ModelComponent>(models::sphereModel, *shaders::defaultShader);
+		rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(obj.get<TransformComponent>());
+		body->addCollider(PHYSICS_COMMON.createSphereShape(1.0f), rp3d::Transform::identity());
+		obj.addComponent<PhysicsComponent>(body);
+	}
 
 	while (!glfwWindowShouldClose(GAME_WINDOW))
 	{

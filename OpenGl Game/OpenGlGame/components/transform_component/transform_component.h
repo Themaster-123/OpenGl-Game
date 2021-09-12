@@ -28,9 +28,5 @@ namespace glg {
 		virtual TransformComponent& operator=(const TransformComponent& other);
 
 		operator rp3d::Transform() const;
-
-	protected:
-
-		virtual void updateVectors();
 	};
 }
