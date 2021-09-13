@@ -57,6 +57,44 @@ int main() {
 	
 	//shader.use();
 
+	Object worldLight;
+	worldLight.addComponent<DirectionalLightComponent>();
+
+	// creates ground
+	{
+		Object ground;
+		ground.addComponent<TransformComponent>(glm::vec3(0, -10, 0), glm::identity<glm::quat>());
+		ground.addComponent<ModelComponent>(models::terrainModel, shaders::defaultShader);
+
+		rp3d::RigidBody* groundRigidbody = PHYSICS_WORLD->createRigidBody(ground.get<TransformComponent>());
+		groundRigidbody->setType(rp3d::BodyType::KINEMATIC);
+		glg::Mesh* mesh = new Mesh(models::terrainModel.getMeshes()[0]);
+		rp3d::TriangleVertexArray* triangleArray = new rp3d::TriangleVertexArray(mesh->vertices.size(), &mesh->vertices[0], sizeof(Vertex), mesh->indices.size() / 3, &mesh->indices[0], 3 * sizeof(unsigned int),
+			rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
+			rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
+		rp3d::TriangleMesh* triangleMesh = PHYSICS_COMMON.createTriangleMesh();
+		triangleMesh->addSubpart(triangleArray);
+		rp3d::ConcaveMeshShape* concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
+		groundRigidbody->addCollider(concaveMesh, rp3d::Transform::identity());
+		ground.addComponent<PhysicsComponent>(groundRigidbody);
+	}
+
+	// creates other stuff
+	Object playerObject;
+	playerObject.addComponent<CameraComponent>();
+	playerObject.addComponent<PlayerComponent>();
+	playerObject.addComponent<SpotLightComponent>();
+
+	rp3d::SphereShape* sphereShape = PHYSICS_COMMON.createSphereShape(1.0f);
+
+	for (int i = 0; i < 100; i++) {
+		Object obj;
+		obj.addComponent<ModelComponent>(models::sphereModel, shaders::defaultShader);
+		rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(obj.get<TransformComponent>());
+		body->addCollider(sphereShape, rp3d::Transform::identity());
+		obj.addComponent<PhysicsComponent>(body);
+	}
+
 	Player player(camera.getPosition(), camera.getRotation(), camera);
 	SphereEntity test(glm::vec3(0, 0, 0), rp3d::Quaternion::identity());
 	DirectionalLightEntity light(glm::vec3(-53, 0, 0), glm::vec3(.1f), glm::vec3(1, 1, 1), glm::vec3(1));
