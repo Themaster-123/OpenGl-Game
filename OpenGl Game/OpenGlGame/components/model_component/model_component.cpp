@@ -2,7 +2,7 @@
 
 using namespace glg;
 
-glg::ModelComponent::ModelComponent(Model& model, Shader& shader) : model(model), shader(shader)
+glg::ModelComponent::ModelComponent(Model& model, Shader* shader) : model(model), shader(shader)
 {
 }
 

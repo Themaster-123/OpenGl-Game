@@ -10,11 +10,11 @@ namespace glg {
 	struct ModelComponent {
 
 		Model& model;
-		Shader& shader;
+		Shader* shader;
 
 		ModelComponent() = default;
 
-		ModelComponent(Model& model, Shader& shader);
+		ModelComponent(Model& model, Shader* shader);
 
 		virtual ModelComponent& operator=(const ModelComponent& other);
 	};
