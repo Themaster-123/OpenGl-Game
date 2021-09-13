@@ -5,6 +5,7 @@
 #include "../components.h"
 #include <entt/entt.hpp>
 #include <iostream>
+#include "../../resources/model.h"
 
 namespace glg {
 	struct ModelComponent {

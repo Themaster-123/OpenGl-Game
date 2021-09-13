@@ -5,6 +5,8 @@
 #include "../transform_system/transform_system.h"
 #include "../physics_system/physics_system.h"
 #include "../../screen.h"
+#include "../../physics.h"
+#include "../../globals/shaders.h"
 
 glg::RendererSystem::RendererSystem() : ComponentSystem()
 {

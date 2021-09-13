@@ -1,7 +1,5 @@
 #include "physics.h"
 #include "screen.h"
-#include "entities/object/sphere_entity.h"
-#include "entities/object/test2.h"
 #include <reactphysics3d/reactphysics3d.h> 
 #include <iostream> 
 #include "scene.h"

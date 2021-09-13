@@ -2,12 +2,10 @@
 #include <glad/glad.h>
 #include <algorithm>
 #include "scene.h"
-#include "entities/entity.h"
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include "physics.h"
 #include "world/world.h"
-#include "entities/Alive/player.h"
 #include <entt/entt.hpp>
 #include "components/components.h"
 #include "component_systems/component_system.h"

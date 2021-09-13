@@ -39,18 +39,6 @@
     <ClCompile Include="OpenGlGame\screen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\Alive\player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\camera.cpp">
-      <Filter>Source Files\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\entity.cpp">
-      <Filter>Source Files\objects\entities</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\visible_entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="OpenGlGame\globals\shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,34 +48,10 @@
     <ClCompile Include="OpenGlGame\physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\object\sphere_entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\object\test2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\physics_entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="OpenGlGame\resources\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\light\light_entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="OpenGlGame\scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\light\directional_light_entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\light\attenuation\point_light_entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\light\attenuation\attenuation_light_entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGlGame\entities\light\attenuation\spot_light_entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OpenGlGame\world\world.cpp">
@@ -158,18 +122,6 @@
     <ClInclude Include="OpenGlGame\screen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\Alive\player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\camera.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\entity.h">
-      <Filter>Header Files\objects\entites</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\visible_entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="OpenGlGame\resources\mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -185,34 +137,10 @@
     <ClInclude Include="OpenGlGame\physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\object\sphere_entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\object\test2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\physics_entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="OpenGlGame\resources\material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\light\light_entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="OpenGlGame\scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\light\directional_light_entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\light\attenuation\point_light_entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\light\attenuation\attenuation_light_entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\entities\light\attenuation\spot_light_entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OpenGlGame\world\world.h">

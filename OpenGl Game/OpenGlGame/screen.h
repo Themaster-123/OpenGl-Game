@@ -1,9 +1,6 @@
 #pragma once
 #include <vector>
 #include <GLFW/glfw3.h>
-#include "entities/entity.h"
-#include "entities/Alive/player.h"
-
 namespace glg  {
 	extern GLFWwindow* GAME_WINDOW;
 	extern unsigned int SCREEN_WIDTH;
@@ -13,10 +10,6 @@ namespace glg  {
 	void callDraw();
 
 	void callUpdate();
-
-	void addEntityToUpdateCycle(glg::Entity& entity);
-
-	void removeEntityFromUpdateCycle(const glg::Entity& entity);
 
 	GLFWwindow* createWindow(int width, int height, const char* title);
 

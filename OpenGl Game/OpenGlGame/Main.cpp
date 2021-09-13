@@ -3,7 +3,6 @@
 #include <iostream>
 #include "resources/shader.h"
 #include "resources/texture.h"
-#include "entities/camera.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <glm/glm.hpp>
@@ -13,24 +12,16 @@
 #include <utility>
 #include <vector>
 #include "screen.h"
-#include "entities/Alive/player.h"
 #include "resources/model.h"
-#include "entities/visible_entity.h"
 #include "globals/shaders.h"
 #include "globals/models.h"
 #include <reactphysics3d/reactphysics3d.h>
 #include "physics.h"
-#include "entities/object/sphere_entity.h"
-#include "entities/light/attenuation/point_light_entity.h"
-#include "entities/light/attenuation/spot_light_entity.h"
-#include "entities/light/directional_light_entity.h"
 #include "essential/object.h"
 #include "components/components.h"
 #include "component_systems/component_system.h"
 
 using namespace glg;
-
-Camera camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 70, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT);
 
 void loadOpenGlFunctions();
 
