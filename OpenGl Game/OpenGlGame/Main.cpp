@@ -85,6 +85,10 @@ int main() {
 	playerObject.addComponent<CameraComponent>();
 	playerObject.addComponent<PlayerComponent>();
 	playerObject.addComponent<SpotLightComponent>();
+	rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(playerObject.get<TransformComponent>());
+	body->setType(rp3d::BodyType::KINEMATIC);
+	body->addCollider(PHYSICS_COMMON.createCapsuleShape(1.0f, 2.0f), rp3d::Transform::identity());
+	playerObject.addComponent<PhysicsComponent>(body);
 
 	rp3d::SphereShape* sphereShape = PHYSICS_COMMON.createSphereShape(1.0f);
 
