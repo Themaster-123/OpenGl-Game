@@ -156,6 +156,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="OpenGlGame\components\light_components\attenuation\attenuation_light_component.cpp" />
+    <ClCompile Include="OpenGlGame\components\light_components\directional_light_component.cpp" />
+    <ClCompile Include="OpenGlGame\components\light_components\light_component.cpp" />
     <ClCompile Include="OpenGlGame\components\lookable_component\lookable_component.cpp" />
     <ClCompile Include="OpenGlGame\components\camera_component\camera_component.cpp" />
     <ClCompile Include="OpenGlGame\components\model_component\model_component.cpp" />
@@ -190,8 +193,13 @@
     <ClCompile Include="OpenGlGame\world\world.cpp" />
     <ClCompile Include="OpenGlGame\world\world_chunk.cpp" />
     <ClCompile Include="OpenGlGame\component_systems\physics_system\physics_system.cpp" />
+    <ClCompile Include="OpenGlGame\components\light_components\attenuation\point_light_component.cpp" />
+    <ClCompile Include="OpenGlGame\components\light_components\attenuation\spot_light_component.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="OpenGlGame\components\light_components\attenuation\attenuation_light_component.h" />
+    <ClInclude Include="OpenGlGame\components\light_components\directional_light_component.h" />
+    <ClInclude Include="OpenGlGame\components\light_components\light_component.h" />
     <ClInclude Include="OpenGlGame\components\lookable_component\lookable_component.h" />
     <ClInclude Include="OpenGlGame\components\camera_component\camera_component.h" />
     <ClInclude Include="OpenGlGame\components\components.h" />
@@ -229,6 +237,8 @@
     <ClInclude Include="OpenGlGame\world\world_chunk.h" />
     <ClInclude Include="OpenGlGame\world\world.h" />
     <ClInclude Include="OpenGlGame\component_systems\physics_system\physics_system.h" />
+    <ClInclude Include="OpenGlGame\components\light_components\attenuation\point_light_component.h" />
+    <ClInclude Include="OpenGlGame\components\light_components\attenuation\spot_light_component.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

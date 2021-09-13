@@ -137,18 +137,6 @@ int glg::getKey(int key)
 
 void glg::startRenderLoop()
 {
-	Object camera;
-	camera.addComponent<CameraComponent>();
-	camera.addComponent<PlayerComponent>();
-
-	for (int i = 0; i < 100; i++) {
-		Object obj;
-		obj.addComponent<ModelComponent>(models::sphereModel, *shaders::defaultShader);
-		rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(obj.get<TransformComponent>());
-		body->addCollider(PHYSICS_COMMON.createSphereShape(1.0f), rp3d::Transform::identity());
-		obj.addComponent<PhysicsComponent>(body);
-	}
-
 	while (!glfwWindowShouldClose(GAME_WINDOW))
 	{
 		calculateDeltaTime();
@@ -180,7 +168,7 @@ void glg::setLightsUniforms()
 	for (Shader* shader : shaders::getShaders()) {
 		shader->setInt("lightsSize", scene::getLights().size());
 		for (int i = 0; i < scene::getLights().size(); i++) {
-			scene::getLights()[i]->setShaderLightUniforms(shader, i);
+			//scene::getLights()[i]->setShaderLightUniforms(shader, i);
 		}
 	}
 }
