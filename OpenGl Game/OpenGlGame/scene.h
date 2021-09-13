@@ -15,10 +15,8 @@ namespace glg {
 
 		std::vector<LightEntity*>& getLights();
 
-		std::vector<Entity*>& getEntities();
-
 		std::vector<ComponentSystem*>& getSystems();
 
-		void loopThroughEntitiesPhysics();
+		void callPhysicsUpdate();
 	}
 }

@@ -55,8 +55,6 @@ namespace glg {
 		glm::vec2 lookRotation = glm::vec2(0.0f, 0.0f);
 
 		virtual void updateVectors();
-
-		virtual void addEntityToUpdateCycle();
 	};
 }
 

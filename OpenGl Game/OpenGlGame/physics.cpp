@@ -25,7 +25,7 @@ void glg::physicsFrame()
 
 	while (ACCUMULATOR >= PHYSICS_TIME_STEP) {
 		PHYSICS_WORLD->update(PHYSICS_TIME_STEP);
-		scene::loopThroughEntitiesPhysics();
+		scene::callPhysicsUpdate();
 
 		ACCUMULATOR -= PHYSICS_TIME_STEP; 
 	}

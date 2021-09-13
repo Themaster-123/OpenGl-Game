@@ -10,9 +10,9 @@ namespace glg  {
 	extern unsigned int SCREEN_HEIGHT;
 	extern float DELTA_TIME;
 
-	void drawEntities();
+	void callDraw();
 
-	void loopThroughEntities();
+	void callUpdate();
 
 	void addEntityToUpdateCycle(glg::Entity& entity);
 
@@ -31,6 +31,4 @@ namespace glg  {
 	int getKey(int key);
 
 	void startRenderLoop();
-
-	void setLightsUniforms();
 }

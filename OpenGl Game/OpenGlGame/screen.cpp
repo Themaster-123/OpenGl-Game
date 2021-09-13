@@ -20,47 +20,21 @@ float glg::DELTA_TIME;
 static float lastMouseX;
 static float lastMouseY;
 
-void glg::drawEntities()
+void glg::callDraw()
 {
-	for (int i = 0; i < scene::getEntities().size(); i++) {
-		VisibleEntity* entity = dynamic_cast<VisibleEntity*>(scene::getEntities()[i]);
-		if (entity != nullptr) {
-			entity->draw();
-		}
-	}
-
-	auto systems = scene::getSystems();
+	auto& systems = scene::getSystems();
 
 	for (int i = 0; i < systems.size(); i++) {
 		systems[i]->draw();
 	}
 }
 
-void glg::loopThroughEntities() {
-	for (int i = 0; i < scene::getEntities().size(); i++) {
-		Entity* entity = scene::getEntities()[i];
-		(*entity).update();
-	}
-
-	auto systems = scene::getSystems();
+void glg::callUpdate() {
+	auto& systems = scene::getSystems();
 
 	for (int i = 0; i < systems.size(); i++) {
 		systems[i]->update();
 	}
-}
-
-void glg::addEntityToUpdateCycle(glg::Entity& entity) {
-	scene::getEntities().push_back(&entity);
-}
-
-void glg::removeEntityFromUpdateCycle(const glg::Entity& entity) {
-	int eraseIndex = -1;
-	for (int i = 0; i < scene::getEntities().size(); i++) {
-		if (&entity == scene::getEntities()[i]) {
-			eraseIndex = i;
-		}
-	}
-	scene::getEntities().erase(scene::getEntities().begin() + eraseIndex);
 }
 
 GLFWwindow* glg::createWindow(int width, int height, const char* title) {
@@ -100,11 +74,7 @@ void glg::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	lastMouseX = (float)xpos;
 	lastMouseY = (float)ypos;
 
-	for (Entity* entity : scene::getEntities()) {
-		(*entity).onMouseMovement(xOffset, yOffset, (float) xpos, (float) ypos);
-	}
-
-	auto systems = scene::getSystems();
+	auto& systems = scene::getSystems();
 
 	for (int i = 0; i < systems.size(); i++) {
 		systems[i]->onMouseMovement(xOffset, yOffset, (float)xpos, (float)ypos);
@@ -148,27 +118,13 @@ void glg::startRenderLoop()
 
 		physicsFrame();
 
-		loopThroughEntities();
+		callUpdate();
 
-		setLightsUniforms();
-
-		drawEntities();
-
-		//obj.get<ModelComponent>().draw();
+		callDraw();
 
 		glBindVertexArray(0);
 
 		glfwSwapBuffers(GAME_WINDOW);
 		glfwPollEvents();
-	}
-}
-
-void glg::setLightsUniforms()
-{
-	for (Shader* shader : shaders::getShaders()) {
-		shader->setInt("lightsSize", scene::getLights().size());
-		for (int i = 0; i < scene::getLights().size(); i++) {
-			//scene::getLights()[i]->setShaderLightUniforms(shader, i);
-		}
 	}
 }

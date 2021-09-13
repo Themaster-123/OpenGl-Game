@@ -58,6 +58,7 @@ int main() {
 	//shader.use();
 
 	Object worldLight;
+	worldLight.addComponent<TransformComponent>(glm::vec3(), glm::vec3(-45, 0, 0));
 	worldLight.addComponent<DirectionalLightComponent>();
 
 	// creates ground
@@ -94,10 +95,6 @@ int main() {
 		body->addCollider(sphereShape, rp3d::Transform::identity());
 		obj.addComponent<PhysicsComponent>(body);
 	}
-
-	Player player(camera.getPosition(), camera.getRotation(), camera);
-	SphereEntity test(glm::vec3(0, 0, 0), rp3d::Quaternion::identity());
-	DirectionalLightEntity light(glm::vec3(-53, 0, 0), glm::vec3(.1f), glm::vec3(1, 1, 1), glm::vec3(1));
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);

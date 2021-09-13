@@ -10,7 +10,6 @@ Entity::Entity(glm::vec3 position, glm::quat rotation)
 	setPosition(position);
 	setRotation(rotation);
 	updateVectors();
-	addEntityToUpdateCycle();
 }
 
 Entity::Entity(glm::vec3 position, glm::vec3 rotation) : Entity(position, glm::quat(glm::radians(rotation)))
@@ -22,12 +21,10 @@ Entity::Entity(const Entity& other)
 	this->position = other.position;
 	this->rotation = other.rotation;
 	updateVectors();
-	addEntityToUpdateCycle();
 }
 
 Entity::~Entity()
 {
-	glg::removeEntityFromUpdateCycle(*this);
 }
 
 glm::vec3 Entity::getPosition() const
@@ -105,9 +102,4 @@ void glg::Entity::physicsUpdate()
 
 void glg::Entity::onMouseMovement(float xOffset, float yOffset, float xPos, float yPos)
 {
-}
-
-void Entity::addEntityToUpdateCycle()
-{
-	glg::addEntityToUpdateCycle((*this));
 }
