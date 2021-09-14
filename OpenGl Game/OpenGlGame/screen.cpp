@@ -15,6 +15,8 @@ GLFWwindow* glg::GAME_WINDOW;
 unsigned int glg::SCREEN_WIDTH = 800;
 unsigned int glg::SCREEN_HEIGHT = 800;
 float glg::DELTA_TIME;
+float glg::FRAME_RATE;
+float glg::FRAME_RATE_SMOOTHING = .9f;
 static float lastMouseX;
 static float lastMouseY;
 
@@ -87,6 +89,11 @@ void glg::calculateDeltaTime() {
 	lastFrame = currentFrame;
 }
 
+void glg::calculateFrameRate()
+{
+	FRAME_RATE = (FRAME_RATE * FRAME_RATE_SMOOTHING) + (1 / glg::DELTA_TIME * (1 - FRAME_RATE_SMOOTHING));
+}
+
 void glg::lockCursor(GLFWwindow* window, bool locked) {
 	int disabled;
 	if (locked) {
@@ -108,6 +115,7 @@ void glg::startRenderLoop()
 	while (!glfwWindowShouldClose(GAME_WINDOW))
 	{
 		calculateDeltaTime();
+		calculateFrameRate();
 
 		glClearColor(.3f, 0, .2f, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -121,6 +129,8 @@ void glg::startRenderLoop()
 		callDraw();
 
 		glBindVertexArray(0);
+
+		std::cout << FRAME_RATE << std::endl;
 
 		glfwSwapBuffers(GAME_WINDOW);
 		glfwPollEvents();

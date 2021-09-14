@@ -6,6 +6,8 @@ namespace glg  {
 	extern unsigned int SCREEN_WIDTH;
 	extern unsigned int SCREEN_HEIGHT;
 	extern float DELTA_TIME;
+	extern float FRAME_RATE;
+	extern float FRAME_RATE_SMOOTHING;
 
 	void callDraw();
 
@@ -18,6 +20,8 @@ namespace glg  {
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
 	void calculateDeltaTime();
+
+	void calculateFrameRate();
 
 	void lockCursor(GLFWwindow* window, bool locked);
 
