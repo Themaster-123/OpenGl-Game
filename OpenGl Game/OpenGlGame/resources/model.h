@@ -11,6 +11,7 @@
 namespace glg {
 	class Model {
 	public:
+		std::vector<Mesh> meshes;
 
 		Model() {
 
@@ -32,7 +33,6 @@ namespace glg {
 
 	private:
 		std::map<std::string, Texture2D> loadedTextures;
-		std::vector<Mesh> meshes;
 		std::string directory;
 
 		void loadModel(std::string path) {
