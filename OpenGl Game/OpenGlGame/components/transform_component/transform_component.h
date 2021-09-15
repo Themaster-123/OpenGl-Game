@@ -15,9 +15,7 @@ namespace glg {
 		glm::vec3 up;
 		glm::vec3 right;
 
-		TransformComponent();
-
-		TransformComponent(glm::vec3 position, glm::quat rotation);
+		TransformComponent(glm::vec3 position = glm::vec3(), glm::quat rotation = glm::identity<glm::quat>());
 
 		TransformComponent(glm::vec3 position, glm::vec3 rotation);
 

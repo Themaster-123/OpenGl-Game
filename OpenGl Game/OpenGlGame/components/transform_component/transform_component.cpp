@@ -5,15 +5,6 @@
 
 using namespace glg;
 
-glg::TransformComponent::TransformComponent()
-{
-	this->position = glm::vec3();
-	this->rotation = glm::identity<glm::quat>();
-	this->front = glm::normalize(rotation * glm::vec3(0, 0, -1));
-	this->right = glm::normalize(rotation * glm::vec3(1, 0, 0));
-	this->up = glm::normalize(rotation * glm::vec3(0, 1, 0));
-}
-
 glg::TransformComponent::TransformComponent(glm::vec3 position, glm::quat rotation)
 {
 	this->position = position;
