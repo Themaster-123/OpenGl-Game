@@ -2,6 +2,8 @@
 #include <GLFW/glfw3.h>
 #include "../../screen.h"
 #include "../transform_system/transform_system.h"
+#include "../../scene.h"
+#include "../../world/world.h"
 
 glg::PlayerSystem::PlayerSystem() : ComponentSystem()
 {
@@ -37,6 +39,8 @@ void glg::PlayerSystem::update()
 		if (getKey(GLFW_KEY_SPACE) == GLFW_PRESS) {
 			TransformSystem::setPosition(object, transformComponent.position + glm::normalize(transformComponent.up) * deltaSpeed);
 		}
+
+		scene::WORLD.loadChunk(world::World::getChunkPosition(transformComponent.position));
 	}
 }
 
