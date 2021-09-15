@@ -5,6 +5,16 @@
 
 namespace glg {
 	namespace world {
+		struct NoiseSettings {
+			FastNoiseLite noise;
+
+			float displacementHeight;
+
+			NoiseSettings() = default;
+
+			NoiseSettings(FastNoiseLite& noise, float displacementHeight);
+		};
+
 		class World {
 		public:
 			struct ChunkPositionComparator {
@@ -19,12 +29,16 @@ namespace glg {
 
 			};
 
-			static float CHUNK_SIZE;
-
 			World();
 
 		protected:
 			std::map<glm::ivec2, Chunk*, ChunkPositionComparator> chunks;
 		};
+
+		extern NoiseSettings NOISE_SETTINGS;
+
+		extern float CHUNK_SIZE;
+
+		void setNoiseSetting();
 	}
 }

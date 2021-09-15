@@ -11,7 +11,7 @@ glg::world::Chunk::Chunk(glm::ivec2 position) : position(position)
 glg::Object& glg::world::Chunk::createObject()
 {
 	Object object;
-	object.addComponent<TransformComponent>(glm::vec3(position.x, 0, position.y) * World::CHUNK_SIZE, glm::identity<glm::quat>());
+	object.addComponent<TransformComponent>(glm::vec3(position.x, 0, position.y) * world::CHUNK_SIZE, glm::identity<glm::quat>());
 	object.addComponent<ModelComponent>(*generateModel(), shaders::defaultShader);
 
 	return object;
@@ -32,10 +32,10 @@ glg::Model* glg::world::Chunk::generateModel()
 	for (int x = 0; x <= resolution; x++) {
 		for (int z = 0; z <= resolution; z++) {
 			float localX, localZ;
-			localX = float(x) / resolution * World::CHUNK_SIZE;
-			localZ = float(z) / resolution * World::CHUNK_SIZE;
+			localX = float(x) / resolution * world::CHUNK_SIZE;
+			localZ = float(z) / resolution * world::CHUNK_SIZE;
 
-			float displacement = scene::NOISE.GetNoise(float(localX + (position.x * World::CHUNK_SIZE)), float(localZ + (position.y * World::CHUNK_SIZE)));
+			float displacement = world::NOISE_SETTINGS.noise.GetNoise(float(localX + (position.x * world::CHUNK_SIZE)), float(localZ + (position.y * world::CHUNK_SIZE))) * world::NOISE_SETTINGS.displacementHeight;
 
 			vertices.push_back(Vertex(glm::vec3(localX, displacement, localZ), glm::vec3(0, 1, 0), glm::vec2(0, 0)));
 

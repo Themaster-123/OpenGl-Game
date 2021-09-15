@@ -10,12 +10,8 @@ namespace glg {
 
 		extern entt::dispatcher DISPATCHER;
 
-		extern FastNoiseLite NOISE;
-
 		std::vector<ComponentSystem*>& getSystems();
 
 		void callPhysicsUpdate();
-
-		void setNoiseSetting();
 	}
 }
