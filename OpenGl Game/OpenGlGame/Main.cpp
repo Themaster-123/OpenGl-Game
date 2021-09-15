@@ -94,7 +94,7 @@ int main() {
 	}
 
 	// creates terrian mesh
-	world::World world;
+	//world::World world;
 	
 
 	glEnable(GL_DEPTH_TEST);
