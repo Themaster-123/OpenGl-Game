@@ -130,8 +130,6 @@ void glg::startRenderLoop()
 
 		glBindVertexArray(0);
 
-		std::cout << FRAME_RATE << std::endl;
-
 		glfwSwapBuffers(GAME_WINDOW);
 		glfwPollEvents();
 	}
