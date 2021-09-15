@@ -20,6 +20,7 @@
 #include "essential/object.h"
 #include "components/components.h"
 #include "component_systems/component_system.h"
+#include "world/world.h"
 
 using namespace glg;
 
@@ -53,7 +54,7 @@ int main() {
 	worldLight.addComponent<DirectionalLightComponent>();
 
 	// creates ground
-	{
+	/*{
 		Object ground;
 		ground.addComponent<TransformComponent>(glm::vec3(0, -10, 0), glm::identity<glm::quat>());
 		ground.addComponent<ModelComponent>(models::terrainModel, shaders::defaultShader);
@@ -69,7 +70,7 @@ int main() {
 		rp3d::ConcaveMeshShape* concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
 		groundRigidbody->addCollider(concaveMesh, rp3d::Transform::identity());
 		ground.addComponent<PhysicsComponent>(groundRigidbody);
-	}
+	}*/
 
 	// creates other stuff
 	Object playerObject;
@@ -82,17 +83,21 @@ int main() {
 	playerObject.addComponent<PhysicsComponent>(body);
 
 	rp3d::SphereShape* sphereShape = PHYSICS_COMMON.createSphereShape(1.0f);
-
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 1; i++) {
 		Object obj;
 		obj.addComponent<ModelComponent>(models::sphereModel, shaders::defaultShader);
 		rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(obj.get<TransformComponent>());
 		body->addCollider(sphereShape, rp3d::Transform::identity());
-		obj.addComponent<PhysicsComponent>(body);
+		//obj.addComponent<PhysicsComponent>(body);
 	}
+
+	// creates terrian mesh
+	world::World world;
+	
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	startRenderLoop();
 
@@ -105,9 +110,4 @@ void loadOpenGlFunctions() {
 		throw std::runtime_error("No glad just sad");
 	}
 }
-
-//void setTextureSetting() {
-//	glTexParameteri(GL_TEXTURE_2D)
-//}
-
 
