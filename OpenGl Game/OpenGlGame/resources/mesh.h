@@ -59,13 +59,33 @@ namespace glg {
 
 		}
 
+		void calculateNormals() {
+			for (size_t i = 0; i < indices.size(); i += 3) {
+				size_t index1, index2, index3;
+				index1 = indices[i];
+				index2 = indices[i + 1];
+				index3 = indices[i + 2];
+
+				glm::vec3 u = vertices[index2].position - vertices[index1].position;
+				glm::vec3 v = vertices[index3].position - vertices[index1].position;
+				
+				glm::vec3 normal = glm::normalize(glm::cross(u, v));
+				vertices[index1].normal = normal;
+				vertices[index2].normal = normal;
+				vertices[index3].normal = normal;
+			}
+			setupMesh();
+		}
+
 	private:
-		unsigned int VAO, VBO, EBO;
+		unsigned int VAO = 0, VBO, EBO;
 
 		void setupMesh() {
-			glGenVertexArrays(1, &VAO);
-			glGenBuffers(1, &VBO);
-			glGenBuffers(1, &EBO);
+			if (VAO == 0) {
+				glGenVertexArrays(1, &VAO);
+				glGenBuffers(1, &VBO);
+				glGenBuffers(1, &EBO);
+			}
 
 			glBindVertexArray(VAO);
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
