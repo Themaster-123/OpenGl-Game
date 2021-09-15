@@ -27,7 +27,10 @@ void glg::PhysicsSystem::physicsUpdate()
 void glg::PhysicsSystem::onConstruct(entt::registry& registry, entt::entity entity)
 {
 	Object object(entity);
-	object.getOrAddComponent<TransformComponent>();
+	TransformComponent& transformComponent = object.getOrAddComponent<TransformComponent>();
+	PhysicsComponent& physicsComponent = object.get<PhysicsComponent>();
+	physicsComponent.collisionBody->setTransform(transformComponent);
+	physicsComponent.prevTransform = transformComponent;
 }
 
 void glg::PhysicsSystem::onDestroy(entt::registry& registry, entt::entity entity)
