@@ -2,6 +2,7 @@
 #include "world.h"
 #include "../globals/shaders.h"
 #include <fastnoise/FastNoiseLite.h>
+#include "../physics.h"
 
 glg::world::Chunk::Chunk(glm::ivec2 position) : position(position)
 {
@@ -12,7 +13,26 @@ glg::Object& glg::world::Chunk::createObject()
 {
 	Object object;
 	object.addComponent<TransformComponent>(glm::vec3(position.x, 0, position.y) * world::CHUNK_SIZE, glm::identity<glm::quat>());
-	object.addComponent<ModelComponent>(*generateModel(), shaders::defaultShader);
+
+	Model* model = generateModel();
+	object.addComponent<ModelComponent>(*model, shaders::defaultShader);
+
+	// creates rigidbody
+	rp3d::RigidBody* groundRigidbody = PHYSICS_WORLD->createRigidBody(object.get<TransformComponent>());
+	groundRigidbody->setType(rp3d::BodyType::KINEMATIC);
+
+	// create collision shape
+	glg::Mesh& mesh = model->meshes[0];
+	rp3d::TriangleVertexArray* triangleArray = new rp3d::TriangleVertexArray(mesh.vertices.size(), &mesh.vertices[0], sizeof(Vertex), mesh.indices.size() / 3, &mesh.indices[0], 3 * sizeof(unsigned int),
+		rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
+		rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
+	rp3d::TriangleMesh* triangleMesh = PHYSICS_COMMON.createTriangleMesh();
+	triangleMesh->addSubpart(triangleArray);
+	rp3d::ConcaveMeshShape* concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
+
+	groundRigidbody->addCollider(concaveMesh, rp3d::Transform::identity());
+
+	object.addComponent<PhysicsComponent>(groundRigidbody);
 
 	return object;
 }
@@ -24,11 +44,6 @@ glg::Model* glg::world::Chunk::generateModel()
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices(resolution * resolution * 6);
 
-	int index = 0;
-
-	//noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-
-
 	for (int x = 0; x <= resolution; x++) {
 		for (int z = 0; z <= resolution; z++) {
 			float localX, localZ;
@@ -38,8 +53,6 @@ glg::Model* glg::world::Chunk::generateModel()
 			float displacement = world::NOISE_SETTINGS.noise.GetNoise(float(localX + (position.x * world::CHUNK_SIZE)), float(localZ + (position.y * world::CHUNK_SIZE))) * world::NOISE_SETTINGS.displacementHeight;
 
 			vertices.push_back(Vertex(glm::vec3(localX, displacement, localZ), glm::vec3(0, 1, 0), glm::vec2(0, 0)));
-
-			index++;
 		}
 	}
 
