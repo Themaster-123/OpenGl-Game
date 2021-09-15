@@ -1,6 +1,7 @@
 #include "world_chunk.h"
 #include "world.h"
 #include "../globals/shaders.h"
+#include <fastnoise/FastNoiseLite.h>
 
 glg::world::Chunk::Chunk(glm::ivec2 position) : position(position)
 {
@@ -18,12 +19,15 @@ glg::Object& glg::world::Chunk::createObject()
 
 glg::Model* glg::world::Chunk::generateModel()
 {
-	size_t resolution = 16;
+	static size_t resolution = 32;
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices(resolution * resolution * 6);
 
 	int index = 0;
+
+	//noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
+
 
 	for (int x = 0; x <= resolution; x++) {
 		for (int z = 0; z <= resolution; z++) {
@@ -31,7 +35,9 @@ glg::Model* glg::world::Chunk::generateModel()
 			localX = float(x) / resolution * World::CHUNK_SIZE;
 			localZ = float(z) / resolution * World::CHUNK_SIZE;
 
-			vertices.push_back(Vertex(glm::vec3(localX, 0, localZ), glm::vec3(0, 1, 0), glm::vec2(0, 0)));
+			float displacement = scene::NOISE.GetNoise(float(localX + (position.x * World::CHUNK_SIZE)), float(localZ + (position.y * World::CHUNK_SIZE)));
+
+			vertices.push_back(Vertex(glm::vec3(localX, displacement, localZ), glm::vec3(0, 1, 0), glm::vec2(0, 0)));
 
 			index++;
 		}

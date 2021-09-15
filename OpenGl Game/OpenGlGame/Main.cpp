@@ -42,6 +42,7 @@ int main() {
 	lockCursor(window, true);
 	// load all OpenGl function pointers
 	loadOpenGlFunctions();
+	scene::setNoiseSetting();
 	shaders::registerShaders();
 	models::registerModels();
 	registerPhysics();
