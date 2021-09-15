@@ -1,7 +1,7 @@
 #pragma once
 #include "../resources/mesh.h"
 #include "../resources/model.h"
-#include "../components/components.h"
+#include "../essential/object.h"
 
 namespace glg {
 	namespace world {

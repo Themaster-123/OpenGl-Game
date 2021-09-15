@@ -3,6 +3,7 @@
 #include "../globals/shaders.h"
 #include <fastnoise/FastNoiseLite.h>
 #include "../physics.h"
+#include "../components/components.h"
 
 glg::world::Chunk::Chunk(glm::ivec2 position) : position(position)
 {
