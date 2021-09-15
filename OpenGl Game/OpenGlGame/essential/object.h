@@ -1,7 +1,7 @@
 #pragma once
 #include <entt/entt.hpp>
 #include "../scene.h"
-#include <entt/entt.hpp>
+
 
 namespace glg {
 	class Object
