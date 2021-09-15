@@ -5,10 +5,34 @@ glg::world::NoiseSettings glg::world::NOISE_SETTINGS;
 
 glg::world::World::World()
 {
-	chunks.insert(std::pair<glm::ivec2, Chunk*>(glm::ivec2(0, 0), new Chunk(glm::ivec2(-1, -1)))); 
-	chunks.insert(std::pair<glm::ivec2, Chunk*>(glm::ivec2(0, 0), new Chunk(glm::ivec2(-1, -2))));
-	chunks.insert(std::pair<glm::ivec2, Chunk*>(glm::ivec2(0, 0), new Chunk(glm::ivec2(-2, -1))));
-	chunks.insert(std::pair<glm::ivec2, Chunk*>(glm::ivec2(0, 0), new Chunk(glm::ivec2(-2, -2))));
+}
+
+void glg::world::World::loadChunk(glm::ivec2 chunkPos)
+{
+	if (!chunks.contains(chunkPos)) {
+		chunks.insert(std::pair<glm::ivec2, Chunk*>(chunkPos, new Chunk(chunkPos)));
+	}
+}
+
+glm::ivec2 glg::world::World::getChunkPosition(glm::vec3 position)
+{
+	glm::ivec2 chunkPos;
+
+	if (position.x < 0) {
+		chunkPos.x = int(std::floor(position.x / CHUNK_SIZE));
+	}
+	else {
+		chunkPos.x = int(position.x / CHUNK_SIZE);
+	}
+
+	if (position.z < 0) {
+		chunkPos.y = int(std::floor(position.z / CHUNK_SIZE));
+	}
+	else {
+		chunkPos.y = int(position.z / CHUNK_SIZE);
+	}
+
+	return chunkPos;
 }
 
 void glg::world::setNoiseSetting()

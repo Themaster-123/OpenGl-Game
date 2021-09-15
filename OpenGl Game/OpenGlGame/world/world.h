@@ -23,16 +23,16 @@ namespace glg {
 					return lhs ^ (std::hash<int>()(vec.y) + 0x9e3779b9 + (lhs << 6) + (lhs >> 2));
 				}
 
-				bool operator()(const glm::ivec2& vecA, const glm::ivec2& vecB) const {
-					return (vecA.x * vecA.y) < (vecB.x * vecB.y);
-				}
-
 			};
 
 			World();
 
+			void loadChunk(glm::ivec2 chunkPos);
+
+			static glm::ivec2 getChunkPosition(glm::vec3 position);
+
 		protected:
-			std::map<glm::ivec2, Chunk*, ChunkPositionComparator> chunks;
+			std::unordered_map<glm::ivec2, Chunk*, ChunkPositionComparator> chunks;
 		};
 
 		extern NoiseSettings NOISE_SETTINGS;
