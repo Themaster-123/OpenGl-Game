@@ -9,6 +9,8 @@ namespace glg {
 
 		extern int CHUNK_LOAD_SIZE;
 
+		extern size_t CHUNK_RESOLUTION;
+
 		struct NoiseSettings {
 			FastNoiseLite noise;
 
