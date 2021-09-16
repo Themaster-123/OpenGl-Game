@@ -128,6 +128,8 @@ void glg::startRenderLoop()
 
 		callDraw();
 
+		std::cout << "FPS: " << FRAME_RATE << std::endl;
+
 		glBindVertexArray(0);
 
 		glfwSwapBuffers(GAME_WINDOW);
