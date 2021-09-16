@@ -40,7 +40,15 @@ void glg::PlayerSystem::update()
 			TransformSystem::setPosition(object, transformComponent.position + glm::normalize(transformComponent.up) * deltaSpeed);
 		}
 
-		scene::WORLD.loadChunk(world::World::getChunkPosition(transformComponent.position));
+		glm::ivec2 chunkPos = world::World::getChunkPosition(transformComponent.position);
+
+		int size = 4;
+
+		for (int x = -size; x <= size; x++) {
+			for (int y = -size; y <= size; y++) {
+				scene::WORLD.loadChunk(chunkPos - glm::ivec2(x, y));
+			}
+		}
 	}
 }
 
