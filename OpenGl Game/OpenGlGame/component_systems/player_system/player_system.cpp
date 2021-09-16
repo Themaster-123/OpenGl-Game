@@ -39,16 +39,6 @@ void glg::PlayerSystem::update()
 		if (getKey(GLFW_KEY_SPACE) == GLFW_PRESS) {
 			TransformSystem::setPosition(object, transformComponent.position + glm::normalize(transformComponent.up) * deltaSpeed);
 		}
-
-		glm::ivec2 chunkPos = world::World::getChunkPosition(transformComponent.position);
-
-		int size = 4;
-
-		for (int x = -size; x <= size; x++) {
-			for (int y = -size; y <= size; y++) {
-				scene::WORLD.loadChunk(chunkPos - glm::ivec2(x, y));
-			}
-		}
 	}
 }
 
