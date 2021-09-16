@@ -29,16 +29,20 @@ namespace glg {
 
 			};
 
+			std::unordered_map<glm::ivec2, Chunk*, ChunkPositionComparator> chunks;
+
 			World();
 
 			void loadChunk(glm::ivec2 chunkPos);
 
-			bool isChunkLoaded(glm::ivec2 chunkPos);
+			void unloadChunk(const glm::ivec2& chunkPos);
+
+			bool isChunkLoaded(const glm::ivec2& chunkPos) const;
 
 			static glm::ivec2 getChunkPosition(glm::vec3 position);
 
 		protected:
-			std::unordered_map<glm::ivec2, Chunk*, ChunkPositionComparator> chunks;
+
 		};
 
 		extern NoiseSettings NOISE_SETTINGS;

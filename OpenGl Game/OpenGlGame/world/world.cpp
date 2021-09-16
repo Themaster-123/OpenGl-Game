@@ -5,7 +5,7 @@ float glg::world::CHUNK_SIZE = 32.0f;
 
 float glg::world::CHUNK_LOAD_SPEED = 1.0f / 10.0f;
 
-int glg::world::CHUNK_LOAD_SIZE = 5;
+int glg::world::CHUNK_LOAD_SIZE = 3;
 
 glg::world::NoiseSettings glg::world::NOISE_SETTINGS;
 
@@ -20,7 +20,15 @@ void glg::world::World::loadChunk(glm::ivec2 chunkPos)
 	}
 }
 
-bool glg::world::World::isChunkLoaded(glm::ivec2 chunkPos) {
+void glg::world::World::unloadChunk(const glm::ivec2& chunkPos)
+{
+	if (isChunkLoaded(chunkPos)) {
+		delete chunks[chunkPos];
+		chunks.erase(chunkPos);
+	}
+}
+
+bool glg::world::World::isChunkLoaded(const glm::ivec2& chunkPos) const {
 	return chunks.contains(chunkPos);
 }
 
