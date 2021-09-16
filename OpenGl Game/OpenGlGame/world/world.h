@@ -7,7 +7,7 @@ namespace glg {
 	namespace world {
 		extern float CHUNK_LOAD_SPEED;
 
-		extern float CHUNK_LOAD_SIZE;
+		extern int CHUNK_LOAD_SIZE;
 
 		struct NoiseSettings {
 			FastNoiseLite noise;
