@@ -1,6 +1,12 @@
 #include "world.h"
+#include "../screen.h"
 
 float glg::world::CHUNK_SIZE = 32.0f;
+
+float glg::world::CHUNK_LOAD_SPEED = 1.0f / 10.0f;
+
+float glg::world::CHUNK_LOAD_SIZE = 5;
+
 glg::world::NoiseSettings glg::world::NOISE_SETTINGS;
 
 glg::world::World::World()
@@ -9,9 +15,13 @@ glg::world::World::World()
 
 void glg::world::World::loadChunk(glm::ivec2 chunkPos)
 {
-	if (!chunks.contains(chunkPos)) {
+	if (!isChunkLoaded(chunkPos)) {
 		chunks.insert(std::pair<glm::ivec2, Chunk*>(chunkPos, new Chunk(chunkPos)));
 	}
+}
+
+bool glg::world::World::isChunkLoaded(glm::ivec2 chunkPos) {
+	return chunks.contains(chunkPos);
 }
 
 glm::ivec2 glg::world::World::getChunkPosition(glm::vec3 position)

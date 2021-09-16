@@ -5,6 +5,10 @@
 
 namespace glg {
 	namespace world {
+		extern float CHUNK_LOAD_SPEED;
+
+		extern float CHUNK_LOAD_SIZE;
+
 		struct NoiseSettings {
 			FastNoiseLite noise;
 
@@ -28,6 +32,8 @@ namespace glg {
 			World();
 
 			void loadChunk(glm::ivec2 chunkPos);
+
+			bool isChunkLoaded(glm::ivec2 chunkPos);
 
 			static glm::ivec2 getChunkPosition(glm::vec3 position);
 
