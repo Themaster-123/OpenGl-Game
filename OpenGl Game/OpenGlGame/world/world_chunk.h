@@ -11,7 +11,10 @@ namespace glg {
 
 			Chunk(glm::ivec2 position);
 
+			~Chunk();
+
 		protected:
+			Object object;
 
 			Object& createObject();
 

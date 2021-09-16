@@ -7,7 +7,12 @@
 
 glg::world::Chunk::Chunk(glm::ivec2 position) : position(position)
 {
-	createObject();
+	object = createObject();
+}
+
+glg::world::Chunk::~Chunk()
+{
+	object.destory();
 }
 
 glg::Object& glg::world::Chunk::createObject()
