@@ -5,7 +5,7 @@ namespace glg {
 		float sensitivity;
 		float speed = 10;
 
-		PlayerComponent(float sensitivity = .2f, float speed = 200);
+		PlayerComponent(float sensitivity = .2f, float speed = 15);
 
 		virtual PlayerComponent& operator=(const PlayerComponent& other);
 	};
