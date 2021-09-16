@@ -27,7 +27,6 @@ void glg::ChunkLoaderSystem::update()
 			glm::ivec2 offsetPos(0, 0);
 			glm::ivec2 direction(0, -1);
 			glm::ivec2 loadPos;
-			std::cout << (world::CHUNK_LOAD_SIZE * 2) + 1;
 			int sizeSqrd = ((world::CHUNK_LOAD_SIZE * 2) + 1) * ((world::CHUNK_LOAD_SIZE * 2) + 1);
 			int moveAmount = 1;
 
