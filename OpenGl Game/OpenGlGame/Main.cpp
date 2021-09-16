@@ -92,9 +92,6 @@ int main() {
 		body->addCollider(sphereShape, rp3d::Transform::identity());
 		obj.addComponent<PhysicsComponent>(body);
 	}
-
-	// creates terrian mesh
-	//world::World world;
 	
 
 	glEnable(GL_DEPTH_TEST);
