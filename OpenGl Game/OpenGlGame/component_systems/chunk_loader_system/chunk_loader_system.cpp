@@ -24,22 +24,38 @@ void glg::ChunkLoaderSystem::update()
 			glm::ivec2 chunkPos = world::World::getChunkPosition(transformComponent.position);
 
 
-			for (int x = -world::CHUNK_LOAD_SIZE; x <= world::CHUNK_LOAD_SIZE; x++) {
-				for (int y = -world::CHUNK_LOAD_SIZE; y <= world::CHUNK_LOAD_SIZE; y++) {
-					glm::ivec2 loadPos = chunkPos - glm::ivec2(x, y);
+			glm::ivec2 offsetPos(0, 0);
+			glm::ivec2 direction(0, -1);
+			glm::ivec2 loadPos;
 
-					if (!scene::WORLD.isChunkLoaded(loadPos)) {
-						scene::WORLD.loadChunk(loadPos);
-						goto chunkLoadOut;
-					}
+			int sizeSqrd = world::CHUNK_LOAD_SIZE * world::CHUNK_LOAD_SIZE;
+			int moveAmount = 1;
+
+			for (int i = 0, increase = 0, amountMoved = 0; i < sizeSqrd; i++, amountMoved++) {
+				if (increase == 2) {
+					moveAmount++;
+					increase = 0;
 				}
+
+				loadPos = chunkPos - offsetPos;
+
+				if (!scene::WORLD.isChunkLoaded(loadPos)) {
+					scene::WORLD.loadChunk(loadPos);
+					break;
+				}
+
+				if (amountMoved == moveAmount) {
+					amountMoved = 0;
+					int oldDirX = direction.x;
+					direction.x = -direction.y;
+					direction.y = oldDirX;
+					increase++;
+				}
+				
+				offsetPos += direction;
 			}
 
-			chunkLoadOut:
-			continue;
-
 		}
-
 
 		CHUNK_ACCUMULATOR -= world::CHUNK_LOAD_SPEED;
 	}
