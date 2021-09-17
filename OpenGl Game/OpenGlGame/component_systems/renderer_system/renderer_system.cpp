@@ -7,6 +7,7 @@
 #include "../../screen.h"
 #include "../../physics.h"
 #include "../../globals/shaders.h"
+#include "../../globals/models.h"
 
 glg::RendererSystem::RendererSystem() : ComponentSystem()
 {
@@ -119,7 +120,7 @@ void glg::RendererSystem::onAttenuationLightConstruct(entt::registry& registry, 
 void glg::RendererSystem::onLodConstruct(entt::registry& registry, entt::entity entity)
 {
 	Object obj(entity);
-	obj.getOrAddComponent<ModelComponent>();
+	obj.getOrAddComponent<ModelComponent>(models::defaultModel, shaders::defaultShader);
 }
 
 void glg::RendererSystem::drawModel(const Object& object)
@@ -154,10 +155,10 @@ void glg::RendererSystem::drawModel(const Object& object, const TransformCompone
 
 			const auto& lodComponent = object.get<LodComponent>();
 
-			const LodModel* bestLodModel;
+			const LodModel* bestLodModel = nullptr;
 
 			for (const LodModel& model : lodComponent.lodModels) {
-				if (distanceSq > model.minDistance && bestLodModel->minDistance < model.minDistance) {
+				if (distanceSq > model.minDistance && (bestLodModel == nullptr || bestLodModel->minDistance < model.minDistance)) {
 					bestLodModel = &model;
 				}
 			}

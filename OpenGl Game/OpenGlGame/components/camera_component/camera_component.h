@@ -6,7 +6,7 @@ namespace glg {
 		float nearPlane;
 		float farPlane;
 
-		CameraComponent(float fov = 70.0f, float nearPlane = 0.01f, float farPlane = 300.0f);
+		CameraComponent(float fov = 70.0f, float nearPlane = 0.01f, float farPlane = 3000.0f);
 
 		virtual CameraComponent& operator=(const CameraComponent& other);
 
