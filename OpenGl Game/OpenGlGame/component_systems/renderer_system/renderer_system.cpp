@@ -163,7 +163,10 @@ void glg::RendererSystem::drawModel(const Object& object, const TransformCompone
 				}
 			}
 
-			modelComponent.model = *bestLodModel->model;
+			if (bestLodModel != nullptr) {
+				modelComponent.model = *bestLodModel->model;
+			}
+
 		}
 
 		modelComponent.shader->setMat4("view", getViewMatrix(cameraEntity));
