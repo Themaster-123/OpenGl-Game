@@ -20,6 +20,8 @@ namespace glg {
 
 		static void onAttenuationLightConstruct(entt::registry& registry, entt::entity entity);
 
+		static void onLodConstruct(entt::registry& registry, entt::entity entity);
+
 		static void drawModel(const Object& object);
 
 		static void drawPhysicsModel(const Object& object);

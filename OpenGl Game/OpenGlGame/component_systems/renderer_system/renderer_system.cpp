@@ -17,6 +17,7 @@ glg::RendererSystem::RendererSystem() : ComponentSystem()
 	Object::addConstruct<AttenuationLightComponent, &RendererSystem::onLightConstruct>();
 	Object::addConstruct<PointLightComponent, &RendererSystem::onAttenuationLightConstruct>();
 	Object::addConstruct<SpotLightComponent, &RendererSystem::onAttenuationLightConstruct>();
+	Object::addConstruct<LodComponent, &RendererSystem::onLodConstruct>();
 }
 
 void glg::RendererSystem::draw()
@@ -115,6 +116,12 @@ void glg::RendererSystem::onAttenuationLightConstruct(entt::registry& registry, 
 	obj.getOrAddComponent<AttenuationLightComponent>();
 }
 
+void glg::RendererSystem::onLodConstruct(entt::registry& registry, entt::entity entity)
+{
+	Object obj(entity);
+	obj.getOrAddComponent<ModelComponent>();
+}
+
 void glg::RendererSystem::drawModel(const Object& object)
 {
 	const auto& transformComponent = object.get<TransformComponent>();
@@ -139,6 +146,24 @@ void glg::RendererSystem::drawModel(const Object& object, const TransformCompone
 
 	for (auto entity : cameraView) {
 		Object cameraEntity(entity);
+
+		const auto& cameraTransformComponent = cameraEntity.get<TransformComponent>();
+
+		if (object.allOf<LodComponent>()) {
+			float distanceSq = glm::distance2(transformComponent.position, cameraTransformComponent.position);
+
+			const auto& lodComponent = object.get<LodComponent>();
+
+			const LodModel* bestLodModel;
+
+			for (const LodModel& model : lodComponent.lodModels) {
+				if (distanceSq > model.minDistance && bestLodModel->minDistance < model.minDistance) {
+					bestLodModel = &model;
+				}
+			}
+
+			modelComponent.model = *bestLodModel->model;
+		}
 
 		modelComponent.shader->setMat4("view", getViewMatrix(cameraEntity));
 		modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraEntity));
