@@ -1,6 +1,6 @@
 #include "lod_component.h"
 
-glg::LodModel::LodModel(Model* model, float distance) : model(model), distance(distance)
+glg::LodModel::LodModel(Model* model, float minDistance) : model(model), minDistance(minDistance)
 {
 }
 

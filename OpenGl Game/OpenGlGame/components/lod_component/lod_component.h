@@ -5,9 +5,9 @@
 namespace glg {
 	struct LodModel {
 		Model* model;
-		float distance;
+		float minDistance;
 
-		LodModel(Model* model, float distance);
+		LodModel(Model* model, float minDistance);
 	};
 
 	struct LodComponent
