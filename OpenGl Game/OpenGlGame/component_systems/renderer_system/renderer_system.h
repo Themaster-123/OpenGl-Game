@@ -24,6 +24,8 @@ namespace glg {
 
 		static void drawPhysicsModel(const Object& object);
 
+		static void drawModel(const Object& object, const TransformComponent& transformComponent);
+
 		static glm::mat4 getViewMatrix(const Object& object);
 
 		static glm::mat4 getProjectionMatrix(const Object& object);

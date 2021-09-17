@@ -117,32 +117,32 @@ void glg::RendererSystem::onAttenuationLightConstruct(entt::registry& registry, 
 
 void glg::RendererSystem::drawModel(const Object& object)
 {
-	auto cameraView = scene::REGISTRY.view<CameraComponent, TransformComponent>();
+	const auto& transformComponent = object.get<TransformComponent>();
 
-	for (auto entity : cameraView) {
-		Object cameraEntity(entity);
-
-		const auto [modelComponent, transformComponent] = object.get<ModelComponent, TransformComponent>();
-		
-		modelComponent.shader->setMat4("view", getViewMatrix(cameraEntity));
-		modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraEntity));
-		modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(transformComponent));
-		modelComponent.model.draw(*modelComponent.shader);
-	}
+	drawModel(object, transformComponent);
 }
 
 void glg::RendererSystem::drawPhysicsModel(const Object& object)
 {
+	const auto [transformComponent, physicsComponent] = object.get<TransformComponent, PhysicsComponent>();
+
 	auto cameraView = scene::REGISTRY.view<CameraComponent, TransformComponent>();
+
+	drawModel(object, TransformSystem::interpolateTransforms(physicsComponent.prevTransform, transformComponent, std::min(FACTOR, 1.0f)));
+}
+
+void glg::RendererSystem::drawModel(const Object& object, const TransformComponent& transformComponent)
+{
+	auto cameraView = scene::REGISTRY.view<CameraComponent, TransformComponent>();
+	const auto& modelComponent = object.get<ModelComponent>();
+
 
 	for (auto entity : cameraView) {
 		Object cameraEntity(entity);
 
-		const auto [modelComponent, transformComponent, physicsComponent] = object.get<ModelComponent, TransformComponent, PhysicsComponent>();
-
 		modelComponent.shader->setMat4("view", getViewMatrix(cameraEntity));
 		modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraEntity));
-		modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(TransformSystem::interpolateTransforms(physicsComponent.prevTransform, transformComponent, std::min(FACTOR, 1.0f))));
+		modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(transformComponent));
 		modelComponent.model.draw(*modelComponent.shader);
 	}
 }
