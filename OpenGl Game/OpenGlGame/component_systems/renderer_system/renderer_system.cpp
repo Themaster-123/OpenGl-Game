@@ -151,14 +151,14 @@ void glg::RendererSystem::drawModel(const Object& object, const TransformCompone
 		const auto& cameraTransformComponent = cameraEntity.get<TransformComponent>();
 
 		if (object.allOf<LodComponent>()) {
-			float distanceSq = glm::distance2(transformComponent.position, cameraTransformComponent.position);
+			float distanceSq = glm::distance2(cameraTransformComponent.position, transformComponent.position);
 
 			const auto& lodComponent = object.get<LodComponent>();
 
 			const LodModel* bestLodModel = nullptr;
 
 			for (const LodModel& model : lodComponent.lodModels) {
-				if (distanceSq > model.minDistance && (bestLodModel == nullptr || bestLodModel->minDistance < model.minDistance)) {
+				if (distanceSq >= (model.minDistance * model.minDistance) && (bestLodModel == nullptr || bestLodModel->minDistance < model.minDistance)) {
 					bestLodModel = &model;
 				}
 			}
