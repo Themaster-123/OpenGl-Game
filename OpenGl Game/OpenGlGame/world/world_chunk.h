@@ -18,7 +18,7 @@ namespace glg {
 
 			Object& createObject();
 
-			Model* generateModel();
+			Model* generateModel(int quality);
 		};
 	}
 }

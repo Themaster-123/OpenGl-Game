@@ -20,7 +20,7 @@ glg::Object& glg::world::Chunk::createObject()
 	Object object;
 	object.addComponent<TransformComponent>(glm::vec3(position.x, 0, position.y) * world::CHUNK_SIZE, glm::identity<glm::quat>());
 
-	Model* model = generateModel();
+	Model* model = generateModel(1);
 	object.addComponent<ModelComponent>(*model, shaders::defaultShader);
 
 	// creates rigidbody
@@ -43,16 +43,18 @@ glg::Object& glg::world::Chunk::createObject()
 	return object;
 }
 
-glg::Model* glg::world::Chunk::generateModel()
+glg::Model* glg::world::Chunk::generateModel(int quality)
 {
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices(CHUNK_RESOLUTION * CHUNK_RESOLUTION * 6);
+	size_t resolution = CHUNK_RESOLUTION / quality;
 
-	for (int x = 0; x <= CHUNK_RESOLUTION; x++) {
-		for (int z = 0; z <= CHUNK_RESOLUTION; z++) {
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices(resolution * resolution * 6);
+
+	for (int x = 0; x <= resolution; x++) {
+		for (int z = 0; z <= resolution; z++) {
 			float localX, localZ;
-			localX = float(x) / CHUNK_RESOLUTION * world::CHUNK_SIZE;
-			localZ = float(z) / CHUNK_RESOLUTION * world::CHUNK_SIZE;
+			localX = float(x) / resolution * world::CHUNK_SIZE;
+			localZ = float(z) / resolution * world::CHUNK_SIZE;
 
 			float displacement = world::NOISE_SETTINGS.noise.GetNoise(float(localX + (position.x * world::CHUNK_SIZE)), float(localZ + (position.y * world::CHUNK_SIZE))) * world::NOISE_SETTINGS.displacementHeight;
 
@@ -60,12 +62,12 @@ glg::Model* glg::world::Chunk::generateModel()
 		}
 	}
 
-	for (size_t ii = 0, vi = 0, x = 0; x < CHUNK_RESOLUTION; x++, vi++) {
-		for (size_t z = 0; z < CHUNK_RESOLUTION; z++, ii += 6, vi++) {
+	for (size_t ii = 0, vi = 0, x = 0; x < resolution; x++, vi++) {
+		for (size_t z = 0; z < resolution; z++, ii += 6, vi++) {
 			indices[ii] = vi;
 			indices[ii + 4] = indices[ii + 1] = vi + 1;
-			indices[ii + 3] = indices[ii + 2] = vi + CHUNK_RESOLUTION + 1;
-			indices[ii + 5] = vi + CHUNK_RESOLUTION + 2;
+			indices[ii + 3] = indices[ii + 2] = vi + resolution + 1;
+			indices[ii + 5] = vi + resolution + 2;
 		}
 	}
 
