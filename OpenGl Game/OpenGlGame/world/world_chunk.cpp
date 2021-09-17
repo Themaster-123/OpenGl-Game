@@ -4,6 +4,8 @@
 #include <fastnoise/FastNoiseLite.h>
 #include "../physics.h"
 #include "../components/components.h"
+#include "../globals/models.h"
+#include "../globals/textures.h"
 
 glg::world::Chunk::Chunk(glm::ivec2 position) : position(position)
 {
@@ -21,7 +23,11 @@ glg::Object& glg::world::Chunk::createObject()
 	object.addComponent<TransformComponent>(glm::vec3(position.x, 0, position.y) * world::CHUNK_SIZE, glm::identity<glm::quat>());
 
 	Model* model = generateModel(1);
-	object.addComponent<ModelComponent>(*model, shaders::defaultShader);
+	object.addComponent<ModelComponent>(models::defaultModel, shaders::defaultShader);
+
+	std::vector<LodModel> models = { LodModel(model, 0), LodModel(generateModel(2), 32 * 3), LodModel(generateModel(4), 32 * 6) };
+
+	object.addComponent<LodComponent>(models);
 
 	// creates rigidbody
 	rp3d::RigidBody* groundRigidbody = PHYSICS_WORLD->createRigidBody(object.get<TransformComponent>());
@@ -78,7 +84,7 @@ glg::Model* glg::world::Chunk::generateModel(int quality)
 		newIndices.push_back(i);
 	}
 
-	std::vector<Texture2D> textures;
+	std::vector<Texture2D> textures{*textures::defaultTexture};
 
 	Mesh mesh(newVertices, newIndices, textures, Material(glm::vec3(1), glm::vec3(1), glm::vec3(.3), 32));
 	mesh.calculateNormals();

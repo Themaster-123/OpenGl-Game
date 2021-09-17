@@ -21,6 +21,7 @@
 #include "components/components.h"
 #include "component_systems/component_system.h"
 #include "world/world.h"
+#include "globals/textures.h"
 
 using namespace glg;
 
@@ -45,33 +46,14 @@ int main() {
 	world::setNoiseSetting();
 	shaders::registerShaders();
 	models::registerModels();
+	textures::registerTextures();
 	registerPhysics();
 	ComponentSystem::addSystems();
 	
-	//shader.use();
 
 	Object worldLight;
 	worldLight.addComponent<TransformComponent>(glm::vec3(), glm::vec3(-45, 0, 0));
 	worldLight.addComponent<DirectionalLightComponent>();
-
-	// creates ground
-	/*{
-		Object ground;
-		ground.addComponent<TransformComponent>(glm::vec3(0, -10, 0), glm::identity<glm::quat>());
-		ground.addComponent<ModelComponent>(models::terrainModel, shaders::defaultShader);
-
-		rp3d::RigidBody* groundRigidbody = PHYSICS_WORLD->createRigidBody(ground.get<TransformComponent>());
-		groundRigidbody->setType(rp3d::BodyType::KINEMATIC);
-		glg::Mesh* mesh = new Mesh(models::terrainModel.getMeshes()[0]);
-		rp3d::TriangleVertexArray* triangleArray = new rp3d::TriangleVertexArray(mesh->vertices.size(), &mesh->vertices[0], sizeof(Vertex), mesh->indices.size() / 3, &mesh->indices[0], 3 * sizeof(unsigned int),
-			rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
-			rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
-		rp3d::TriangleMesh* triangleMesh = PHYSICS_COMMON.createTriangleMesh();
-		triangleMesh->addSubpart(triangleArray);
-		rp3d::ConcaveMeshShape* concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
-		groundRigidbody->addCollider(concaveMesh, rp3d::Transform::identity());
-		ground.addComponent<PhysicsComponent>(groundRigidbody);
-	}*/
 
 	// creates other stuff
 	Object playerObject;
@@ -84,7 +66,7 @@ int main() {
 	playerObject.addComponent<PhysicsComponent>(body);
 
 	rp3d::SphereShape* sphereShape = PHYSICS_COMMON.createSphereShape(1.0f);
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 0; i++) {
 		Object obj;
 		obj.addComponent<TransformComponent>(glm::vec3(-28, 10, -28));
 		obj.addComponent<ModelComponent>(models::sphereModel, shaders::defaultShader);
