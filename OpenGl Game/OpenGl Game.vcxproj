@@ -175,6 +175,7 @@
     <ClCompile Include="OpenGlGame\essential\object.cpp" />
     <ClCompile Include="OpenGlGame\globals\models.cpp" />
     <ClCompile Include="OpenGlGame\globals\shaders.cpp" />
+    <ClCompile Include="OpenGlGame\globals\textures.cpp" />
     <ClCompile Include="OpenGlGame\Main.cpp" />
     <ClCompile Include="OpenGlGame\physics.cpp" />
     <ClCompile Include="OpenGlGame\resources\shader.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="OpenGlGame\essential\object.h" />
     <ClInclude Include="OpenGlGame\globals\models.h" />
     <ClInclude Include="OpenGlGame\globals\shaders.h" />
+    <ClInclude Include="OpenGlGame\globals\textures.h" />
     <ClInclude Include="OpenGlGame\physics.h" />
     <ClInclude Include="OpenGlGame\resources\material.h" />
     <ClInclude Include="OpenGlGame\resources\mesh.h" />
