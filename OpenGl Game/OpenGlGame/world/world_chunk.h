@@ -14,6 +14,8 @@ namespace glg {
 			~Chunk();
 
 		protected:
+			Model* model;
+
 			Object object;
 
 			Object& createObject();

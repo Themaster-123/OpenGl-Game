@@ -15,6 +15,7 @@ glg::world::Chunk::Chunk(glm::ivec2 position) : position(position)
 glg::world::Chunk::~Chunk()
 {
 	object.destory();
+	delete model;
 }
 
 glg::Object& glg::world::Chunk::createObject()
@@ -22,7 +23,7 @@ glg::Object& glg::world::Chunk::createObject()
 	Object object;
 	object.addComponent<TransformComponent>(glm::vec3(position.x, 0, position.y) * world::CHUNK_SIZE, glm::identity<glm::quat>());
 
-	Model* model = generateModel(1);
+	model = generateModel(1);
 	object.addComponent<ModelComponent>(model, shaders::defaultShader);
 
 	//std::vector<LodModel> models = { LodModel(model, 0), LodModel(generateModel(2), 32 * 3), LodModel(generateModel(4), 32 * 6), LodModel(generateModel(8), 32 * 14) };
