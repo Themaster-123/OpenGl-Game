@@ -120,7 +120,7 @@ void glg::RendererSystem::onAttenuationLightConstruct(entt::registry& registry, 
 void glg::RendererSystem::onLodConstruct(entt::registry& registry, entt::entity entity)
 {
 	Object obj(entity);
-	obj.getOrAddComponent<ModelComponent>(models::defaultModel, shaders::defaultShader);
+	obj.getOrAddComponent<ModelComponent>(&models::defaultModel, shaders::defaultShader);
 }
 
 void glg::RendererSystem::drawModel(const Object& object)
@@ -142,7 +142,7 @@ void glg::RendererSystem::drawPhysicsModel(const Object& object)
 void glg::RendererSystem::drawModel(const Object& object, const TransformComponent& transformComponent)
 {
 	auto cameraView = scene::REGISTRY.view<CameraComponent, TransformComponent>();
-	const auto& modelComponent = object.get<ModelComponent>();
+	auto& modelComponent = object.get<ModelComponent>();
 
 
 	for (auto entity : cameraView) {
@@ -164,7 +164,7 @@ void glg::RendererSystem::drawModel(const Object& object, const TransformCompone
 			}
 
 			if (bestLodModel != nullptr) {
-				modelComponent.model = *bestLodModel->model;
+				modelComponent.model = bestLodModel->model;
 			}
 
 		}
@@ -172,7 +172,7 @@ void glg::RendererSystem::drawModel(const Object& object, const TransformCompone
 		modelComponent.shader->setMat4("view", getViewMatrix(cameraEntity));
 		modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraEntity));
 		modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(transformComponent));
-		modelComponent.model.draw(*modelComponent.shader);
+		modelComponent.model->draw(*modelComponent.shader);
 	}
 }
 

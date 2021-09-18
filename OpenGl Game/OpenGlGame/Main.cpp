@@ -69,7 +69,7 @@ int main() {
 	for (int i = 0; i < 0; i++) {
 		Object obj;
 		obj.addComponent<TransformComponent>(glm::vec3(-28, 10, -28));
-		obj.addComponent<ModelComponent>(models::sphereModel, shaders::defaultShader);
+		obj.addComponent<ModelComponent>(&models::sphereModel, shaders::defaultShader);
 		rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(obj.get<TransformComponent>());
 		body->addCollider(sphereShape, rp3d::Transform::identity());
 		obj.addComponent<PhysicsComponent>(body);

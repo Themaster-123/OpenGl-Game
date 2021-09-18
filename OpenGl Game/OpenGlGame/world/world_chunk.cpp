@@ -23,9 +23,9 @@ glg::Object& glg::world::Chunk::createObject()
 	object.addComponent<TransformComponent>(glm::vec3(position.x, 0, position.y) * world::CHUNK_SIZE, glm::identity<glm::quat>());
 
 	Model* model = generateModel(1);
-	object.addComponent<ModelComponent>(models::defaultModel, shaders::defaultShader);
+	object.addComponent<ModelComponent>(model, shaders::defaultShader);
 
-	std::vector<LodModel> models = { LodModel(model, 0), LodModel(generateModel(2), 32 * 3), LodModel(generateModel(4), 32 * 6) };
+	std::vector<LodModel> models = { LodModel(model, 0), LodModel(generateModel(2), 32 * 3), LodModel(generateModel(4), 32 * 6), LodModel(generateModel(8), 32 * 14) };
 
 	object.addComponent<LodComponent>(models);
 
