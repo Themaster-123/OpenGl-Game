@@ -7,7 +7,7 @@ namespace glg {
 	namespace world {
 		extern float CHUNK_LOAD_SPEED;
 
-		extern int CHUNK_LOAD_SIZE;
+		extern unsigned int CHUNK_LOAD_SIZE;
 
 		extern size_t CHUNK_RESOLUTION;
 

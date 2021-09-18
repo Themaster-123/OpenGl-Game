@@ -5,7 +5,7 @@ float glg::world::CHUNK_SIZE = 32.0f;
 
 float glg::world::CHUNK_LOAD_SPEED = 1.0f / 10.0f;
 
-int glg::world::CHUNK_LOAD_SIZE = 4;
+unsigned int glg::world::CHUNK_LOAD_SIZE = 4;
 
 size_t glg::world::CHUNK_RESOLUTION = 32;
 
