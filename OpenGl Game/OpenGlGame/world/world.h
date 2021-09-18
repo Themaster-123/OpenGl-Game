@@ -2,6 +2,7 @@
 #include "world_chunk.h"
 #include <map>
 #include <glm/glm.hpp>
+#include <mutex>
 
 namespace glg {
 	namespace world {
@@ -10,6 +11,10 @@ namespace glg {
 		extern unsigned int CHUNK_LOAD_SIZE;
 
 		extern size_t CHUNK_RESOLUTION;
+
+		extern float CHUNK_SIZE;
+
+		void setNoiseSetting();
 
 		struct NoiseSettings {
 			FastNoiseLite noise;
@@ -20,6 +25,8 @@ namespace glg {
 
 			NoiseSettings(FastNoiseLite& noise, float displacementHeight);
 		};
+
+		extern NoiseSettings NOISE_SETTINGS;
 
 		class World {
 		public:
@@ -44,13 +51,8 @@ namespace glg {
 			static glm::ivec2 getChunkPosition(glm::vec3 position);
 
 		protected:
+			std::mutex chunksMutex;
 
 		};
-
-		extern NoiseSettings NOISE_SETTINGS;
-
-		extern float CHUNK_SIZE;
-
-		void setNoiseSetting();
 	}
 }

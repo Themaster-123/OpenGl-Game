@@ -11,6 +11,24 @@ size_t glg::world::CHUNK_RESOLUTION = 32;
 
 glg::world::NoiseSettings glg::world::NOISE_SETTINGS;
 
+void glg::world::setNoiseSetting()
+{
+	FastNoiseLite noise;
+	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
+	noise.SetFrequency(0.05);
+	noise.SetFractalOctaves(9);
+	noise.SetFractalGain(0.3);
+	noise.SetFractalLacunarity(2.00);
+	noise.SetFractalType(noise.FractalType_FBm);
+	NOISE_SETTINGS = NoiseSettings(noise, 8);
+}
+
+glg::world::NoiseSettings::NoiseSettings(FastNoiseLite& noise, float displacementHeight)
+{
+	this->noise = noise;
+	this->displacementHeight = displacementHeight;
+}
+
 glg::world::World::World()
 {
 }
@@ -18,15 +36,19 @@ glg::world::World::World()
 void glg::world::World::loadChunk(glm::ivec2 chunkPos)
 {
 	if (!isChunkLoaded(chunkPos)) {
+		chunksMutex.lock();
 		chunks.insert(std::pair<glm::ivec2, Chunk*>(chunkPos, new Chunk(chunkPos)));
+		chunksMutex.unlock();
 	}
 }
 
 void glg::world::World::unloadChunk(const glm::ivec2& chunkPos)
 {
 	if (isChunkLoaded(chunkPos)) {
+		chunksMutex.lock();
 		delete chunks[chunkPos];
 		chunks.erase(chunkPos);
+		chunksMutex.unlock();
 	}
 }
 
@@ -53,22 +75,4 @@ glm::ivec2 glg::world::World::getChunkPosition(glm::vec3 position)
 	}
 
 	return chunkPos;
-}
-
-void glg::world::setNoiseSetting()
-{
-	FastNoiseLite noise;
-	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-	noise.SetFrequency(0.05);
-	noise.SetFractalOctaves(9);
-	noise.SetFractalGain(0.3);
-	noise.SetFractalLacunarity(2.00);
-	noise.SetFractalType(noise.FractalType_FBm);
-	NOISE_SETTINGS = NoiseSettings(noise, 8);
-}
-
-glg::world::NoiseSettings::NoiseSettings(FastNoiseLite& noise, float displacementHeight)
-{
-	this->noise = noise;
-	this->displacementHeight = displacementHeight;
 }
