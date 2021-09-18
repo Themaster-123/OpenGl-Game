@@ -25,9 +25,9 @@ glg::Object& glg::world::Chunk::createObject()
 	Model* model = generateModel(1);
 	object.addComponent<ModelComponent>(model, shaders::defaultShader);
 
-	std::vector<LodModel> models = { LodModel(model, 0), LodModel(generateModel(2), 32 * 3), LodModel(generateModel(4), 32 * 6), LodModel(generateModel(8), 32 * 14) };
+	//std::vector<LodModel> models = { LodModel(model, 0), LodModel(generateModel(2), 32 * 3), LodModel(generateModel(4), 32 * 6), LodModel(generateModel(8), 32 * 14) };
 
-	object.addComponent<LodComponent>(models);
+	//object.addComponent<LodComponent>(models);
 
 	// creates rigidbody
 	rp3d::RigidBody* groundRigidbody = PHYSICS_WORLD->createRigidBody(object.get<TransformComponent>());
