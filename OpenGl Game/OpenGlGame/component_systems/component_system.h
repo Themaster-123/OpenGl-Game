@@ -6,6 +6,8 @@ namespace glg {
 	public:
 		ComponentSystem();
 
+		virtual ~ComponentSystem() = default;
+
 		virtual void draw();
 
 		virtual void update();
