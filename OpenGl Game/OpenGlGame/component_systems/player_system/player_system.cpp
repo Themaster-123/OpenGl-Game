@@ -62,7 +62,10 @@ void glg::PlayerSystem::onMouseMovement(float xOffset, float yOffset, float xPos
 
 void glg::PlayerSystem::onConstruct(entt::registry& registry, entt::entity entity)
 {
+	scene::PLAYER_MUTEX.lock();
 	Object object(entity);
 	object.getOrAddComponent<CameraComponent>();
 	object.getOrAddComponent<LookableComponent>();
+	scene::PLAYERS.push_back(entity);
+	scene::PLAYER_MUTEX.unlock();
 }

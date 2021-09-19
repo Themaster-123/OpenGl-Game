@@ -9,6 +9,10 @@ entt::dispatcher scene::DISPATCHER;
 
 world::World scene::WORLD;
 
+std::mutex scene::PLAYER_MUTEX;
+
+std::vector<entt::entity> scene::PLAYERS;
+
 std::vector<ComponentSystem*>& scene::getSystems()
 {
 	static std::vector<ComponentSystem*> vector;

@@ -28,7 +28,6 @@ using namespace glg;
 void loadOpenGlFunctions();
 
 int main() {
-	
 	// initialize and configure
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -66,7 +65,7 @@ int main() {
 	playerObject.addComponent<PhysicsComponent>(body);
 
 	rp3d::SphereShape* sphereShape = PHYSICS_COMMON.createSphereShape(1.0f);
-	for (int i = 0; i < 0; i++) {
+	for (int i = 0; i < 100; i++) {
 		Object obj;
 		obj.addComponent<TransformComponent>(glm::vec3(-28, 10, -28));
 		obj.addComponent<ModelComponent>(&models::sphereModel, shaders::defaultShader);
