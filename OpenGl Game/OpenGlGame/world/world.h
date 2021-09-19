@@ -44,6 +44,8 @@ namespace glg {
 
 			void loadChunk(glm::ivec2 chunkPos);
 
+			void loadChunk(glm::ivec2 chunkPos, Model* model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh);
+
 			void unloadChunk(const glm::ivec2& chunkPos);
 
 			bool isChunkLoaded(const glm::ivec2& chunkPos) const;
@@ -51,7 +53,6 @@ namespace glg {
 			static glm::ivec2 getChunkPosition(glm::vec3 position);
 
 		protected:
-			std::mutex chunksMutex;
 
 		};
 	}

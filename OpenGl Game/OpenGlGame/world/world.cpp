@@ -3,7 +3,7 @@
 
 float glg::world::CHUNK_SIZE = 32.0f;
 
-float glg::world::CHUNK_LOAD_SPEED = 1.0f / 60.0f;
+float glg::world::CHUNK_LOAD_SPEED = 1.0f / 1.0f;
 
 unsigned int glg::world::CHUNK_LOAD_SIZE = 4;
 
@@ -36,19 +36,22 @@ glg::world::World::World()
 void glg::world::World::loadChunk(glm::ivec2 chunkPos)
 {
 	if (!isChunkLoaded(chunkPos)) {
-		chunksMutex.lock();
 		chunks.insert(std::pair<glm::ivec2, Chunk*>(chunkPos, new Chunk(chunkPos)));
-		chunksMutex.unlock();
+	}
+}
+
+void glg::world::World::loadChunk(glm::ivec2 chunkPos, glg::Model* model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh)
+{
+	if (!isChunkLoaded(chunkPos)) {
+		chunks.insert(std::pair<glm::ivec2, Chunk*>(chunkPos, new Chunk(chunkPos, model, triangleArray, triangleMesh, concaveMesh)));
 	}
 }
 
 void glg::world::World::unloadChunk(const glm::ivec2& chunkPos)
 {
 	if (isChunkLoaded(chunkPos)) {
-		chunksMutex.lock();
 		delete chunks[chunkPos];
 		chunks.erase(chunkPos);
-		chunksMutex.unlock();
 	}
 }
 
