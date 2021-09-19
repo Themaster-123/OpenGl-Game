@@ -10,6 +10,8 @@ namespace glg {
 
 		ChunkLoaderSystem();
 
+		~ChunkLoaderSystem();
+
 		virtual void update();
 
 		static void chunkLoadLoop();

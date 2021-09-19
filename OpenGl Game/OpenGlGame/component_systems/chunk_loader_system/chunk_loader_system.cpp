@@ -7,6 +7,8 @@
 
 float CHUNK_ACCUMULATOR = 0;
 
+std::atomic<bool> CHUNK_LOAD_LOOP_RUNNING = true;
+
 struct ThreadChunk {
 	glg::Model* model;
 	rp3d::TriangleVertexArray* triangleArray;
@@ -21,24 +23,30 @@ struct ThreadChunk {
 	}
 };
 
-std::unordered_map<glm::ivec2, ThreadChunk, glg::world::World::ChunkPositionComparator> threadChunkModels;
-std::mutex threadChunkMutex;
+std::unordered_map<glm::ivec2, ThreadChunk, glg::world::World::ChunkPositionComparator> THREAD_CHUNK_MODELS;
+std::mutex THREAD_CHUNK_MUTEX;
 
 glg::ChunkLoaderSystem::ChunkLoaderSystem() : ComponentSystem()
 {
 	loadThread = std::thread(chunkLoadLoop);
 }
 
+glg::ChunkLoaderSystem::~ChunkLoaderSystem()
+{
+	CHUNK_LOAD_LOOP_RUNNING = false;
+	loadThread.join();
+}
+
 void glg::ChunkLoaderSystem::update()
 {
 
-	for (auto [pos, threadChunk] : threadChunkModels) {
+	for (auto [pos, threadChunk] : THREAD_CHUNK_MODELS) {
 		threadChunk.model->meshes[0].setupMesh();
 		scene::WORLD.loadChunk(pos, threadChunk.model, threadChunk.triangleArray, threadChunk.triangleMesh, threadChunk.concaveMesh);
 	}
-	threadChunkMutex.lock();
-	threadChunkModels.clear();
-	threadChunkMutex.unlock();
+	THREAD_CHUNK_MUTEX.lock();
+	THREAD_CHUNK_MODELS.clear();
+	THREAD_CHUNK_MUTEX.unlock();
 
 	auto playerView = scene::REGISTRY.view<PlayerComponent, TransformComponent>();
 
@@ -68,7 +76,7 @@ void glg::ChunkLoaderSystem::update()
 
 void glg::ChunkLoaderSystem::chunkLoadLoop()
 {
-	while (true) {
+	while (CHUNK_LOAD_LOOP_RUNNING) {
 		//std::this_thread::sleep_for(std::chrono::seconds(1));
 		scene::PLAYER_MUTEX.lock();
 
@@ -105,9 +113,9 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 					triangleMesh->addSubpart(triangleArray);
 					rp3d::ConcaveMeshShape* concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
 
-					threadChunkMutex.lock();
-					threadChunkModels.insert(std::pair<glm::ivec2, ThreadChunk>(loadPos, ThreadChunk(model, triangleArray, triangleMesh, concaveMesh)));
-					threadChunkMutex.unlock();
+					THREAD_CHUNK_MUTEX.lock();
+					THREAD_CHUNK_MODELS.insert(std::pair<glm::ivec2, ThreadChunk>(loadPos, ThreadChunk(model, triangleArray, triangleMesh, concaveMesh)));
+					THREAD_CHUNK_MUTEX.unlock();
 					break;
 				}
 
