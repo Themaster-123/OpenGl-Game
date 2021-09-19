@@ -5,8 +5,6 @@
 #include <reactphysics3d/reactphysics3d.h>
 #include "../../physics.h"
 
-float CHUNK_ACCUMULATOR = 0;
-
 std::atomic<bool> CHUNK_LOAD_LOOP_RUNNING = true;
 
 struct ThreadChunk {
