@@ -28,13 +28,15 @@ namespace glg {
 		std::vector<Texture2D> textures;
 		Material material;
 
-		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D>& textures, Material material = Material()) {
+		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D>& textures, Material material = Material(), bool setupMesh = true) {
 			this->vertices = vertices;
 			this->indices = indices;
 			this->textures = textures;
 			this->material = material;
 
-			setupMesh();
+			if (setupMesh) {
+				this->setupMesh();
+			}
 		}
 
 		void draw(Shader& shader) const {
@@ -74,11 +76,7 @@ namespace glg {
 				vertices[index2].normal = normal;
 				vertices[index3].normal = normal;
 			}
-			setupMesh();
 		}
-
-	private:
-		unsigned int VAO = 0, VBO, EBO;
 
 		void setupMesh() {
 			if (VAO == 0) {
@@ -91,7 +89,7 @@ namespace glg {
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
-			
+
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
@@ -107,5 +105,8 @@ namespace glg {
 
 			glBindVertexArray(0);
 		}
+
+	private:
+		unsigned int VAO = 0, VBO, EBO;
 	};
 }
