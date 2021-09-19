@@ -21,7 +21,7 @@ struct ThreadChunk {
 	}
 };
 
-std::unordered_map<glm::ivec2, ThreadChunk, glg::world::World::ChunkPositionComparator> THREAD_CHUNK_MODELS;
+std::unordered_map<glm::ivec2, std::tuple<glg::Model*, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>, glg::world::World::ChunkPositionComparator> THREAD_CHUNK_MODELS;
 std::mutex THREAD_CHUNK_MUTEX;
 
 glg::ChunkLoaderSystem::ChunkLoaderSystem() : ComponentSystem()
@@ -39,8 +39,9 @@ void glg::ChunkLoaderSystem::update()
 {
 
 	for (auto [pos, threadChunk] : THREAD_CHUNK_MODELS) {
-		threadChunk.model->meshes[0].setupMesh();
-		scene::WORLD.loadChunk(pos, threadChunk.model, threadChunk.triangleArray, threadChunk.triangleMesh, threadChunk.concaveMesh);
+		auto [model, triangleArray, triangleMesh, concaveMesh] = threadChunk;
+		model->meshes[0].setupMesh();
+		scene::WORLD.loadChunk(pos, model, triangleArray, triangleMesh, concaveMesh);
 	}
 	THREAD_CHUNK_MUTEX.lock();
 	THREAD_CHUNK_MODELS.clear();
@@ -102,17 +103,12 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 
 				if (!scene::WORLD.isChunkLoaded(loadPos)) {
 					Model* model = glg::world::Chunk::generateModel(loadPos);
-					Mesh& mesh = model->meshes[0];
 
-					rp3d::TriangleVertexArray* triangleArray = new rp3d::TriangleVertexArray(mesh.vertices.size(), &mesh.vertices[0], sizeof(Vertex), mesh.indices.size() / 3, &mesh.indices[0], 3 * sizeof(unsigned int),
-						rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
-						rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
-					rp3d::TriangleMesh* triangleMesh = PHYSICS_COMMON.createTriangleMesh();
-					triangleMesh->addSubpart(triangleArray);
-					rp3d::ConcaveMeshShape* concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
+					auto [triangleArray, triangleMesh, concaveMesh] = glg::world::Chunk::generateConcaveMeshShape(model);
 
 					THREAD_CHUNK_MUTEX.lock();
-					THREAD_CHUNK_MODELS.insert(std::pair<glm::ivec2, ThreadChunk>(loadPos, ThreadChunk(model, triangleArray, triangleMesh, concaveMesh)));
+					THREAD_CHUNK_MODELS.insert(std::pair<glm::ivec2, std::tuple<glg::Model*, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>>(loadPos, 
+						{ model, triangleArray, triangleMesh, concaveMesh }));
 					THREAD_CHUNK_MUTEX.unlock();
 					break;
 				}

@@ -18,6 +18,8 @@ namespace glg {
 
 			static Model* generateModel(glm::ivec2 position);
 
+			static std::tuple<rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*> generateConcaveMeshShape(const Model* model);
+
 		protected:
 			Model* model;
 			rp3d::TriangleVertexArray* triangleArray;

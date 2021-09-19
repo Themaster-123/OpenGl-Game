@@ -13,13 +13,7 @@ glg::world::Chunk::Chunk(glm::ivec2 position)
 	glg::Mesh& mesh = model->meshes[0];
 	mesh.setupMesh();
 
-	// create collision shape
-	triangleArray = new rp3d::TriangleVertexArray(mesh.vertices.size(), &mesh.vertices[0], sizeof(Vertex), mesh.indices.size() / 3, &mesh.indices[0], 3 * sizeof(unsigned int),
-	rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
-	rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
-	triangleMesh = PHYSICS_COMMON.createTriangleMesh();
-	triangleMesh->addSubpart(triangleArray);
-	concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
+	std::tie(triangleArray, triangleMesh, concaveMesh) = generateConcaveMeshShape(model);
 
 	object = createObject();
 }
@@ -106,4 +100,18 @@ glg::Model* glg::world::Chunk::generateModel(glm::ivec2 position)
 	model->meshes.push_back(mesh);
 
 	return model;
+}
+
+std::tuple<rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*> glg::world::Chunk::generateConcaveMeshShape(const Model* model)
+{
+	const Mesh& mesh = model->meshes[0];
+
+	rp3d::TriangleVertexArray* triangleArray = new rp3d::TriangleVertexArray(mesh.vertices.size(), &mesh.vertices[0], sizeof(Vertex), mesh.indices.size() / 3, &mesh.indices[0], 3 * sizeof(unsigned int),
+		rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
+		rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
+	rp3d::TriangleMesh* triangleMesh = PHYSICS_COMMON.createTriangleMesh();
+	triangleMesh->addSubpart(triangleArray);
+	rp3d::ConcaveMeshShape* concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
+
+	return { triangleArray, triangleMesh, concaveMesh };
 }
