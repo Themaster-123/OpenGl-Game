@@ -7,14 +7,36 @@
 #include "../globals/models.h"
 #include "../globals/textures.h"
 
-glg::world::Chunk::Chunk(glm::ivec2 position) : position(position)
+glg::world::Chunk::Chunk(glm::ivec2 position)
 {
+	this->model = generateModel(position);
+	glg::Mesh& mesh = model->meshes[0];
+	mesh.setupMesh();
+
+	// create collision shape
+	triangleArray = new rp3d::TriangleVertexArray(mesh.vertices.size(), &mesh.vertices[0], sizeof(Vertex), mesh.indices.size() / 3, &mesh.indices[0], 3 * sizeof(unsigned int),
+	rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
+	rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
+	triangleMesh = PHYSICS_COMMON.createTriangleMesh();
+	triangleMesh->addSubpart(triangleArray);
+	concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
+
+	object = createObject();
+}
+
+glg::world::Chunk::Chunk(glm::ivec2 position, Model* model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh) : position(position), triangleArray(triangleArray)
+, triangleMesh(triangleMesh), concaveMesh(concaveMesh)
+{
+	this->model = model;
 	object = createObject();
 }
 
 glg::world::Chunk::~Chunk()
 {
 	object.destory();
+	delete triangleArray;
+	PHYSICS_COMMON.destroyTriangleMesh(triangleMesh);
+	PHYSICS_COMMON.destroyConcaveMeshShape(concaveMesh);
 	delete model;
 }
 
@@ -23,7 +45,6 @@ glg::Object& glg::world::Chunk::createObject()
 	Object object;
 	object.addComponent<TransformComponent>(glm::vec3(position.x, 0, position.y) * world::CHUNK_SIZE, glm::identity<glm::quat>());
 
-	model = generateModel(1);
 	object.addComponent<ModelComponent>(model, shaders::defaultShader);
 
 	//std::vector<LodModel> models = { LodModel(model, 0), LodModel(generateModel(2), 32 * 3), LodModel(generateModel(4), 32 * 6), LodModel(generateModel(8), 32 * 14) };
@@ -34,15 +55,6 @@ glg::Object& glg::world::Chunk::createObject()
 	rp3d::RigidBody* groundRigidbody = PHYSICS_WORLD->createRigidBody(object.get<TransformComponent>());
 	groundRigidbody->setType(rp3d::BodyType::KINEMATIC);
 
-	// create collision shape
-	glg::Mesh& mesh = model->meshes[0];
-	rp3d::TriangleVertexArray* triangleArray = new rp3d::TriangleVertexArray(mesh.vertices.size(), &mesh.vertices[0], sizeof(Vertex), mesh.indices.size() / 3, &mesh.indices[0], 3 * sizeof(unsigned int),
-		rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
-		rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
-	rp3d::TriangleMesh* triangleMesh = PHYSICS_COMMON.createTriangleMesh();
-	triangleMesh->addSubpart(triangleArray);
-	rp3d::ConcaveMeshShape* concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
-
 	groundRigidbody->addCollider(concaveMesh, rp3d::Transform::identity());
 
 	object.addComponent<PhysicsComponent>(groundRigidbody);
@@ -50,9 +62,9 @@ glg::Object& glg::world::Chunk::createObject()
 	return object;
 }
 
-glg::Model* glg::world::Chunk::generateModel(int quality)
+glg::Model* glg::world::Chunk::generateModel(glm::ivec2 position)
 {
-	size_t resolution = CHUNK_RESOLUTION / quality;
+	size_t resolution = CHUNK_RESOLUTION;
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices(resolution * resolution * 6);
