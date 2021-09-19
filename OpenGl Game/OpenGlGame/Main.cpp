@@ -27,6 +27,8 @@ using namespace glg;
 
 void loadOpenGlFunctions();
 
+void cleanUp();
+
 int main() {
 	// initialize and configure
 	glfwInit();
@@ -82,12 +84,22 @@ int main() {
 	startRenderLoop();
 
 	glfwTerminate();
+
+	cleanUp();
+
 	return 0;
 }
 
 void loadOpenGlFunctions() {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		throw std::runtime_error("No glad just sad");
+	}
+}
+
+void cleanUp()
+{
+	for (auto* system : scene::getSystems()) {
+		delete system;
 	}
 }
 
