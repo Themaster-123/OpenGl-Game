@@ -12,16 +12,16 @@ namespace glg {
 
 			Chunk(glm::ivec2 position);
 
-			Chunk(glm::ivec2 position, Model* model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh);
+			Chunk(glm::ivec2 position, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh);
 
 			~Chunk();
 
-			static Model* generateModel(glm::ivec2 position);
+			static std::shared_ptr<Model> generateModel(glm::ivec2 position);
 
-			static std::tuple<rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*> generateConcaveMeshShape(const Model* model);
+			static std::tuple<rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*> generateConcaveMeshShape(std::shared_ptr<const Model> model);
 
 		protected:
-			Model* model;
+			std::shared_ptr<Model> model;
 			rp3d::TriangleVertexArray* triangleArray;
 			rp3d::TriangleMesh* triangleMesh;
 			rp3d::ConcaveMeshShape* concaveMesh;

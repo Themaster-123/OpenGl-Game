@@ -67,14 +67,13 @@ int main() {
 	playerObject.addComponent<PhysicsComponent>(body);
 
 	rp3d::SphereShape* sphereShape = PHYSICS_COMMON.createSphereShape(1.0f);
-	for (int i = 0; i < 10000000; i++) {
-		//auto entity = scene::REGISTRY.create();
-		//obj.addComponent<TransformComponent>(glm::vec3(-28, 10, -28));
-		//obj.addComponent<ModelComponent>(&models::sphereModel, shaders::defaultShader);
-		//rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(obj.get<TransformComponent>());
-		//body->addCollider(sphereShape, rp3d::Transform::identity());
-		//obj.addComponent<PhysicsComponent>(body);
-		//scene::REGISTRY.destroy(entity);
+	for (int i = 0; i < 00; i++) {
+		Object obj;
+		obj.addComponent<TransformComponent>(glm::vec3(-28, 10, -28));
+		obj.addComponent<ModelComponent>(models::sphereModel, shaders::defaultShader);
+		rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(obj.get<TransformComponent>());
+		body->addCollider(sphereShape, rp3d::Transform::identity());
+		obj.addComponent<PhysicsComponent>(body);
 	}
 	//std::this_thread::sleep_for(std::chrono::seconds(50));
 	

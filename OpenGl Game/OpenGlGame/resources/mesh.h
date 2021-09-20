@@ -27,16 +27,36 @@ namespace glg {
 		std::vector<unsigned int> indices;
 		std::vector<Texture2D> textures;
 		Material material;
+		bool setupMeshV;
 
 		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D>& textures, Material material = Material(), bool setupMesh = true) {
 			this->vertices = vertices;
 			this->indices = indices;
 			this->textures = textures;
 			this->material = material;
+			this->setupMeshV = setupMesh;
 
-			if (setupMesh) {
+			if (setupMeshV) {
 				this->setupMesh();
 			}
+		}
+
+		Mesh(const Mesh& mesh) {
+			vertices = mesh.vertices;
+			indices = mesh.indices;
+			textures = mesh.textures;
+			material = mesh.material;
+			setupMeshV = mesh.setupMeshV;
+
+			if (setupMeshV) {
+				setupMesh();
+			}
+		}
+
+		~Mesh() {
+			glDeleteVertexArrays(1, &VAO);
+			glDeleteBuffers(1, &VBO);
+			glDeleteBuffers(1, &EBO);
 		}
 
 		void draw(Shader& shader) const {

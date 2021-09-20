@@ -120,7 +120,7 @@ void glg::RendererSystem::onAttenuationLightConstruct(entt::registry& registry, 
 void glg::RendererSystem::onLodConstruct(entt::registry& registry, entt::entity entity)
 {
 	Object obj(entity);
-	obj.getOrAddComponent<ModelComponent>(&models::defaultModel, shaders::defaultShader);
+	obj.getOrAddComponent<ModelComponent>(models::defaultModel, shaders::defaultShader);
 }
 
 void glg::RendererSystem::drawModel(const Object& object)

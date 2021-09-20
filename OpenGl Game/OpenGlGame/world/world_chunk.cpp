@@ -18,7 +18,7 @@ glg::world::Chunk::Chunk(glm::ivec2 position)
 	object = createObject();
 }
 
-glg::world::Chunk::Chunk(glm::ivec2 position, Model* model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh) : position(position), triangleArray(triangleArray)
+glg::world::Chunk::Chunk(glm::ivec2 position, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh) : position(position), triangleArray(triangleArray)
 , triangleMesh(triangleMesh), concaveMesh(concaveMesh)
 {
 	this->model = model;
@@ -31,7 +31,6 @@ glg::world::Chunk::~Chunk()
 	delete triangleArray;
 	PHYSICS_COMMON.destroyTriangleMesh(triangleMesh);
 	PHYSICS_COMMON.destroyConcaveMeshShape(concaveMesh);
-	delete model;
 }
 
 glg::Object& glg::world::Chunk::createObject()
@@ -39,7 +38,7 @@ glg::Object& glg::world::Chunk::createObject()
 	Object object;
 	object.addComponent<TransformComponent>(glm::vec3(position.x, 0, position.y) * world::CHUNK_SIZE, glm::identity<glm::quat>());
 
-	object.addComponent<ModelComponent>(model, shaders::defaultShader);
+	object.addComponent<ModelComponent>(model.get(), shaders::defaultShader);
 
 	//std::vector<LodModel> models = { LodModel(model, 0), LodModel(generateModel(2), 32 * 3), LodModel(generateModel(4), 32 * 6), LodModel(generateModel(8), 32 * 14) };
 
@@ -56,7 +55,7 @@ glg::Object& glg::world::Chunk::createObject()
 	return object;
 }
 
-glg::Model* glg::world::Chunk::generateModel(glm::ivec2 position)
+std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position)
 {
 	size_t resolution = CHUNK_RESOLUTION;
 
@@ -91,18 +90,20 @@ glg::Model* glg::world::Chunk::generateModel(glm::ivec2 position)
 		newIndices.push_back(i);
 	}
 
-	std::vector<Texture2D> textures{};
+	std::vector<Texture2D> textures { *textures::defaultTexture };
+
 
 	Mesh mesh(newVertices, newIndices, textures, Material(glm::vec3(1), glm::vec3(1), glm::vec3(.3), 32));
 	mesh.calculateNormals();
 
-	Model* model = new Model();
+	auto model = std::make_shared<Model>();
+
 	model->meshes.push_back(mesh);
 
 	return model;
 }
 
-std::tuple<rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*> glg::world::Chunk::generateConcaveMeshShape(const Model* model)
+std::tuple<rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*> glg::world::Chunk::generateConcaveMeshShape(std::shared_ptr<const Model> model)
 {
 	const Mesh& mesh = model->meshes[0];
 

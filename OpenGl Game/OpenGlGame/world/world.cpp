@@ -35,16 +35,16 @@ void glg::world::World::loadChunk(glm::ivec2 chunkPos)
 {
 	if (!isChunkLoaded(chunkPos)) {
 		chunksMutex.lock();
-		chunks.insert(std::pair<glm::ivec2, Chunk*>(chunkPos, new Chunk(chunkPos)));
+		chunks.insert(std::pair<glm::ivec2, std::shared_ptr<Chunk>>(chunkPos, std::make_shared<Chunk>(chunkPos)));
 		chunksMutex.unlock();
 	}
 }
 
-void glg::world::World::loadChunk(glm::ivec2 chunkPos, glg::Model* model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh)
+void glg::world::World::loadChunk(glm::ivec2 chunkPos, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh)
 {
 	if (!isChunkLoaded(chunkPos)) {
 		chunksMutex.lock();
-		chunks.insert(std::pair<glm::ivec2, Chunk*>(chunkPos, new Chunk(chunkPos, model, triangleArray, triangleMesh, concaveMesh)));
+		chunks.insert(std::pair<glm::ivec2, std::shared_ptr<Chunk>>(chunkPos, std::make_shared<Chunk>(chunkPos, model, triangleArray, triangleMesh, concaveMesh)));
 		chunksMutex.unlock();
 	}
 }
@@ -53,7 +53,6 @@ void glg::world::World::unloadChunk(const glm::ivec2& chunkPos)
 {
 	if (isChunkLoaded(chunkPos)) {
 		chunksMutex.lock();
-		delete chunks[chunkPos];
 		chunks.erase(chunkPos);
 		chunksMutex.unlock();
 	}

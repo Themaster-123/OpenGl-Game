@@ -37,13 +37,13 @@ namespace glg {
 
 			};
 
-			std::unordered_map<glm::ivec2, Chunk*, ChunkPositionComparator> chunks;
+			std::unordered_map<glm::ivec2, std::shared_ptr<Chunk>, ChunkPositionComparator> chunks;
 
 			World();
 
 			void loadChunk(glm::ivec2 chunkPos);
 
-			void loadChunk(glm::ivec2 chunkPos, Model* model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh);
+			void loadChunk(glm::ivec2 chunkPos, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh);
 
 			void unloadChunk(const glm::ivec2& chunkPos);
 

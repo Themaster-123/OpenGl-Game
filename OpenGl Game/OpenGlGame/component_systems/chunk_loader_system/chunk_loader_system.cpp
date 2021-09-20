@@ -7,7 +7,7 @@
 
 std::atomic<bool> CHUNK_LOAD_LOOP_RUNNING = true;
 
-std::unordered_map<glm::ivec2, std::tuple<glg::Model*, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>, glg::world::World::ChunkPositionComparator> THREAD_CHUNK_MODELS;
+std::unordered_map<glm::ivec2, std::tuple<std::shared_ptr<glg::Model>, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>, glg::world::World::ChunkPositionComparator> THREAD_CHUNK_MODELS;
 std::mutex THREAD_CHUNK_MUTEX;
 
 glg::ChunkLoaderSystem::ChunkLoaderSystem() : ComponentSystem()
@@ -34,7 +34,6 @@ void glg::ChunkLoaderSystem::update()
 			delete triangleArray;
 			PHYSICS_COMMON.destroyTriangleMesh(triangleMesh);
 			PHYSICS_COMMON.destroyConcaveMeshShape(concaveMesh);
-			delete model;
 		}
 	}
 	THREAD_CHUNK_MUTEX.lock();
@@ -97,12 +96,12 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 				THREAD_CHUNK_MUTEX.lock();
 				if (!THREAD_CHUNK_MODELS.contains(loadPos) && !scene::WORLD.isChunkLoaded(loadPos)) {
 					THREAD_CHUNK_MUTEX.unlock();
-					Model* model = glg::world::Chunk::generateModel(loadPos);
+					std::shared_ptr<Model> model = glg::world::Chunk::generateModel(loadPos);
 
 					auto [triangleArray, triangleMesh, concaveMesh] = glg::world::Chunk::generateConcaveMeshShape(model);
 
 					THREAD_CHUNK_MUTEX.lock();
-					THREAD_CHUNK_MODELS.insert(std::pair<glm::ivec2, std::tuple<glg::Model*, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>>(loadPos, 
+					THREAD_CHUNK_MODELS.insert(std::pair<glm::ivec2, std::tuple<std::shared_ptr<Model>, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>>(loadPos,
 						{ model, triangleArray, triangleMesh, concaveMesh }));
 					THREAD_CHUNK_MUTEX.unlock();
 					break;
