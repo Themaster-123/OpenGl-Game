@@ -7,20 +7,6 @@
 
 std::atomic<bool> CHUNK_LOAD_LOOP_RUNNING = true;
 
-struct ThreadChunk {
-	glg::Model* model;
-	rp3d::TriangleVertexArray* triangleArray;
-	rp3d::TriangleMesh* triangleMesh;
-	rp3d::ConcaveMeshShape* concaveMesh;
-
-	ThreadChunk(glg::Model* model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh) {
-		this->model = model;
-		this->triangleArray = triangleArray;
-		this->triangleMesh = triangleMesh;
-		this->concaveMesh = concaveMesh;
-	}
-};
-
 std::unordered_map<glm::ivec2, std::tuple<glg::Model*, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>, glg::world::World::ChunkPositionComparator> THREAD_CHUNK_MODELS;
 std::mutex THREAD_CHUNK_MUTEX;
 
@@ -40,8 +26,16 @@ void glg::ChunkLoaderSystem::update()
 
 	for (auto [pos, threadChunk] : THREAD_CHUNK_MODELS) {
 		auto [model, triangleArray, triangleMesh, concaveMesh] = threadChunk;
-		model->meshes[0].setupMesh();
-		scene::WORLD.loadChunk(pos, model, triangleArray, triangleMesh, concaveMesh);
+		if (!scene::WORLD.isChunkLoaded(pos)) {
+			model->meshes[0].setupMesh();
+			scene::WORLD.loadChunk(pos, model, triangleArray, triangleMesh, concaveMesh);
+		}
+		else {
+			delete triangleArray;
+			PHYSICS_COMMON.destroyTriangleMesh(triangleMesh);
+			PHYSICS_COMMON.destroyConcaveMeshShape(concaveMesh);
+			delete model;
+		}
 	}
 	THREAD_CHUNK_MUTEX.lock();
 	THREAD_CHUNK_MODELS.clear();
@@ -100,8 +94,9 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 				}
 
 				loadPos = chunkPos - offsetPos;
-
-				if (!scene::WORLD.isChunkLoaded(loadPos)) {
+				THREAD_CHUNK_MUTEX.lock();
+				if (!THREAD_CHUNK_MODELS.contains(loadPos) && !scene::WORLD.isChunkLoaded(loadPos)) {
+					THREAD_CHUNK_MUTEX.unlock();
 					Model* model = glg::world::Chunk::generateModel(loadPos);
 
 					auto [triangleArray, triangleMesh, concaveMesh] = glg::world::Chunk::generateConcaveMeshShape(model);
@@ -111,6 +106,9 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 						{ model, triangleArray, triangleMesh, concaveMesh }));
 					THREAD_CHUNK_MUTEX.unlock();
 					break;
+				}
+				else {
+					THREAD_CHUNK_MUTEX.unlock();
 				}
 
 				if (amountMoved == moveAmount) {

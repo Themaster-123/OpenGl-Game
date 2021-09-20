@@ -91,7 +91,7 @@ glg::Model* glg::world::Chunk::generateModel(glm::ivec2 position)
 		newIndices.push_back(i);
 	}
 
-	std::vector<Texture2D> textures{*textures::defaultTexture};
+	std::vector<Texture2D> textures{};
 
 	Mesh mesh(newVertices, newIndices, textures, Material(glm::vec3(1), glm::vec3(1), glm::vec3(.3), 32));
 	mesh.calculateNormals();

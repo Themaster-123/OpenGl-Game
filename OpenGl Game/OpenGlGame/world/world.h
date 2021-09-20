@@ -52,6 +52,7 @@ namespace glg {
 			static glm::ivec2 getChunkPosition(glm::vec3 position);
 
 		protected:
+			mutable std::mutex chunksMutex;
 
 		};
 	}

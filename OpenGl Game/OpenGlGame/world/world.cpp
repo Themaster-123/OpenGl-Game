@@ -1,7 +1,7 @@
 #include "world.h"
 #include "../screen.h"
 
-float glg::world::CHUNK_SIZE = 32.0f;
+float glg::world::CHUNK_SIZE = 32;
 
 unsigned int glg::world::CHUNK_LOAD_SIZE = 4;
 
@@ -34,27 +34,36 @@ glg::world::World::World()
 void glg::world::World::loadChunk(glm::ivec2 chunkPos)
 {
 	if (!isChunkLoaded(chunkPos)) {
+		chunksMutex.lock();
 		chunks.insert(std::pair<glm::ivec2, Chunk*>(chunkPos, new Chunk(chunkPos)));
+		chunksMutex.unlock();
 	}
 }
 
 void glg::world::World::loadChunk(glm::ivec2 chunkPos, glg::Model* model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh)
 {
 	if (!isChunkLoaded(chunkPos)) {
+		chunksMutex.lock();
 		chunks.insert(std::pair<glm::ivec2, Chunk*>(chunkPos, new Chunk(chunkPos, model, triangleArray, triangleMesh, concaveMesh)));
+		chunksMutex.unlock();
 	}
 }
 
 void glg::world::World::unloadChunk(const glm::ivec2& chunkPos)
 {
 	if (isChunkLoaded(chunkPos)) {
+		chunksMutex.lock();
 		delete chunks[chunkPos];
 		chunks.erase(chunkPos);
+		chunksMutex.unlock();
 	}
 }
 
 bool glg::world::World::isChunkLoaded(const glm::ivec2& chunkPos) const {
-	return chunks.contains(chunkPos);
+	chunksMutex.lock();
+	bool contains = chunks.contains(chunkPos);
+	chunksMutex.unlock();
+	return contains;
 }
 
 glm::ivec2 glg::world::World::getChunkPosition(glm::vec3 position)

@@ -19,7 +19,7 @@ void glg::PlayerSystem::update()
 
 		auto [playerComponent, transformComponent] = playerView.get<PlayerComponent, TransformComponent>(entity);
 
-		float deltaSpeed = playerComponent.speed * DELTA_TIME;
+		float deltaSpeed = playerComponent.speed * DELTA_TIME * 10;
 
 		if (getKey(GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 			glfwSetWindowShouldClose(GAME_WINDOW, true);
