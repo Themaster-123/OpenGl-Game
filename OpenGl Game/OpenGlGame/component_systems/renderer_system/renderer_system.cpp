@@ -210,3 +210,36 @@ void glg::RendererSystem::setLightUniforms(const glm::vec3& position, const glm:
 		shader->setFloat("lights[" + std::to_string(index) + "].outerCutOff", glm::cos(glm::radians(outerCutOff)));
 	}
 }
+
+glg::ViewFrustum::ViewFrustum(glm::vec3 ftl, glm::vec3 ftr, glm::vec3 fbl, glm::vec3 fbr, glm::vec3 ntl, glm::vec3 ntr, glm::vec3 nbl, glm::vec3 nbr)
+{
+	this->ftl = ftl;
+	this->ftr = ftr;
+	this->fbl = fbl;
+	this->fbr = fbr;
+	this->ntl = ntl;
+	this->ntr = ntr;
+	this->nbl = nbl;
+	this->nbr = nbr;
+}
+
+glg::ViewFrustum::ViewFrustum(const CameraComponent& camera, const TransformComponent& transform)
+{
+	float hNearPlane = 2 * std::tan(glm::radians(camera.fov) / 2.0f) * camera.nearPlane;
+	float wNearPlane = hNearPlane * (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+
+	float hFarPlane = 2 * std::tan(glm::radians(camera.fov) / 2.0f) * camera.farPlane;
+	float wFarPlane = hFarPlane * (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+
+	glm::vec3 fc = transform.position + transform.front * camera.farPlane;
+	glm::vec3 nc = transform.position + transform.front * camera.nearPlane;
+
+	ViewFrustum(fc + (transform.up * hFarPlane / 2.0f) - (transform.right + wFarPlane / 2.0f),
+		fc + (transform.up * hFarPlane / 2.0f) + (transform.right + wFarPlane / 2.0f),
+		fc - (transform.up * hFarPlane / 2.0f) - (transform.right + wFarPlane / 2.0f),
+		fc - (transform.up * hFarPlane / 2.0f) + (transform.right + wFarPlane / 2.0f), 
+		nc + (transform.up * hNearPlane / 2.0f) - (transform.right + wNearPlane / 2.0f),
+		nc + (transform.up * hNearPlane / 2.0f) + (transform.right + wNearPlane / 2.0f),
+		nc - (transform.up * hNearPlane / 2.0f) - (transform.right + wNearPlane / 2.0f),
+		nc - (transform.up * hNearPlane / 2.0f) + (transform.right + wNearPlane / 2.0f));
+}
