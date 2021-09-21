@@ -7,6 +7,15 @@
 
 namespace glg {
 	struct ViewFrustum {
+		struct ViewPlane {
+			glm::vec3 position;
+			glm::vec3 normal;
+
+			ViewPlane() = default;
+
+			ViewPlane(glm::vec3 position, glm::vec3 normal);
+		};
+
 		glm::vec3 ftl;
 		glm::vec3 ftr;
 		glm::vec3 fbl;
@@ -16,7 +25,12 @@ namespace glg {
 		glm::vec3 nbl;
 		glm::vec3 nbr;
 
-		ViewFrustum(glm::vec3 ftl, glm::vec3 ftr, glm::vec3 fbl, glm::vec3 fbr, glm::vec3 ntl, glm::vec3 ntr, glm::vec3 nbl, glm::vec3 nbr);
+		ViewPlane topPlane;
+		ViewPlane bottomPlane;
+		ViewPlane leftPlane;
+		ViewPlane rightPlane;
+		ViewPlane nearPlane;
+		ViewPlane farPlane;
 
 		ViewFrustum(const CameraComponent& camera, const TransformComponent& transform);
 
