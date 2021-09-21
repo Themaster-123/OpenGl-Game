@@ -53,7 +53,7 @@ void glg::ChunkLoaderSystem::update()
 
 		for (const auto& [pos, chunk] : scene::WORLD.chunks) {
 			glm::ivec2 localPos = chunkPos - pos;
-			int distance = std::max(abs(localPos.x), abs(localPos.y));
+			unsigned int distance = unsigned(std::max(abs(localPos.x), abs(localPos.y)));
 
 			if (distance >= (world::CHUNK_LOAD_SIZE * 2) + 1) {
 				chunksToDelete.push_back(pos);

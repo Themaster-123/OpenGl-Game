@@ -8,6 +8,8 @@ namespace glg {
 	extern float ACCUMULATOR;
 	extern float FACTOR;
 
+	extern std::mutex PHYSICS_MUTEX;
+
 	void registerPhysics();
 
 	void physicsFrame();

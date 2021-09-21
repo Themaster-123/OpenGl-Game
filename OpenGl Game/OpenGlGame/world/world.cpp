@@ -27,7 +27,7 @@ glg::world::NoiseSettings::NoiseSettings(FastNoiseLite& noise, float displacemen
 	this->displacementHeight = displacementHeight;
 }
 
-glg::world::World::World()
+glg::world::World::World() : chunks()
 {
 }
 
@@ -53,7 +53,6 @@ void glg::world::World::unloadChunk(const glm::ivec2& chunkPos)
 {
 	if (isChunkLoaded(chunkPos)) {
 		chunksMutex.lock();
-		std::cout << chunkPos.x << " " << chunkPos.y << chunks.contains(chunkPos) << std::endl;
 		chunks.erase(chunkPos);
 		chunksMutex.unlock();
 	}

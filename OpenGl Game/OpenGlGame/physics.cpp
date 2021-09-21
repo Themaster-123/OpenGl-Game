@@ -10,6 +10,7 @@ rp3d::PhysicsWorld* glg::PHYSICS_WORLD;
 const float glg::PHYSICS_TIME_STEP = 1.0f / 60.0f;
 float glg::FACTOR = 0;
 float glg::ACCUMULATOR = 0;
+std::mutex glg::PHYSICS_MUTEX;
 
 
 void glg::registerPhysics()
@@ -22,8 +23,10 @@ void glg::physicsFrame()
 	ACCUMULATOR += DELTA_TIME;
 
 	while (ACCUMULATOR >= PHYSICS_TIME_STEP) {
+		PHYSICS_MUTEX.lock();
 		PHYSICS_WORLD->update(PHYSICS_TIME_STEP);
 		scene::callPhysicsUpdate();
+		PHYSICS_MUTEX.unlock();
 
 		ACCUMULATOR -= PHYSICS_TIME_STEP; 
 	}

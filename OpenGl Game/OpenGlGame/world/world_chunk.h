@@ -28,7 +28,7 @@ namespace glg {
 
 			Object object;
 
-			Object& createObject();
+			Object createObject();
 		};
 	}
 }
