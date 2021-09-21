@@ -45,7 +45,7 @@ void glg::ChunkLoaderSystem::update()
 	for (auto entity : playerView) {
 		Object object(entity);
 
-		auto [playerComponent, transformComponent] = playerView.get<PlayerComponent, TransformComponent>(entity);
+		const auto& transformComponent = playerView.get<TransformComponent>(entity);
 
 		glm::ivec2 chunkPos = world::World::getChunkPosition(transformComponent.position);
 

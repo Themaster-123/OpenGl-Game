@@ -60,6 +60,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position
 	size_t resolution = CHUNK_RESOLUTION;
 
 	std::vector<Vertex> vertices;
+	vertices.reserve((resolution + 1) * (resolution + 1));
 	std::vector<unsigned int> indices(resolution * resolution * 6);
 
 	for (int x = 0; x <= resolution; x++) {
@@ -70,7 +71,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position
 
 			float displacement = world::NOISE_SETTINGS.noise.GetNoise(float(localX + (position.x * world::CHUNK_SIZE)), float(localZ + (position.y * world::CHUNK_SIZE))) * world::NOISE_SETTINGS.displacementHeight;
 
-			vertices.push_back(Vertex(glm::vec3(localX, displacement, localZ), glm::vec3(0, 1, 0), glm::vec2(0, 0)));
+			vertices.emplace_back(glm::vec3(localX, displacement, localZ), glm::vec3(0, 1, 0), glm::vec2(0, 0));
 		}
 	}
 
@@ -84,10 +85,12 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position
 	}
 
 	std::vector<Vertex> newVertices;
+	newVertices.reserve(indices.size());
 	std::vector<unsigned int> newIndices;
+	newIndices.reserve(indices.size());
 	for (size_t i = 0; i < indices.size(); i++) {
 		newVertices.push_back(vertices[indices[i]]);
-		newIndices.push_back(i);
+		newIndices.emplace_back(i);
 	}
 
 	std::vector<Texture2D> textures { *textures::defaultTexture };

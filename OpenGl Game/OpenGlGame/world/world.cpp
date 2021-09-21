@@ -53,6 +53,7 @@ void glg::world::World::unloadChunk(const glm::ivec2& chunkPos)
 {
 	if (isChunkLoaded(chunkPos)) {
 		chunksMutex.lock();
+		std::cout << chunkPos.x << " " << chunkPos.y << chunks.contains(chunkPos) << std::endl;
 		chunks.erase(chunkPos);
 		chunksMutex.unlock();
 	}
