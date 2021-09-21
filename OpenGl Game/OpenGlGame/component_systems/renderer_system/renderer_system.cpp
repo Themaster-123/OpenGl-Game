@@ -260,10 +260,10 @@ glg::ViewFrustum::ViewFrustum(const CameraComponent& camera, const TransformComp
 	planes[RIGHT] = ViewPlane(nc + transform.right * wNearPlane, glm::normalize(normal));
 }
 
-bool glg::ViewFrustum::isInside(glm::vec3 point)
+bool glg::ViewFrustum::isInside(const glm::vec3& point, float radius) const
 {
 	for (const ViewPlane& plane : planes) {
-		if (glm::dot(plane.normal, point - plane.position) < 0) {
+		if (glm::dot(plane.normal, point - plane.position) < -radius) {
 			return false;
 		}
 	}

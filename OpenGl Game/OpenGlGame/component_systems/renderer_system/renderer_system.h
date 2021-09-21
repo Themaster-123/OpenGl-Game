@@ -38,7 +38,7 @@ namespace glg {
 
 		ViewFrustum(const CameraComponent& camera, const TransformComponent& transform);
 
-		bool isInside(glm::vec3 point);
+		bool isInside(const glm::vec3& point, float radius = 0) const;
 
 	};
 
