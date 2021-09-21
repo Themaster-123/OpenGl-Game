@@ -234,30 +234,40 @@ glg::ViewFrustum::ViewFrustum(const CameraComponent& camera, const TransformComp
 	glm::vec3 nbl = nc - (transform.up * hNearPlane / 2.0f) - (transform.right * wNearPlane / 2.0f);
 	glm::vec3 nbr = nc - (transform.up * hNearPlane / 2.0f) + (transform.right * wNearPlane / 2.0f);
 
-	nearPlane = ViewPlane(nc, transform.front);
-	farPlane = ViewPlane(fc, -transform.front);
+	planes[NEARP] = ViewPlane(nc, transform.front);
+	planes[FARP] = ViewPlane(fc, -transform.front);
 
 	glm::vec3 aux, normal;
 
 	aux = (nc + transform.up * hNearPlane) - transform.position;
 	aux = glm::normalize(aux);
 	normal = aux * transform.right;
-	topPlane = ViewPlane(nc + transform.up * hNearPlane, normal);
+	planes[TOP] = ViewPlane(nc + transform.up * hNearPlane, glm::normalize(normal));
 
 	aux = (nc - transform.up * hNearPlane) - transform.position;
 	aux = glm::normalize(aux);
 	normal = aux * transform.right;
-	bottomPlane = ViewPlane(nc - transform.up * hNearPlane, normal);
+	planes[BOTTOM] = ViewPlane(nc - transform.up * hNearPlane, glm::normalize(normal));
 
 	aux = (nc - transform.right * wNearPlane) - transform.position;
 	aux = glm::normalize(aux);
 	normal = aux * transform.up;
-	leftPlane = ViewPlane(nc - transform.right * wNearPlane, normal);
+	planes[LEFT] = ViewPlane(nc - transform.right * wNearPlane, glm::normalize(normal));
 
 	aux = (nc + transform.right * wNearPlane) - transform.position;
 	aux = glm::normalize(aux);
 	normal = aux * transform.up;
-	rightPlane = ViewPlane(nc + transform.right * wNearPlane, normal);
+	planes[RIGHT] = ViewPlane(nc + transform.right * wNearPlane, glm::normalize(normal));
+}
+
+bool glg::ViewFrustum::isInside(glm::vec3 point)
+{
+	for (const ViewPlane& plane : planes) {
+		if (glm::dot(plane.normal, point - plane.position) < 0) {
+			return false;
+		}
+	}
+	return true;
 }
 
 glg::ViewFrustum::ViewPlane::ViewPlane(glm::vec3 position, glm::vec3 normal) : position(position), normal(normal)

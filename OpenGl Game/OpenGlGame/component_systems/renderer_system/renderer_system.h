@@ -7,6 +7,15 @@
 
 namespace glg {
 	struct ViewFrustum {
+		enum {
+			TOP, 
+			BOTTOM, 
+			LEFT,
+			RIGHT, 
+			NEARP, 
+			FARP
+		};
+
 		struct ViewPlane {
 			glm::vec3 position;
 			glm::vec3 normal;
@@ -25,14 +34,11 @@ namespace glg {
 		glm::vec3 nbl;
 		glm::vec3 nbr;
 
-		ViewPlane topPlane;
-		ViewPlane bottomPlane;
-		ViewPlane leftPlane;
-		ViewPlane rightPlane;
-		ViewPlane nearPlane;
-		ViewPlane farPlane;
+		ViewPlane planes[6];
 
 		ViewFrustum(const CameraComponent& camera, const TransformComponent& transform);
+
+		bool isInside(glm::vec3 point);
 
 	};
 
