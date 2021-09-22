@@ -31,15 +31,6 @@ namespace glg {
 			BoundingCube(glm::vec3 size, glm::vec3 offset = glm::vec3(0));
 		};
 
-		glm::vec3 ftl;
-		glm::vec3 ftr;
-		glm::vec3 fbl;
-		glm::vec3 fbr;
-		glm::vec3 ntl;
-		glm::vec3 ntr;
-		glm::vec3 nbl;
-		glm::vec3 nbr;
-
 		ViewPlane planes[6];
 
 		ViewFrustum(const CameraComponent& camera, const TransformComponent& transform);

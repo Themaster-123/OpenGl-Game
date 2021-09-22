@@ -223,20 +223,8 @@ glg::ViewFrustum::ViewFrustum(const CameraComponent& camera, const TransformComp
 	float hNearPlane = (tanFov * camera.nearPlane);
 	float wNearPlane = (hNearPlane * aspect);
 
-	float hFarPlane = (tanFov * camera.farPlane);
-	float wFarPlane = (hFarPlane * aspect);
-
 	glm::vec3 fc = transform.position + transform.front * camera.farPlane;
 	glm::vec3 nc = transform.position + transform.front * camera.nearPlane;
-
-	glm::vec3 ftl = fc + (transform.up * hFarPlane / 2.0f) - (transform.right * wFarPlane / 2.0f);
-	glm::vec3 ftr = fc + (transform.up * hFarPlane / 2.0f) + (transform.right * wFarPlane / 2.0f);
-	glm::vec3 fbl = fc - (transform.up * hFarPlane / 2.0f) - (transform.right * wFarPlane / 2.0f);
-	glm::vec3 fbr = fc - (transform.up * hFarPlane / 2.0f) + (transform.right * wFarPlane / 2.0f);
-	glm::vec3 ntl = nc + (transform.up * hNearPlane / 2.0f) - (transform.right * wNearPlane / 2.0f);
-	glm::vec3 ntr = nc + (transform.up * hNearPlane / 2.0f) + (transform.right * wNearPlane / 2.0f);
-	glm::vec3 nbl = nc - (transform.up * hNearPlane / 2.0f) - (transform.right * wNearPlane / 2.0f);
-	glm::vec3 nbr = nc - (transform.up * hNearPlane / 2.0f) + (transform.right * wNearPlane / 2.0f);
 
 	glm::vec3 nw = glm::vec3(nc + -transform.right * wNearPlane + transform.up * hNearPlane) - transform.position;
 	glm::vec3 ne = glm::vec3(nc + transform.right * wNearPlane + transform.up * hNearPlane) - transform.position;
@@ -248,23 +236,15 @@ glg::ViewFrustum::ViewFrustum(const CameraComponent& camera, const TransformComp
 
 	glm::vec3 aux, normal;
 
-	aux = (nc + transform.up * hNearPlane) - transform.position;
-	aux = glm::normalize(aux);
 	normal = glm::normalize(glm::cross(nw, ne));
 	planes[TOP] = ViewPlane(nc + transform.up * hNearPlane, normal);
 
-	aux = (nc - transform.up * hNearPlane) - transform.position;
-	aux = glm::normalize(aux);
 	normal = glm::normalize(glm::cross(se, sw));
 	planes[BOTTOM] = ViewPlane(nc - transform.up * hNearPlane, normal);
 
-	aux = (nc - transform.right * wNearPlane) - transform.position;
-	aux = glm::normalize(aux);
 	normal = glm::normalize(glm::cross(sw, nw));
 	planes[LEFT] = ViewPlane(nc - transform.right * wNearPlane, normal);
 
-	aux = (nc + transform.right * wNearPlane) - transform.position;
-	aux = glm::normalize(aux);
 	normal = glm::normalize(glm::cross(ne, se));
 	planes[RIGHT] = ViewPlane(nc + transform.right * wNearPlane, normal);
 }
