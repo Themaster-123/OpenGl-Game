@@ -28,7 +28,7 @@ namespace glg {
 		struct BoundingCube {
 			glm::vec3 points[8];
 
-			BoundingCube(glm::vec3 size);
+			BoundingCube(glm::vec3 size, glm::vec3 offset = glm::vec3(0));
 		};
 
 		glm::vec3 ftl;

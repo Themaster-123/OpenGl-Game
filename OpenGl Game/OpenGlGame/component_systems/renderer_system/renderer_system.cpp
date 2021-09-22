@@ -173,9 +173,9 @@ void glg::RendererSystem::drawModel(const Object& object, const TransformCompone
 
 		if (frus.isInside(transformComponent.position)) {
 			modelComponent.shader->setMat4("view", getViewMatrix(cameraEntity));
-				modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraEntity));
-				modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(transformComponent));
-				modelComponent.model->draw(*modelComponent.shader);
+			modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraEntity));
+			modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(transformComponent));
+			modelComponent.model->draw(*modelComponent.shader);
 		}
 	}
 }
@@ -311,10 +311,11 @@ glg::ViewFrustum::ViewPlane::ViewPlane(glm::vec3 position, glm::vec3 normal) : p
 {
 }
 
-glg::ViewFrustum::BoundingCube::BoundingCube(glm::vec3 size) : points {glm::vec3(-1, 1, 1), glm::vec3(1, 1, 1), glm::vec3(1, -1, 1), glm::vec3(-1, -1, 1), 
+glg::ViewFrustum::BoundingCube::BoundingCube(glm::vec3 size, glm::vec3 offset) : points {glm::vec3(-1, 1, 1), glm::vec3(1, 1, 1), glm::vec3(1, -1, 1), glm::vec3(-1, -1, 1),
 glm::vec3(-1, 1, -1), glm::vec3(1, 1, -1), glm::vec3(1, -1, -1), glm::vec3(-1, -1, -1) }
 {
 	for (glm::vec3& point : points) {
 		 point *= size;
+		 point += offset;
 	}
 }
