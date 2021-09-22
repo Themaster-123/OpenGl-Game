@@ -78,18 +78,28 @@ void glg::RendererSystem::draw()
 		index++;
 	}
 
-	auto modelView = scene::REGISTRY.view<ModelComponent, TransformComponent>(entt::exclude<PhysicsComponent>);
+	auto cameraView = scene::REGISTRY.view<CameraComponent, TransformComponent>();
 
-	for (auto entity : modelView) {
-		Object obj(entity);
-		drawModel(obj);
-	}
+	for (auto cameraEntity : cameraView) {
+		Object camObj(cameraEntity);
 
-	auto physicsModelView = scene::REGISTRY.view<ModelComponent, PhysicsComponent, TransformComponent>();
+		auto [cameraComponent, transformComponent] = camObj.get<CameraComponent, TransformComponent>(cameraView);
 
-	for (auto entity : physicsModelView) {
-		Object obj(entity);
-		RendererSystem::drawPhysicsModel(obj);
+		ViewFrustum frustum (cameraComponent, transformComponent);
+
+		auto modelView = scene::REGISTRY.view<ModelComponent, TransformComponent>(entt::exclude<PhysicsComponent>);
+
+		for (auto entity : modelView) {
+			Object obj(entity);
+			drawModel(obj, cameraComponent, transformComponent, frustum);
+		}
+
+		auto physicsModelView = scene::REGISTRY.view<ModelComponent, PhysicsComponent, TransformComponent>();
+
+		for (auto entity : physicsModelView) {
+			Object obj(entity);
+			RendererSystem::drawPhysicsModel(obj, cameraComponent, transformComponent, frustum);
+		}
 	}
 }
 
@@ -123,72 +133,65 @@ void glg::RendererSystem::onLodConstruct(entt::registry& registry, entt::entity 
 	obj.getOrAddComponent<ModelComponent>(models::defaultModel, shaders::defaultShader);
 }
 
-void glg::RendererSystem::drawModel(const Object& object)
+void glg::RendererSystem::drawModel(const Object& object, const CameraComponent& cameraComponent, const TransformComponent& cameraTransformComponent, ViewFrustum frustum)
 {
 	const auto& transformComponent = object.get<TransformComponent>();
 
-	drawModel(object, transformComponent);
+	drawModel(object, transformComponent, cameraComponent, cameraTransformComponent, frustum);
 }
 
-void glg::RendererSystem::drawPhysicsModel(const Object& object)
+void glg::RendererSystem::drawPhysicsModel(const Object& object, const CameraComponent& cameraComponent, const TransformComponent& cameraTransformComponent, ViewFrustum frustum)
 {
 	const auto [transformComponent, physicsComponent] = object.get<TransformComponent, PhysicsComponent>();
 
 	auto cameraView = scene::REGISTRY.view<CameraComponent, TransformComponent>();
 
-	drawModel(object, TransformSystem::interpolateTransforms(physicsComponent.prevTransform, transformComponent, std::min(FACTOR, 1.0f)));
+	drawModel(object, TransformSystem::interpolateTransforms(physicsComponent.prevTransform, transformComponent, std::min(FACTOR, 1.0f)), cameraComponent, cameraTransformComponent, frustum);
 }
 
-void glg::RendererSystem::drawModel(const Object& object, const TransformComponent& transformComponent)
+void glg::RendererSystem::drawModel(const Object& object, const TransformComponent& transformComponent, const CameraComponent& cameraComponent, const TransformComponent& cameraTransformComponent, ViewFrustum frustum)
 {
-	auto cameraView = scene::REGISTRY.view<CameraComponent, TransformComponent>();
 	auto& modelComponent = object.get<ModelComponent>();
 
 
-	for (auto entity : cameraView) {
-		Object cameraEntity(entity);
 
-		const auto [cameraComponent, cameraTransformComponent] = cameraEntity.get<CameraComponent, TransformComponent>();
 
-		if (object.allOf<LodComponent>()) {
-			float distanceSq = glm::distance2(cameraTransformComponent.position, transformComponent.position);
+	if (object.allOf<LodComponent>()) {
+		float distanceSq = glm::distance2(cameraTransformComponent.position, transformComponent.position);
 
-			const auto& lodComponent = object.get<LodComponent>();
+		const auto& lodComponent = object.get<LodComponent>();
 
-			const LodModel* bestLodModel = nullptr;
+		const LodModel* bestLodModel = nullptr;
 
-			for (const LodModel& model : lodComponent.lodModels) {
-				if (distanceSq >= (model.minDistance * model.minDistance) && (bestLodModel == nullptr || bestLodModel->minDistance < model.minDistance)) {
-					bestLodModel = &model;
-				}
-			}
-
-			if (bestLodModel != nullptr) {
-				modelComponent.model = bestLodModel->model;
-			}
-
-		}
-
-		if (object.allOf<BoxCullComponent>()) {
-			ViewFrustum frustum(cameraComponent, cameraTransformComponent);
-
-			BoxCullComponent& boxCull = object.get<BoxCullComponent>();
-
-			if (!frustum.isInside(transformComponent, boxCull.size, boxCull.offset)) {
-				return;
+		for (const LodModel& model : lodComponent.lodModels) {
+			if (distanceSq >= (model.minDistance * model.minDistance) && (bestLodModel == nullptr || bestLodModel->minDistance < model.minDistance)) {
+				bestLodModel = &model;
 			}
 		}
 
-		modelComponent.shader->setMat4("view", getViewMatrix(cameraEntity));
-		modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraEntity));
-		modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(transformComponent));
-		modelComponent.model->draw(*modelComponent.shader);
+		if (bestLodModel != nullptr) {
+			modelComponent.model = bestLodModel->model;
+		}
+
 	}
+
+	if (object.allOf<BoxCullComponent>()) {
+		BoxCullComponent& boxCull = object.get<BoxCullComponent>();
+
+		if (!frustum.isInside(transformComponent, boxCull.size, boxCull.offset)) {
+			return;
+		}
+	}
+
+	modelComponent.shader->setMat4("view", getViewMatrix(cameraTransformComponent));
+	modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraComponent));
+	modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(transformComponent));
+	modelComponent.model->draw(*modelComponent.shader);
+	
 }
 
-glm::mat4 glg::RendererSystem::getViewMatrix(const Object& object)
+glm::mat4 glg::RendererSystem::getViewMatrix(const TransformComponent& transformComponent)
 {
-	const auto [cameraComponent, transformComponent] = object.get<CameraComponent, TransformComponent>();
 
 	glm::mat4 view = glm::mat4(1);
 	view = glm::translate(view, -transformComponent.position);
@@ -196,10 +199,8 @@ glm::mat4 glg::RendererSystem::getViewMatrix(const Object& object)
 	return view;
 }
 
-glm::mat4 glg::RendererSystem::getProjectionMatrix(const Object& object)
+glm::mat4 glg::RendererSystem::getProjectionMatrix(const CameraComponent& cameraComponent)
 {
-	auto& cameraComponent = object.get<CameraComponent>();
-
 	return glm::perspective(glm::radians(cameraComponent.fov), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, cameraComponent.nearPlane, cameraComponent.farPlane);
 }
 

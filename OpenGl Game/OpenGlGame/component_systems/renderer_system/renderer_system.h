@@ -57,15 +57,15 @@ namespace glg {
 
 		static void onLodConstruct(entt::registry& registry, entt::entity entity);
 
-		static void drawModel(const Object& object);
+		static void drawModel(const Object& object, const CameraComponent& cameraComponent, const TransformComponent& cameraTransformComponent, ViewFrustum frustum);
 
-		static void drawPhysicsModel(const Object& object);
+		static void drawPhysicsModel(const Object& object, const CameraComponent& cameraComponent, const TransformComponent& cameraTransformComponent, ViewFrustum frustum);
 
-		static void drawModel(const Object& object, const TransformComponent& transformComponent);
+		static void drawModel(const Object& object, const TransformComponent& transformComponent, const CameraComponent& cameraComponent, const TransformComponent& cameraTransformComponent, ViewFrustum frustum);
 
-		static glm::mat4 getViewMatrix(const Object& object);
+		static glm::mat4 getViewMatrix(const TransformComponent& transformComponent);
 
-		static glm::mat4 getProjectionMatrix(const Object& object);
+		static glm::mat4 getProjectionMatrix(const CameraComponent& cameraComponent);
 
 		static void setLightUniforms(const glm::vec3& position, const glm::vec3& direction, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float constant, float linear, float quadratic, float innerCutOff, float outerCutOff, int lightType, int index, int size);
 
