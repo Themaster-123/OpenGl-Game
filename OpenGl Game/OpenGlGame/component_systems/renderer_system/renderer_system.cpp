@@ -148,7 +148,9 @@ void glg::RendererSystem::drawModel(const Object& object, const TransformCompone
 	for (auto entity : cameraView) {
 		Object cameraEntity(entity);
 
-		const auto& cameraTransformComponent = cameraEntity.get<TransformComponent>();
+		const auto [cameraComponent, cameraTransformComponent] = cameraEntity.get<CameraComponent, TransformComponent>();
+
+		ViewFrustum frus(cameraComponent, cameraTransformComponent);
 
 		if (object.allOf<LodComponent>()) {
 			float distanceSq = glm::distance2(cameraTransformComponent.position, transformComponent.position);
@@ -169,10 +171,12 @@ void glg::RendererSystem::drawModel(const Object& object, const TransformCompone
 
 		}
 
-		modelComponent.shader->setMat4("view", getViewMatrix(cameraEntity));
-		modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraEntity));
-		modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(transformComponent));
-		modelComponent.model->draw(*modelComponent.shader);
+		if (frus.isInside(transformComponent.position)) {
+			modelComponent.shader->setMat4("view", getViewMatrix(cameraEntity));
+				modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraEntity));
+				modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(transformComponent));
+				modelComponent.model->draw(*modelComponent.shader);
+		}
 	}
 }
 
@@ -213,14 +217,14 @@ void glg::RendererSystem::setLightUniforms(const glm::vec3& position, const glm:
 
 glg::ViewFrustum::ViewFrustum(const CameraComponent& camera, const TransformComponent& transform)
 {
-	float tanFov = 2 * std::tan(glm::radians(camera.fov) / 2.0f);
+	float tanFov = std::tan(glm::radians(camera.fov) / 2.0f);
 	float aspect = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
 
-	float hNearPlane = tanFov * camera.nearPlane;
-	float wNearPlane = hNearPlane * aspect;
+	float hNearPlane = (tanFov * camera.nearPlane);
+	float wNearPlane = (hNearPlane * aspect);
 
-	float hFarPlane = tanFov * camera.farPlane;
-	float wFarPlane = hFarPlane * aspect;
+	float hFarPlane = (tanFov * camera.farPlane);
+	float wFarPlane = (hFarPlane * aspect);
 
 	glm::vec3 fc = transform.position + transform.front * camera.farPlane;
 	glm::vec3 nc = transform.position + transform.front * camera.nearPlane;
@@ -234,6 +238,11 @@ glg::ViewFrustum::ViewFrustum(const CameraComponent& camera, const TransformComp
 	glm::vec3 nbl = nc - (transform.up * hNearPlane / 2.0f) - (transform.right * wNearPlane / 2.0f);
 	glm::vec3 nbr = nc - (transform.up * hNearPlane / 2.0f) + (transform.right * wNearPlane / 2.0f);
 
+	glm::vec3 nw = glm::vec3(nc + -transform.right * wNearPlane + transform.up * hNearPlane) - transform.position;
+	glm::vec3 ne = glm::vec3(nc + transform.right * wNearPlane + transform.up * hNearPlane) - transform.position;
+	glm::vec3 se = glm::vec3(nc + transform.right * wNearPlane + -transform.up * hNearPlane) - transform.position;
+	glm::vec3 sw = glm::vec3(nc + -transform.right * wNearPlane + -transform.up * hNearPlane) - transform.position;
+
 	planes[NEARP] = ViewPlane(nc, transform.front);
 	planes[FARP] = ViewPlane(fc, -transform.front);
 
@@ -241,23 +250,23 @@ glg::ViewFrustum::ViewFrustum(const CameraComponent& camera, const TransformComp
 
 	aux = (nc + transform.up * hNearPlane) - transform.position;
 	aux = glm::normalize(aux);
-	normal = aux * transform.right;
-	planes[TOP] = ViewPlane(nc + transform.up * hNearPlane, glm::normalize(normal));
+	normal = glm::normalize(glm::cross(nw, ne));
+	planes[TOP] = ViewPlane(nc + transform.up * hNearPlane, normal);
 
 	aux = (nc - transform.up * hNearPlane) - transform.position;
 	aux = glm::normalize(aux);
-	normal = aux * transform.right;
-	planes[BOTTOM] = ViewPlane(nc - transform.up * hNearPlane, glm::normalize(normal));
+	normal = glm::normalize(glm::cross(se, sw));
+	planes[BOTTOM] = ViewPlane(nc - transform.up * hNearPlane, normal);
 
 	aux = (nc - transform.right * wNearPlane) - transform.position;
 	aux = glm::normalize(aux);
-	normal = aux * transform.up;
-	planes[LEFT] = ViewPlane(nc - transform.right * wNearPlane, glm::normalize(normal));
+	normal = glm::normalize(glm::cross(sw, nw));
+	planes[LEFT] = ViewPlane(nc - transform.right * wNearPlane, normal);
 
 	aux = (nc + transform.right * wNearPlane) - transform.position;
 	aux = glm::normalize(aux);
-	normal = aux * transform.up;
-	planes[RIGHT] = ViewPlane(nc + transform.right * wNearPlane, glm::normalize(normal));
+	normal = glm::normalize(glm::cross(ne, se));
+	planes[RIGHT] = ViewPlane(nc + transform.right * wNearPlane, normal);
 }
 
 bool glg::ViewFrustum::isInside(const glm::vec3& point, float radius) const
@@ -270,6 +279,42 @@ bool glg::ViewFrustum::isInside(const glm::vec3& point, float radius) const
 	return true;
 }
 
+bool glg::ViewFrustum::isInside(const TransformComponent& transform, const BoundingCube& cube)
+{
+	glm::mat4 modelMat = TransformSystem::getModelMatrix(transform);
+	glm::vec3 points[8];
+
+	int in = 0;
+
+	for (int i = 0; i < 8; i++) {
+		points[i] = glm::vec3(modelMat * glm::vec4(cube.points[i], 1));
+	}
+
+	for (const ViewPlane& plane : planes) {
+		in = 0;
+
+		for (int p = 0; p < 8 && !in; p++) {
+			if (glm::dot(plane.normal, points[p] - plane.position) < 0) {
+				in++;
+			}
+		}
+
+		if (!in) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 glg::ViewFrustum::ViewPlane::ViewPlane(glm::vec3 position, glm::vec3 normal) : position(position), normal(normal)
 {
+}
+
+glg::ViewFrustum::BoundingCube::BoundingCube(glm::vec3 size) : points {glm::vec3(-1, 1, 1), glm::vec3(1, 1, 1), glm::vec3(1, -1, 1), glm::vec3(-1, -1, 1), 
+glm::vec3(-1, 1, -1), glm::vec3(1, 1, -1), glm::vec3(1, -1, -1), glm::vec3(-1, -1, -1) }
+{
+	for (glm::vec3& point : points) {
+		 point *= size;
+	}
 }

@@ -25,6 +25,12 @@ namespace glg {
 			ViewPlane(glm::vec3 position, glm::vec3 normal);
 		};
 
+		struct BoundingCube {
+			glm::vec3 points[8];
+
+			BoundingCube(glm::vec3 size);
+		};
+
 		glm::vec3 ftl;
 		glm::vec3 ftr;
 		glm::vec3 fbl;
@@ -39,6 +45,8 @@ namespace glg {
 		ViewFrustum(const CameraComponent& camera, const TransformComponent& transform);
 
 		bool isInside(const glm::vec3& point, float radius = 0) const;
+
+		bool isInside(const TransformComponent& transform, const BoundingCube& cube);
 
 	};
 
