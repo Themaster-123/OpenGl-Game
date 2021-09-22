@@ -37,7 +37,7 @@ namespace glg {
 
 		bool isInside(const glm::vec3& point, float radius = 0) const;
 
-		bool isInside(const TransformComponent& transform, const BoundingCube& cube);
+		bool isInside(const TransformComponent& transform, glm::vec3 size, glm::vec3 offset);
 
 	};
 

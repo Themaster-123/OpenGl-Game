@@ -12,3 +12,4 @@
 #include "light_components/attenuation/point_light_component.h"
 #include "light_components/attenuation/spot_light_component.h"
 #include "lod_component/lod_component.h"
+#include "box_cull_component/box_cull_component.h"

@@ -150,8 +150,6 @@ void glg::RendererSystem::drawModel(const Object& object, const TransformCompone
 
 		const auto [cameraComponent, cameraTransformComponent] = cameraEntity.get<CameraComponent, TransformComponent>();
 
-		ViewFrustum frus(cameraComponent, cameraTransformComponent);
-
 		if (object.allOf<LodComponent>()) {
 			float distanceSq = glm::distance2(cameraTransformComponent.position, transformComponent.position);
 
@@ -171,12 +169,20 @@ void glg::RendererSystem::drawModel(const Object& object, const TransformCompone
 
 		}
 
-		if (frus.isInside(transformComponent.position)) {
-			modelComponent.shader->setMat4("view", getViewMatrix(cameraEntity));
-			modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraEntity));
-			modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(transformComponent));
-			modelComponent.model->draw(*modelComponent.shader);
+		if (object.allOf<BoxCullComponent>()) {
+			ViewFrustum frustum(cameraComponent, cameraTransformComponent);
+
+			BoxCullComponent& boxCull = object.get<BoxCullComponent>();
+
+			if (!frustum.isInside(transformComponent, boxCull.size, boxCull.offset)) {
+				return;
+			}
 		}
+
+		modelComponent.shader->setMat4("view", getViewMatrix(cameraEntity));
+		modelComponent.shader->setMat4("projection", getProjectionMatrix(cameraEntity));
+		modelComponent.shader->setMat4("model", TransformSystem::getModelMatrix(transformComponent));
+		modelComponent.model->draw(*modelComponent.shader);
 	}
 }
 
@@ -259,15 +265,18 @@ bool glg::ViewFrustum::isInside(const glm::vec3& point, float radius) const
 	return true;
 }
 
-bool glg::ViewFrustum::isInside(const TransformComponent& transform, const BoundingCube& cube)
+bool glg::ViewFrustum::isInside(const TransformComponent& transform, glm::vec3 size, glm::vec3 offset)
 {
 	glm::mat4 modelMat = TransformSystem::getModelMatrix(transform);
-	glm::vec3 points[8];
+	glm::vec3 points[8] { glm::vec3(-1, 1, 1), glm::vec3(1, 1, 1), glm::vec3(1, -1, 1), glm::vec3(-1, -1, 1),
+		glm::vec3(-1, 1, -1), glm::vec3(1, 1, -1), glm::vec3(1, -1, -1), glm::vec3(-1, -1, -1) };
 
 	int in = 0;
 
 	for (int i = 0; i < 8; i++) {
-		points[i] = glm::vec3(modelMat * glm::vec4(cube.points[i], 1));
+		points[i] *= size;
+		points[i] += offset;
+		points[i] = glm::vec3(modelMat * glm::vec4(points[i], 1));
 	}
 
 	for (const ViewPlane& plane : planes) {
