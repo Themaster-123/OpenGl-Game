@@ -282,8 +282,8 @@ bool glg::ViewFrustum::isInside(const TransformComponent& transform, glm::vec3 s
 	for (const ViewPlane& plane : planes) {
 		in = 0;
 
-		for (int p = 0; p < 8 && !in; p++) {
-			if (glm::dot(plane.normal, points[p] - plane.position) < 0) {
+		for (int p = 0; p < 8 && in == 0; p++) {
+			if (glm::dot(plane.normal, points[p] - plane.position) >= 0) {
 				in++;
 			}
 		}

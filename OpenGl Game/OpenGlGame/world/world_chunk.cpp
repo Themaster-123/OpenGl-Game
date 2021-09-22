@@ -42,6 +42,16 @@ glg::Object glg::world::Chunk::createObject()
 
 	object.addComponent<ModelComponent>(model.get(), shaders::defaultShader);
 
+	float highestY = -INFINITY;
+
+	for (const Vertex& vertex : model->meshes[0].vertices) {
+		if (vertex.position.y > highestY) {
+			highestY = vertex.position.y;
+		}
+	}
+
+	object.addComponent<BoxCullComponent>(glm::vec3(world::CHUNK_SIZE / 2, highestY, world::CHUNK_SIZE / 2), glm::vec3(world::CHUNK_SIZE / 2, 0, world::CHUNK_SIZE/ 2));
+
 	//std::vector<LodModel> models = { LodModel(model, 0), LodModel(generateModel(2), 32 * 3), LodModel(generateModel(4), 32 * 6), LodModel(generateModel(8), 32 * 14) };
 
 	//object.addComponent<LodComponent>(models);
