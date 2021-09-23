@@ -64,7 +64,9 @@ namespace glg {
 
 		Mesh processMesh(aiMesh* mesh, const aiScene* scene) {
 			std::vector<Vertex> vertices;
+			vertices.reserve(mesh->mNumVertices);
 			std::vector<unsigned int> indices;
+			indices.reserve(mesh->mNumFaces);
 			std::vector<Texture2D> textures;
 
 			for (size_t i = 0; i < mesh->mNumVertices; i++) {
