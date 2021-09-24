@@ -122,29 +122,33 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position
 	boost::multi_array<Voxel, 3> voxels(boost::extents[(size_t)resolution.x][(size_t)resolution.y][(size_t)resolution.z]);
 	//voxels.reserve();
 
-	std::cout << voxels.size();
+	/*std::cout << voxels.size();
 
-	/*for (int x = 0; x < resolution.x; x++) {
+	float maxNoiseValue = 0;
+
+	for (int x = 0; x < resolution.x; x++) {
 		for (int z = 0; z < resolution.z; z++) {
 			float worldX, worldZ, worldY;
 			worldX = float(x) / resolution.x * world::CHUNK_SIZE.x;
 			worldZ = float(z) / resolution.z * world::CHUNK_SIZE.z;
 			float noiseValue = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldZ + (position.y * world::CHUNK_SIZE.y)));
-			float displacementValue = noiseValue * world::NOISE_SETTINGS.displacementHeight * CHUNK_SIZE.y;
+			noiseValue = ((noiseValue + 1) / 2);
+
+			float displacementValue = noiseValue * world::NOISE_SETTINGS.displacementHeight / resolution.y * CHUNK_SIZE.y;
 
 			for (int y = 0; y < resolution.y; y++) {
 				worldY = float(y) / resolution.y * world::CHUNK_SIZE.y;
 
 				if (worldY > displacementValue) {
-					noiseValue = 1;
+					noiseValue = 1.1;
 				}
 				else {
-					noiseValue = 0;
+					noiseValue = displacementValue / world::NOISE_SETTINGS.displacementHeight;
 				}
 
 				//std::cout << x + resolution.x * (y + resolution.z * z) << std::endl;
 
-				voxels[x + resolution.x * (y + resolution.z * z)] = { noiseValue, glm::vec3(worldX, worldY, worldZ) };
+				voxels[x][y][z] = { noiseValue, glm::vec3(worldX, worldY, worldZ) };
 			}
 		}
 	}*/
@@ -158,20 +162,23 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position
 				worldX = float(x) / resolution.x * world::CHUNK_SIZE.x;
 				worldY = float(y) / resolution.y * world::CHUNK_SIZE.y;
 				worldZ = float(z) / resolution.z * world::CHUNK_SIZE.z;
+				float noiseValue = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldY),
+					float(worldZ + (position.y * world::CHUNK_SIZE.z)));
+				noiseValue = ((noiseValue + 1) / 2);
 
-				voxels[x][y][z] = { world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldY),
-					float(worldZ + (position.y * world::CHUNK_SIZE.z))) * 2, glm::vec3(worldX, worldY, worldZ) };
+				//std::cout << noiseValue << std::endl;
+
+				voxels[x][y][z] = { noiseValue, glm::vec3(worldX, worldY, worldZ) };
 				index++;
 			}
 		}
 	}
-	std::cout << std::endl << index << std::endl;
 
 	MarchingCubes cubes(voxels, glm::vec3(1));
 
 	std::vector<Texture2D> textures{ *textures::defaultTexture };
 
-	std::shared_ptr<Model> model = cubes.createModel(.2f, textures);
+	std::shared_ptr<Model> model = cubes.createModel(.6, textures);
 	model->meshes[0].calculateNormals();
 
 	return model;
