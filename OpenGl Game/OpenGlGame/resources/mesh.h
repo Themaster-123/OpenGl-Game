@@ -54,12 +54,16 @@ namespace glg {
 		}
 
 		~Mesh() {
+			if (vertices.size() == 0) return;
+
 			glDeleteVertexArrays(1, &VAO);
 			glDeleteBuffers(1, &VBO);
 			glDeleteBuffers(1, &EBO);
 		}
 
 		void draw(Shader& shader) const {
+			if (vertices.size() == 0) return;
+
 			unsigned int diffuseNr = 1;
 			for (unsigned int i = 0; i < textures.size(); i++) {
 				std::string number;
@@ -99,6 +103,8 @@ namespace glg {
 		}
 
 		void setupMesh() {
+			if (vertices.size() == 0) return;
+
 			if (VAO == 0) {
 				glGenVertexArrays(1, &VAO);
 				glGenBuffers(1, &VBO);
