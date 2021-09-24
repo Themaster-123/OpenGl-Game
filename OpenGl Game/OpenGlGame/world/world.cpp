@@ -14,7 +14,7 @@ void glg::world::setNoiseSetting()
 	FastNoiseLite noise;
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetFrequency(0.05);
-	noise.SetFractalOctaves(9);
+	noise.SetFractalOctaves(5);
 	noise.SetFractalGain(0.3);
 	noise.SetFractalLacunarity(2.00);
 	noise.SetFractalType(noise.FractalType_FBm);
