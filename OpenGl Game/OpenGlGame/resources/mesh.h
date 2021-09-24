@@ -29,7 +29,7 @@ namespace glg {
 		Material material;
 		bool setupMeshV;
 
-		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D>& textures, Material material = Material(), bool setupMesh = true) {
+		Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture2D>& textures, const Material material = Material(), bool setupMesh = true) {
 			this->vertices = vertices;
 			this->indices = indices;
 			this->textures = textures;
