@@ -320,6 +320,10 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 	mesh.calculateNormals();
 
 	auto model = std::make_shared<Model>();
+
+	model->meshes.push_back(mesh);
+
+	return model;
 }
 
 void glg::MarchingCubes::triangulateCell(const Cell& cell, std::vector<glg::Vertex>& vertices, std::vector<unsigned int>& indices, float isoLevel) const
@@ -369,22 +373,31 @@ glm::vec3 glg::MarchingCubes::interpolateVertexPosition(const Voxel& voxel1, con
 
 glg::Voxel& glg::MarchingCubes::getVoxel(const glm::ivec3& pos)
 {
-	return voxels[(pos.y * resolution.x + pos.x) * resolution.z + pos.z];
+	return voxels[pos.x + resolution.x * (pos.y + resolution.z * pos.z)];
 }
 
 glg::Voxel& glg::MarchingCubes::getVoxel(int index, const glm::ivec3& offset)
 {
-	return voxels[index + offset.z + (offset.x * resolution.x) + (offset.y * (resolution.y * resolution.y))];
+	return voxels[index + offset.x + resolution.x * (offset.y + resolution.z * offset.z)];
 }
 
 const glg::Voxel& glg::MarchingCubes::getVoxel(const glm::ivec3& pos) const
 {
-	return voxels[(pos.y * resolution.x + pos.x) * resolution.z + pos.z];
+	return voxels[pos.x + resolution.x * (pos.y + resolution.z * pos.z)];
 }
 
 const glg::Voxel& glg::MarchingCubes::getVoxel(int index, const glm::ivec3 offset) const
 {
-	return voxels[index + offset.z + (offset.x * resolution.x) + (offset.y * (resolution.y * resolution.y))];
+	return voxels[index + offset.x + resolution.x * (offset.y + resolution.z * offset.z)];
+}
+
+glg::Cell::Cell(std::initializer_list<Voxel> voxels)
+{
+	int index = 0;
+	for (const Voxel& voxel : voxels) {
+		this->voxels[index] = voxel;
+		index++;
+	}
 }
 
 glg::Voxel& glg::Cell::operator[](size_t index)

@@ -6,6 +6,7 @@
 #include "../components/components.h"
 #include "../globals/models.h"
 #include "../globals/textures.h"
+#include "../mesh_gen/marching_cubes.h"
 
 glg::world::Chunk::Chunk(glm::ivec2 position)
 {
@@ -13,13 +14,13 @@ glg::world::Chunk::Chunk(glm::ivec2 position)
 	glg::Mesh& mesh = model->meshes[0];
 	mesh.setupMesh();
 
-	std::tie(triangleArray, triangleMesh, concaveMesh) = generateConcaveMeshShape(model);
+	//std::tie(triangleArray, triangleMesh, concaveMesh) = generateConcaveMeshShape(model);
 
 	object = createObject();
 }
 
-glg::world::Chunk::Chunk(glm::ivec2 position, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh) : position(position), triangleArray(triangleArray)
-, triangleMesh(triangleMesh), concaveMesh(concaveMesh)
+glg::world::Chunk::Chunk(glm::ivec2 position, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh) : position(position)/*, triangleArray(triangleArray)
+, triangleMesh(triangleMesh), concaveMesh(concaveMesh)*/
 {
 	this->model = model;
 	object = createObject();
@@ -29,9 +30,9 @@ glg::world::Chunk::~Chunk()
 {
 	object.destory();
 	PHYSICS_MUTEX.lock();
-	delete triangleArray;
-	PHYSICS_COMMON.destroyTriangleMesh(triangleMesh);
-	PHYSICS_COMMON.destroyConcaveMeshShape(concaveMesh);
+	//delete triangleArray;
+	//PHYSICS_COMMON.destroyTriangleMesh(triangleMesh);
+	//PHYSICS_COMMON.destroyConcaveMeshShape(concaveMesh);
 	PHYSICS_MUTEX.unlock();
 }
 
@@ -57,12 +58,12 @@ glg::Object glg::world::Chunk::createObject()
 	//object.addComponent<LodComponent>(models);
 
 	// creates rigidbody
-	rp3d::RigidBody* groundRigidbody = PHYSICS_WORLD->createRigidBody(object.get<TransformComponent>());
-	groundRigidbody->setType(rp3d::BodyType::KINEMATIC);
+	//rp3d::RigidBody* groundRigidbody = PHYSICS_WORLD->createRigidBody(object.get<TransformComponent>());
+	//groundRigidbody->setType(rp3d::BodyType::KINEMATIC);
 
-	groundRigidbody->addCollider(concaveMesh, rp3d::Transform::identity());
+	//groundRigidbody->addCollider(concaveMesh, rp3d::Transform::identity());
 
-	object.addComponent<PhysicsComponent>(groundRigidbody);
+	//object.addComponent<PhysicsComponent>(groundRigidbody);
 
 	return object;
 }
@@ -115,6 +116,44 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position
 
 	//model->meshes.push_back(mesh);
 
+	glm::ivec3 resolution = CHUNK_RESOLUTION + glm::ivec3(1);
+
+	std::vector<Voxel> voxels ((size_t)resolution.x * (size_t)resolution.y * (size_t)resolution.z);
+
+	std::cout << voxels.size();
+
+	for (int x = 0; x < resolution.x; x++) {
+		for (int z = 0; z < resolution.z; z++) {
+			float worldX, worldZ, worldY;
+			worldX = float(x) / resolution.x * world::CHUNK_SIZE.x;
+			worldZ = float(z) / resolution.z * world::CHUNK_SIZE.z;
+			float noiseValue = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldZ + (position.y * world::CHUNK_SIZE.y)));
+			float displacementValue = noiseValue * world::NOISE_SETTINGS.displacementHeight * CHUNK_SIZE.y;
+
+			for (int y = 0; y < resolution.y; y++) {
+				worldY = float(y) / resolution.y * world::CHUNK_SIZE.y;
+
+				if (worldY > displacementValue) {
+					noiseValue = 1;
+				}
+				else {
+					noiseValue = 0;
+				}
+
+				//std::cout << x + resolution.x * (y + resolution.z * z) << std::endl;
+
+				voxels[x + resolution.x * (y + resolution.z * z)] = { noiseValue, glm::vec3(worldX, worldY, worldZ) };
+			}
+		}
+	}
+
+	MarchingCubes cubes(voxels, resolution, glm::vec3(1));
+
+	std::vector<Texture2D> textures{ *textures::defaultTexture };
+
+	std::shared_ptr<Model> model = cubes.createModel(.5f, textures);
+	model->meshes[0].calculateNormals();
+
 	return model;
 }
 
@@ -122,14 +161,15 @@ std::tuple<rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshSha
 {
 	const Mesh& mesh = model->meshes[0];
 
-	rp3d::TriangleVertexArray* triangleArray = new rp3d::TriangleVertexArray(mesh.vertices.size(), &mesh.vertices[0], sizeof(Vertex), mesh.indices.size() / 3, &mesh.indices[0], 3 * sizeof(unsigned int),
-		rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
-		rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
-	PHYSICS_MUTEX.lock();
-	rp3d::TriangleMesh* triangleMesh = PHYSICS_COMMON.createTriangleMesh();
-	triangleMesh->addSubpart(triangleArray);
-	rp3d::ConcaveMeshShape* concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
-	PHYSICS_MUTEX.unlock();
+	//rp3d::TriangleVertexArray* triangleArray = new rp3d::TriangleVertexArray(mesh.vertices.size(), &mesh.vertices[0], sizeof(Vertex), mesh.indices.size() / 3, &mesh.indices[0], 3 * sizeof(unsigned int),
+	//	rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
+	//	rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
+	//PHYSICS_MUTEX.lock();
+	//rp3d::TriangleMesh* triangleMesh = PHYSICS_COMMON.createTriangleMesh();
+	//triangleMesh->addSubpart(triangleArray);
+	//rp3d::ConcaveMeshShape* concaveMesh = PHYSICS_COMMON.createConcaveMeshShape(triangleMesh);
+	//PHYSICS_MUTEX.unlock();
 
-	return { triangleArray, triangleMesh, concaveMesh };
+	//return { triangleArray, triangleMesh, concaveMesh };
+	return { nullptr, nullptr, nullptr };
 }

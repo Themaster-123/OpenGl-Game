@@ -13,8 +13,7 @@ namespace glg {
 	struct Cell {
 		Voxel voxels[8];
 
-		template<typename... T>
-		Cell(T&&... voxels);
+		Cell(std::initializer_list<Voxel> voxels);
 
 		Voxel& operator[] (size_t index);
 
@@ -43,9 +42,4 @@ namespace glg {
 
 		const Voxel& getVoxel(int index, const glm::ivec3 offset) const;
 	};
-
-	template<typename ...T>
-	inline Cell::Cell(T&&... voxels) : voxels(voxels)
-	{
-	}
 }
