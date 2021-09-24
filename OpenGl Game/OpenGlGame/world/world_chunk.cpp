@@ -7,6 +7,7 @@
 #include "../globals/models.h"
 #include "../globals/textures.h"
 #include "../mesh_gen/marching_cubes.h"
+#include <boost/multi_array.hpp>
 
 glg::world::Chunk::Chunk(glm::ivec2 position)
 {
@@ -118,7 +119,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position
 
 	glm::ivec3 resolution = CHUNK_RESOLUTION + glm::ivec3(1);
 
-	std::vector<Voxel> voxels((size_t)resolution.x * (size_t)resolution.y * (size_t)resolution.z);
+	boost::multi_array<Voxel, 3> voxels(boost::extents[(size_t)resolution.x][(size_t)resolution.y][(size_t)resolution.z]);
 	//voxels.reserve();
 
 	std::cout << voxels.size();
@@ -158,19 +159,19 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position
 				worldY = float(y) / resolution.y * world::CHUNK_SIZE.y;
 				worldZ = float(z) / resolution.z * world::CHUNK_SIZE.z;
 
-				voxels[x + resolution.y * (y + resolution.x * z)] = { world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldY),
-					float(worldZ + (position.y * world::CHUNK_SIZE.z))), glm::vec3(worldX, worldY, worldZ) };
+				voxels[x][y][z] = { world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldY),
+					float(worldZ + (position.y * world::CHUNK_SIZE.z))) * 2, glm::vec3(worldX, worldY, worldZ) };
 				index++;
 			}
 		}
 	}
 	std::cout << std::endl << index << std::endl;
 
-	MarchingCubes cubes(voxels, resolution, glm::vec3(1));
+	MarchingCubes cubes(voxels, glm::vec3(1));
 
 	std::vector<Texture2D> textures{ *textures::defaultTexture };
 
-	std::shared_ptr<Model> model = cubes.createModel(.001f, textures);
+	std::shared_ptr<Model> model = cubes.createModel(.2f, textures);
 	model->meshes[0].calculateNormals();
 
 	return model;

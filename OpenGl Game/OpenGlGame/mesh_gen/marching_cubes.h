@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include "../resources/model.h"
+#include <boost/multi_array.hpp>
 
 namespace glg {
 	struct Voxel {
@@ -22,11 +23,10 @@ namespace glg {
 
 	class MarchingCubes {
 	public:
-		std::vector<Voxel> voxels;
-		glm::ivec3 resolution;
+		boost::multi_array<Voxel, 3> voxels;
 		glm::vec3 voxelSize;
 
-		MarchingCubes(const std::vector<Voxel>& voxels, const glm::ivec3& resolution, const glm::vec3& voxelSize);
+		MarchingCubes(const boost::multi_array<Voxel, 3>& voxels, const glm::vec3& voxelSize);
 
 		std::shared_ptr<Model> createModel(float isoLevel, std::vector<Texture2D> textures) const;
 
@@ -36,10 +36,6 @@ namespace glg {
 
 		Voxel& getVoxel(const glm::ivec3& pos);
 
-		Voxel& getVoxel(int index, const glm::ivec3& offset);
-
 		const Voxel& getVoxel(const glm::ivec3& pos) const;
-
-		const Voxel& getVoxel(int index, const glm::ivec3 offset) const;
 	};
 }

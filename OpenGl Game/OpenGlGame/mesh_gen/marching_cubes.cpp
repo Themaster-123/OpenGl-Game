@@ -295,10 +295,10 @@ int indexTable[256][16] =
 {0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1} };
 
-glg::MarchingCubes::MarchingCubes(const std::vector<Voxel>& voxels, const glm::ivec3& resolution, const glm::vec3& voxelSize)
+glg::MarchingCubes::MarchingCubes(const boost::multi_array<Voxel, 3>& voxels, const glm::vec3& voxelSize)
 {
+	this->voxels.resize(boost::extents[voxels.shape()[0]][voxels.shape()[1]][voxels.shape()[2]]);
 	this->voxels = voxels;
-	this->resolution = resolution;
 	this->voxelSize = voxelSize;
 }
 
@@ -307,11 +307,13 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-	for (int i = 0, y = 0; y < resolution.y - 1; i++, y++) {
-		for (int x = 0; x < resolution.x - 1; i++, x++) {
-			for (int z = 0; z < resolution.z - 1; i++, z++) {
-				triangulateCell(Cell{ getVoxel(i, glm::ivec3(1, 0, 0)), getVoxel(i, glm::ivec3(1, 0, 1)), getVoxel(i, glm::ivec3(0, 0, 1)), getVoxel(i, glm::ivec3(0, 0, 0)),
-					getVoxel(i, glm::ivec3(1, 1, 0)), getVoxel(i, glm::ivec3(1, 1, 1)), getVoxel(i, glm::ivec3(0, 1, 1)), getVoxel(i, glm::ivec3(0, 1, 0)) }, vertices, indices, isoLevel);
+	for (int  y = 0; y < voxels.shape()[0] - 1; y++) {
+		for (int x = 0; x < voxels.shape()[1] - 1; x++) {
+			for (int z = 0; z < voxels.shape()[2] - 1; z++) {
+				glm::ivec3 pos(x, y, z);
+
+				triangulateCell(Cell{ getVoxel(pos + glm::ivec3(1, 0, 0)), getVoxel(pos + glm::ivec3(1, 0, 1)), getVoxel(pos + glm::ivec3(0, 0, 1)), getVoxel(pos + glm::ivec3(0, 0, 0)),
+					getVoxel(pos + glm::ivec3(1, 1, 0)), getVoxel(pos + glm::ivec3(1, 1, 1)), getVoxel(pos + glm::ivec3(0, 1, 1)), getVoxel(pos + glm::ivec3(0, 1, 0)) }, vertices, indices, isoLevel);
 			}
 		}
 	}
@@ -357,9 +359,9 @@ void glg::MarchingCubes::triangulateCell(const Cell& cell, std::vector<glg::Vert
 	if (edgeTable[cubeIndex] & 2048) verticesArray[11] = { interpolateVertexPosition(cell[3], cell[7], isoLevel), glm::vec3(0), glm::vec2(0) };
 
 	for (int i = 0; indexTable[cubeIndex][i] != -1; i += 3) {
-		indices.push_back(indexTable[cubeIndex][i]);
-		indices.push_back(indexTable[cubeIndex][i + 1]);
-		indices.push_back(indexTable[cubeIndex][i + 2]);
+		indices.push_back(vertices.size());
+		indices.push_back(vertices.size() + 1);
+		indices.push_back(vertices.size() + 2);
 
 		vertices.push_back(verticesArray[indexTable[cubeIndex][i]]);
 		vertices.push_back(verticesArray[indexTable[cubeIndex][i + 1]]);
@@ -369,27 +371,32 @@ void glg::MarchingCubes::triangulateCell(const Cell& cell, std::vector<glg::Vert
 
 glm::vec3 glg::MarchingCubes::interpolateVertexPosition(const Voxel& voxel1, const Voxel& voxel2, float isoLevel) const
 {
-	return glm::lerp(voxel1.position, voxel2.position, .5f);
+	/*glm::vec3 pos;
+
+	if (abs(isoLevel - voxel1.value) < 0.00001)
+		return voxel1.position;
+	if (abs(isoLevel - voxel2.value) < 0.00001)
+		return voxel2.position;
+	if (abs(voxel1.value - voxel2.value) < 0.00001)
+		return voxel1.position;
+	float mu = (isoLevel - voxel1.value) / (voxel2.value - voxel1.value);
+	pos.x = voxel1.position.x + mu * (voxel2.position.x - voxel1.position.x);
+	pos.y = voxel1.position.y + mu * (voxel2.position.y - voxel1.position.y);
+	pos.z = voxel1.position.z + mu * (voxel2.position.z - voxel1.position.z);
+
+	return pos;*/
+
+	return glm::vec3((voxel1.position.x + voxel2.position.x) / 2, (voxel1.position.y + voxel2.position.y) / 2, (voxel1.position.z + voxel2.position.z) / 2);
 }
 
 glg::Voxel& glg::MarchingCubes::getVoxel(const glm::ivec3& pos)
 {
-	return voxels[pos.x + resolution.x * (pos.y + resolution.z * pos.z)];
-}
-
-glg::Voxel& glg::MarchingCubes::getVoxel(int index, const glm::ivec3& offset)
-{
-	return voxels[index + (offset.x + resolution.y * (offset.y + resolution.x * offset.z))];
+	return voxels[pos.x][pos.y][pos.z];
 }
 
 const glg::Voxel& glg::MarchingCubes::getVoxel(const glm::ivec3& pos) const
 {
-	return voxels[pos.x + resolution.x * (pos.y + resolution.z * pos.z)];
-}
-
-const glg::Voxel& glg::MarchingCubes::getVoxel(int index, const glm::ivec3 offset) const
-{
-	return voxels[index + (offset.x + resolution.y * (offset.y + resolution.x * offset.z))];
+	return voxels[pos.x][pos.y][pos.z];
 }
 
 glg::Cell::Cell(std::initializer_list<Voxel> voxels)
