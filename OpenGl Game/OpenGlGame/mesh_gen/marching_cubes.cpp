@@ -371,7 +371,7 @@ void glg::MarchingCubes::triangulateCell(const Cell& cell, std::vector<glg::Vert
 
 glm::vec3 glg::MarchingCubes::interpolateVertexPosition(const Voxel& voxel1, const Voxel& voxel2, float isoLevel) const
 {
-	/*glm::vec3 pos;
+	glm::vec3 pos;
 
 	if (abs(isoLevel - voxel1.value) < 0.00001)
 		return voxel1.position;
@@ -384,9 +384,9 @@ glm::vec3 glg::MarchingCubes::interpolateVertexPosition(const Voxel& voxel1, con
 	pos.y = voxel1.position.y + mu * (voxel2.position.y - voxel1.position.y);
 	pos.z = voxel1.position.z + mu * (voxel2.position.z - voxel1.position.z);
 
-	return pos;*/
+	return pos;
 
-	return glm::vec3((voxel1.position.x + voxel2.position.x) / 2, (voxel1.position.y + voxel2.position.y) / 2, (voxel1.position.z + voxel2.position.z) / 2);
+	//return glm::vec3((voxel1.position.x + voxel2.position.x) / 2, (voxel1.position.y + voxel2.position.y) / 2, (voxel1.position.z + voxel2.position.z) / 2);
 }
 
 glg::Voxel& glg::MarchingCubes::getVoxel(const glm::ivec3& pos)
