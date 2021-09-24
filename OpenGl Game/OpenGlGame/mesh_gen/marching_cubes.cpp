@@ -315,6 +315,8 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 			}
 		}
 	}
+	std::cout << "ffa" << std::endl;
+	std::cout << vertices.size() << std::endl;
 
 	Mesh mesh(vertices, indices, textures, Material(glm::vec3(1), glm::vec3(1), glm::vec3(.3), 32));
 	mesh.calculateNormals();
@@ -322,7 +324,6 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 	auto model = std::make_shared<Model>();
 
 	model->meshes.push_back(mesh);
-
 	return model;
 }
 
@@ -378,7 +379,7 @@ glg::Voxel& glg::MarchingCubes::getVoxel(const glm::ivec3& pos)
 
 glg::Voxel& glg::MarchingCubes::getVoxel(int index, const glm::ivec3& offset)
 {
-	return voxels[index + offset.x + resolution.x * (offset.y + resolution.z * offset.z)];
+	return voxels[index + (offset.x + resolution.y * (offset.y + resolution.x * offset.z))];
 }
 
 const glg::Voxel& glg::MarchingCubes::getVoxel(const glm::ivec3& pos) const
@@ -388,7 +389,7 @@ const glg::Voxel& glg::MarchingCubes::getVoxel(const glm::ivec3& pos) const
 
 const glg::Voxel& glg::MarchingCubes::getVoxel(int index, const glm::ivec3 offset) const
 {
-	return voxels[index + offset.x + resolution.x * (offset.y + resolution.z * offset.z)];
+	return voxels[index + (offset.x + resolution.y * (offset.y + resolution.x * offset.z))];
 }
 
 glg::Cell::Cell(std::initializer_list<Voxel> voxels)
