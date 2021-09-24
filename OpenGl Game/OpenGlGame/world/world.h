@@ -9,9 +9,9 @@ namespace glg {
 
 		extern unsigned int CHUNK_LOAD_SIZE;
 
-		extern size_t CHUNK_RESOLUTION;
+		extern glm::ivec3 CHUNK_RESOLUTION;
 
-		extern float CHUNK_SIZE;
+		extern glm::vec3 CHUNK_SIZE;
 
 		void setNoiseSetting();
 

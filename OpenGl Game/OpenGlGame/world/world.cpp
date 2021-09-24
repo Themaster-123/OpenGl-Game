@@ -1,11 +1,11 @@
 #include "world.h"
 #include "../screen.h"
 
-float glg::world::CHUNK_SIZE = 32;
+glm::vec3 glg::world::CHUNK_SIZE = glm::vec3(32, 32 * 2, 32);
 
 unsigned int glg::world::CHUNK_LOAD_SIZE = 4;
 
-size_t glg::world::CHUNK_RESOLUTION = 32;
+glm::ivec3 glg::world::CHUNK_RESOLUTION = glm::ivec3(32, 32 * 2, 32);
 
 glg::world::NoiseSettings glg::world::NOISE_SETTINGS;
 
@@ -70,17 +70,17 @@ glm::ivec2 glg::world::World::getChunkPosition(glm::vec3 position)
 	glm::ivec2 chunkPos;
 
 	if (position.x < 0) {
-		chunkPos.x = int(std::floor(position.x / CHUNK_SIZE));
+		chunkPos.x = int(std::floor(position.x / CHUNK_SIZE.x));
 	}
 	else {
-		chunkPos.x = int(position.x / CHUNK_SIZE);
+		chunkPos.x = int(position.x / CHUNK_SIZE.x);
 	}
 
 	if (position.z < 0) {
-		chunkPos.y = int(std::floor(position.z / CHUNK_SIZE));
+		chunkPos.y = int(std::floor(position.z / CHUNK_SIZE.z));
 	}
 	else {
-		chunkPos.y = int(position.z / CHUNK_SIZE);
+		chunkPos.y = int(position.z / CHUNK_SIZE.z);
 	}
 
 	return chunkPos;
