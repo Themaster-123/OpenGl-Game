@@ -1,3 +1,3 @@
 #pragma once
 
-#define chunkVec glm::ivec2
+#define chunkVec glm::ivec3

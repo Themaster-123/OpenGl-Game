@@ -76,12 +76,29 @@ chunkVec glg::world::World::getChunkPosition(glm::vec3 position)
 		chunkPos.x = int(position.x / CHUNK_SIZE.x);
 	}
 
-	if (position.z < 0) {
-		chunkPos.y = int(std::floor(position.z / CHUNK_SIZE.z));
+	if (position.y < 0) {
+		chunkPos.y = int(std::floor(position.y / CHUNK_SIZE.y));
 	}
 	else {
-		chunkPos.y = int(position.z / CHUNK_SIZE.z);
+		chunkPos.y = int(position.y / CHUNK_SIZE.y);
+	}
+
+	if (position.z < 0) {
+		chunkPos.z = int(std::floor(position.z / CHUNK_SIZE.z));
+	}
+	else {
+		chunkPos.z = int(position.z / CHUNK_SIZE.z);
 	}
 
 	return chunkPos;
+}
+
+int glg::world::World::getChunkDistance(const chunkVec& chunkPos1, const chunkVec& chunkPos2)
+{
+	chunkVec pos = chunkPos1 - chunkPos2;
+	return std::max(std::max(abs(pos.x), abs(pos.y)), abs(pos.z));
+}
+
+bool glg::world::DistanceCompare(const chunkVec& vec1, const chunkVec& vec2) {
+	return glg::world::World::getChunkDistance(chunkVec(0), vec1) < glg::world::World::getChunkDistance(chunkVec(0), vec2);
 }

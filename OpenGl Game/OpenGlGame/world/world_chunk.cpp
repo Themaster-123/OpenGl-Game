@@ -10,7 +10,7 @@
 #include <boost/multi_array.hpp>
 #include <algorithm>
 
-glg::world::Chunk::Chunk(chunkVec position)
+glg::world::Chunk::Chunk(chunkVec position) : position(position)
 {
 	this->model = generateModel(position);
 	glg::Mesh& mesh = model->meshes[0];
@@ -41,7 +41,7 @@ glg::world::Chunk::~Chunk()
 glg::Object glg::world::Chunk::createObject()
 {
 	Object object;
-	object.addComponent<TransformComponent>(glm::vec3(position.x, 0, position.y) * world::CHUNK_SIZE, glm::identity<glm::quat>());
+	object.addComponent<TransformComponent>(glm::vec3(position.x, position.y, position.z) * world::CHUNK_SIZE, glm::identity<glm::quat>());
 
 	object.addComponent<ModelComponent>(model.get(), shaders::defaultShader);
 
@@ -82,19 +82,23 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& pos
 		for (int z = 0; z < resolution.z; z++) {
 			worldX = float(x) / CHUNK_RESOLUTION.x * world::CHUNK_SIZE.x;
 			worldZ = float(z) / CHUNK_RESOLUTION.z * world::CHUNK_SIZE.z;
-			float noiseValue = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldZ + (position.y * world::CHUNK_SIZE.y)));
-			noiseValue = ((noiseValue + 1) / 2);
+			//float noiseValue = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldZ + (position.z * world::CHUNK_SIZE.y)));
+			//noiseValue = ((noiseValue + 1) / 2);
 
-			float displacementValue = noiseValue * world::NOISE_SETTINGS.displacementHeight / CHUNK_RESOLUTION.y * world::CHUNK_SIZE.y + 15;
+			//float displacementValue = noiseValue * world::NOISE_SETTINGS.displacementHeight / CHUNK_RESOLUTION.y * world::CHUNK_SIZE.y + 15;
 
 			for (int y = 0; y < resolution.y; y++) {
 				worldY = float(y) / CHUNK_RESOLUTION.y * world::CHUNK_SIZE.y;
 
-				//float noiseValue3D = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldY),
-				//	float(worldZ + (position.y * world::CHUNK_SIZE.z)));
-				//noiseValue3D = ((noiseValue3D + 1) / 2);
+				float noiseValue3D = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldY) + (position.y * world::CHUNK_SIZE.y),
+					float(worldZ + (position.z * world::CHUNK_SIZE.z)));
+				noiseValue3D = -((noiseValue3D + 1) / 2);
+				noiseValue3D *= world::NOISE_SETTINGS.displacementHeight;
 
-				float value = worldY - displacementValue;
+				float value = float(worldY) + (position.y * world::CHUNK_SIZE.y);
+
+				value += noiseValue3D;
+
 
 				//if (noiseValue3D > .3)
 

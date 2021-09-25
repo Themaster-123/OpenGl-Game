@@ -28,6 +28,8 @@ namespace glg {
 
 		extern NoiseSettings NOISE_SETTINGS;
 
+		bool DistanceCompare(const chunkVec& vec1, const chunkVec& vec2);
+
 		class World {
 		public:
 			struct ChunkPositionComparator {
@@ -51,6 +53,8 @@ namespace glg {
 			bool isChunkLoaded(const chunkVec& chunkPos) const;
 
 			static chunkVec getChunkPosition(glm::vec3 position);
+
+			static int getChunkDistance(const chunkVec& chunkPos1, const chunkVec& chunkPos2);
 
 		protected:
 			mutable std::mutex chunksMutex;
