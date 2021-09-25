@@ -3,8 +3,7 @@
 #include <map>
 #include <glm/glm.hpp>
 #include <mutex>
-
-#define chunkVec glm::ivec2
+#include "../globals/macros.h"
 
 namespace glg {
 	namespace world {

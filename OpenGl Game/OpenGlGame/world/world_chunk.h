@@ -3,7 +3,7 @@
 #include "../resources/model.h"
 #include "../essential/object.h"
 #include <reactphysics3d/reactphysics3d.h>
-#include "world.h"
+#include "../globals/macros.h"
 
 namespace glg {
 	namespace world {
@@ -17,7 +17,7 @@ namespace glg {
 
 			~Chunk();
 
-			static std::shared_ptr<Model> generateModel(chunkVec position, chunkVec xNeighbor, chunkVec yNeighbor, chunkVec diagonalNeighbor);
+			static std::shared_ptr<Model> generateModel(const chunkVec& position);
 
 			static std::tuple<rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*> generateConcaveMeshShape(std::shared_ptr<const Model> model);
 

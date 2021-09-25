@@ -233,5 +233,8 @@
     <ClInclude Include="OpenGlGame\mesh_gen\marching_cubes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGlGame\globals\macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -11,7 +11,7 @@
 
 glg::world::Chunk::Chunk(chunkVec position)
 {
-	this->model = generateModel(position, position, position, position);
+	this->model = generateModel(position);
 	glg::Mesh& mesh = model->meshes[0];
 	mesh.setupMesh();
 
@@ -69,7 +69,7 @@ glg::Object glg::world::Chunk::createObject()
 	return object;
 }
 
-std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(chunkVec position, chunkVec xNeighbor, chunkVec yNeighbor, chunkVec diagonalNeighbor)
+std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& position)
 {
 	//size_t resolution = CHUNK_RESOLUTION;
 
@@ -118,6 +118,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(chunkVec position, 
 	//model->meshes.push_back(mesh);
 
 	glm::ivec3 resolution = CHUNK_RESOLUTION + glm::ivec3(1);
+	//glm::ivec3 borderChunkSize = CHUNK_SIZE + (c)
 
 	boost::multi_array<Voxel, 3> voxels(boost::extents[(size_t)resolution.x][(size_t)resolution.y][(size_t)resolution.z]);
 	//voxels.reserve();
@@ -158,9 +159,9 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(chunkVec position, 
 	for (int y = 0; y < resolution.y; y++) {
 		for (int x = 0; x < resolution.x; x++) {
 			for (int z = 0; z < resolution.z; z++) {
-				worldX = float(x) / resolution.x * world::CHUNK_SIZE.x;
-				worldY = float(y) / resolution.y * world::CHUNK_SIZE.y;
-				worldZ = float(z) / resolution.z * world::CHUNK_SIZE.z;
+				worldX = float(x) / CHUNK_RESOLUTION.x * world::CHUNK_SIZE.x;
+				worldY = float(y) / CHUNK_RESOLUTION.y * world::CHUNK_SIZE.y;
+				worldZ = float(z) / CHUNK_RESOLUTION.z * world::CHUNK_SIZE.z;
 				float noiseValue = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldY),
 					float(worldZ + (position.y * world::CHUNK_SIZE.z)));
 				noiseValue = ((noiseValue + 1) / 2);

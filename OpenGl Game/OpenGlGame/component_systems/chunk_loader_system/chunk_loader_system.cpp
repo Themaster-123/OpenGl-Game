@@ -95,7 +95,9 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 				loadPos = chunkPos - offsetPos;
 				THREAD_CHUNK_MUTEX.lock();
 				if (!THREAD_CHUNK_MODELS.contains(loadPos) && !scene::WORLD.isChunkLoaded(loadPos)) {
+
 					THREAD_CHUNK_MUTEX.unlock();
+
 					std::shared_ptr<Model> model = glg::world::Chunk::generateModel(loadPos);
 
 					auto [triangleArray, triangleMesh, concaveMesh] = glg::world::Chunk::generateConcaveMeshShape(model);
