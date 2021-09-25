@@ -31,25 +31,25 @@ glg::world::World::World() : chunks()
 {
 }
 
-void glg::world::World::loadChunk(glm::ivec2 chunkPos)
+void glg::world::World::loadChunk(chunkVec chunkPos)
 {
 	if (!isChunkLoaded(chunkPos)) {
 		chunksMutex.lock();
-		chunks.insert(std::pair<glm::ivec2, std::shared_ptr<Chunk>>(chunkPos, std::make_shared<Chunk>(chunkPos)));
+		chunks.insert(std::pair<chunkVec, std::shared_ptr<Chunk>>(chunkPos, std::make_shared<Chunk>(chunkPos)));
 		chunksMutex.unlock();
 	}
 }
 
-void glg::world::World::loadChunk(glm::ivec2 chunkPos, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh)
+void glg::world::World::loadChunk(chunkVec chunkPos, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh)
 {
 	if (!isChunkLoaded(chunkPos)) {
 		chunksMutex.lock();
-		chunks.insert(std::pair<glm::ivec2, std::shared_ptr<Chunk>>(chunkPos, std::make_shared<Chunk>(chunkPos, model, triangleArray, triangleMesh, concaveMesh)));
+		chunks.insert(std::pair<chunkVec, std::shared_ptr<Chunk>>(chunkPos, std::make_shared<Chunk>(chunkPos, model, triangleArray, triangleMesh, concaveMesh)));
 		chunksMutex.unlock();
 	}
 }
 
-void glg::world::World::unloadChunk(const glm::ivec2& chunkPos)
+void glg::world::World::unloadChunk(const chunkVec& chunkPos)
 {
 	if (isChunkLoaded(chunkPos)) {
 		chunksMutex.lock();
@@ -58,16 +58,16 @@ void glg::world::World::unloadChunk(const glm::ivec2& chunkPos)
 	}
 }
 
-bool glg::world::World::isChunkLoaded(const glm::ivec2& chunkPos) const {
+bool glg::world::World::isChunkLoaded(const chunkVec& chunkPos) const {
 	chunksMutex.lock();
 	bool contains = chunks.contains(chunkPos);
 	chunksMutex.unlock();
 	return contains;
 }
 
-glm::ivec2 glg::world::World::getChunkPosition(glm::vec3 position)
+chunkVec glg::world::World::getChunkPosition(glm::vec3 position)
 {
-	glm::ivec2 chunkPos;
+	chunkVec chunkPos;
 
 	if (position.x < 0) {
 		chunkPos.x = int(std::floor(position.x / CHUNK_SIZE.x));

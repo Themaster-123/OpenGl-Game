@@ -9,9 +9,9 @@
 #include "../mesh_gen/marching_cubes.h"
 #include <boost/multi_array.hpp>
 
-glg::world::Chunk::Chunk(glm::ivec2 position)
+glg::world::Chunk::Chunk(chunkVec position)
 {
-	this->model = generateModel(position);
+	this->model = generateModel(position, position, position, position);
 	glg::Mesh& mesh = model->meshes[0];
 	mesh.setupMesh();
 
@@ -20,7 +20,7 @@ glg::world::Chunk::Chunk(glm::ivec2 position)
 	object = createObject();
 }
 
-glg::world::Chunk::Chunk(glm::ivec2 position, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh) : position(position)/*, triangleArray(triangleArray)
+glg::world::Chunk::Chunk(chunkVec position, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh) : position(position)/*, triangleArray(triangleArray)
 , triangleMesh(triangleMesh), concaveMesh(concaveMesh)*/
 {
 	this->model = model;
@@ -69,7 +69,7 @@ glg::Object glg::world::Chunk::createObject()
 	return object;
 }
 
-std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position)
+std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(chunkVec position, chunkVec xNeighbor, chunkVec yNeighbor, chunkVec diagonalNeighbor)
 {
 	//size_t resolution = CHUNK_RESOLUTION;
 
@@ -155,7 +155,6 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position
 
 	float worldX, worldZ, worldY;
 
-	int index = 0;
 	for (int y = 0; y < resolution.y; y++) {
 		for (int x = 0; x < resolution.x; x++) {
 			for (int z = 0; z < resolution.z; z++) {
@@ -169,7 +168,6 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(glm::ivec2 position
 				//std::cout << noiseValue << std::endl;
 
 				voxels[x][y][z] = { noiseValue, glm::vec3(worldX, worldY, worldZ) };
-				index++;
 			}
 		}
 	}

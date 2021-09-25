@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <mutex>
 
+#define chunkVec glm::ivec2
+
 namespace glg {
 	namespace world {
 
@@ -30,26 +32,26 @@ namespace glg {
 		class World {
 		public:
 			struct ChunkPositionComparator {
-				size_t operator()(const glm::ivec2& vec) const {
+				size_t operator()(const chunkVec& vec) const {
 					size_t lhs = std::hash<int>()(vec.x);
 					return lhs ^ (std::hash<int>()(vec.y) + 0x9e3779b9 + (lhs << 6) + (lhs >> 2));
 				}
 
 			};
 
-			std::unordered_map<glm::ivec2, std::shared_ptr<Chunk>, ChunkPositionComparator> chunks;
+			std::unordered_map<chunkVec, std::shared_ptr<Chunk>, ChunkPositionComparator> chunks;
 
 			World();
 
-			void loadChunk(glm::ivec2 chunkPos);
+			void loadChunk(chunkVec chunkPos);
 
-			void loadChunk(glm::ivec2 chunkPos, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh);
+			void loadChunk(chunkVec chunkPos, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh);
 
-			void unloadChunk(const glm::ivec2& chunkPos);
+			void unloadChunk(const chunkVec& chunkPos);
 
-			bool isChunkLoaded(const glm::ivec2& chunkPos) const;
+			bool isChunkLoaded(const chunkVec& chunkPos) const;
 
-			static glm::ivec2 getChunkPosition(glm::vec3 position);
+			static chunkVec getChunkPosition(glm::vec3 position);
 
 		protected:
 			mutable std::mutex chunksMutex;

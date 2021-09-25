@@ -7,7 +7,7 @@
 
 std::atomic<bool> CHUNK_LOAD_LOOP_RUNNING = true;
 
-std::unordered_map<glm::ivec2, std::tuple<std::shared_ptr<glg::Model>, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>, glg::world::World::ChunkPositionComparator> THREAD_CHUNK_MODELS;
+std::unordered_map<chunkVec, std::tuple<std::shared_ptr<glg::Model>, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>, glg::world::World::ChunkPositionComparator> THREAD_CHUNK_MODELS;
 std::mutex THREAD_CHUNK_MUTEX;
 
 glg::ChunkLoaderSystem::ChunkLoaderSystem() : ComponentSystem()
@@ -47,12 +47,12 @@ void glg::ChunkLoaderSystem::update()
 
 		const auto& transformComponent = playerView.get<TransformComponent>(entity);
 
-		glm::ivec2 chunkPos = world::World::getChunkPosition(transformComponent.position);
+		chunkVec chunkPos = world::World::getChunkPosition(transformComponent.position);
 
-		std::vector<glm::ivec2> chunksToDelete;
+		std::vector<chunkVec> chunksToDelete;
 
 		for (const auto& [pos, chunk] : scene::WORLD.chunks) {
-			glm::ivec2 localPos = chunkPos - pos;
+			chunkVec localPos = chunkPos - pos;
 			unsigned int distance = unsigned(std::max(abs(localPos.x), abs(localPos.y)));
 
 			if (distance >= (world::CHUNK_LOAD_SIZE * 2) + 1) {
@@ -77,12 +77,12 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 
 			const auto& transformComponent = object.get<TransformComponent>();
 
-			glm::ivec2 chunkPos = world::World::getChunkPosition(transformComponent.position);
+			chunkVec chunkPos = world::World::getChunkPosition(transformComponent.position);
 
 
-			glm::ivec2 offsetPos(0, 0);
-			glm::ivec2 direction(0, -1);
-			glm::ivec2 loadPos;
+			chunkVec offsetPos(0, 0);
+			chunkVec direction(0, -1);
+			chunkVec loadPos;
 			int sizeSqrd = ((world::CHUNK_LOAD_SIZE * 2) + 1) * ((world::CHUNK_LOAD_SIZE * 2) + 1);
 			int moveAmount = 1;
 
@@ -101,7 +101,7 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 					auto [triangleArray, triangleMesh, concaveMesh] = glg::world::Chunk::generateConcaveMeshShape(model);
 
 					THREAD_CHUNK_MUTEX.lock();
-					THREAD_CHUNK_MODELS.insert(std::pair<glm::ivec2, std::tuple<std::shared_ptr<Model>, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>>(loadPos,
+					THREAD_CHUNK_MODELS.insert(std::pair<chunkVec, std::tuple<std::shared_ptr<Model>, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>>(loadPos,
 						{ model, triangleArray, triangleMesh, concaveMesh }));
 					THREAD_CHUNK_MUTEX.unlock();
 					break;
