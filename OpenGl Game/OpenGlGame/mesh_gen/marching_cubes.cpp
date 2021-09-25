@@ -2,6 +2,8 @@
 #include <cmath>
 #include <glm/gtx/compatibility.hpp>
 #include <vector>
+#include <future>
+#include <GLFW/glfw3.h>
 
 int edgeTable[256] = {
 0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -304,23 +306,40 @@ glg::MarchingCubes::MarchingCubes(const boost::multi_array<Voxel, 3>& voxels, co
 
 std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std::vector<Texture2D> textures) const
 {
+	float lastTime = glfwGetTime();
+
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-	
+	std::vector<std::future<std::tuple<std::vector<Vertex>, std::vector<unsigned int>>>> futures;
 
-	for (int  y = 0; y < voxels.shape()[0] - 1; y++) {
-		for (int x = 0; x < voxels.shape()[1] - 1; x++) {
-			for (int z = 0; z < voxels.shape()[2] - 1; z++) {
-				glm::ivec3 pos(x, y, z);
+	for (int x = 0; x < voxels.shape()[0] - 1; x++) {
+		futures.push_back(std::async(std::launch::async, [this, x, &isoLevel]() ->std::tuple<std::vector<Vertex>, std::vector<unsigned int>> {
+			std::vector<Vertex> vertices;
+			std::vector<unsigned int> indices;
 
-				triangulateCell(Cell{ getVoxel(pos + glm::ivec3(1, 0, 0)), getVoxel(pos + glm::ivec3(1, 0, 1)), getVoxel(pos + glm::ivec3(0, 0, 1)), getVoxel(pos + glm::ivec3(0, 0, 0)),
-					getVoxel(pos + glm::ivec3(1, 1, 0)), getVoxel(pos + glm::ivec3(1, 1, 1)), getVoxel(pos + glm::ivec3(0, 1, 1)), getVoxel(pos + glm::ivec3(0, 1, 0)) }, vertices, indices, isoLevel);
+			for (int y = 0; y < voxels.shape()[1] - 1; y++) {
+				for (int z = 0; z < voxels.shape()[2] - 1; z++) {
+					glm::ivec3 pos(x, y, z);
+
+					triangulateCell(Cell{ getVoxel(pos + glm::ivec3(1, 0, 0)), getVoxel(pos + glm::ivec3(1, 0, 1)), getVoxel(pos + glm::ivec3(0, 0, 1)), getVoxel(pos + glm::ivec3(0, 0, 0)),
+						getVoxel(pos + glm::ivec3(1, 1, 0)), getVoxel(pos + glm::ivec3(1, 1, 1)), getVoxel(pos + glm::ivec3(0, 1, 1)), getVoxel(pos + glm::ivec3(0, 1, 0)) }, vertices, indices, isoLevel);
+				}
 			}
-		}
+
+			return { vertices, indices };
+			}));
 	}
-	std::cout << "ffa" << std::endl;
-	std::cout << vertices.size() << std::endl;
+
+	for (auto& mFuture : futures) {
+		auto [fVertices, fIndices] = mFuture.get();
+
+		for (auto& index : fIndices) {
+			indices.push_back(vertices.size() + index);
+		}
+
+		vertices.insert(vertices.end(), fVertices.begin(), fVertices.end());
+	}
 
 	Mesh mesh(vertices, indices, textures, Material(glm::vec3(1), glm::vec3(1), glm::vec3(.3), 32));
 	mesh.calculateNormals();
@@ -328,6 +347,9 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 	auto model = std::make_shared<Model>();
 
 	model->meshes.push_back(mesh);
+
+	std::cout << glfwGetTime() - lastTime << std::endl;
+	
 	return model;
 }
 
