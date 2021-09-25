@@ -4,7 +4,6 @@
 #include "../../world/world.h"
 #include <reactphysics3d/reactphysics3d.h>
 #include "../../physics.h"
-#include <boost/sort/pdqsort/pdqsort.hpp>
 
 std::atomic<bool> CHUNK_LOAD_LOOP_RUNNING = true;
 
@@ -79,46 +78,13 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 
 			chunkVec chunkPos = world::World::getChunkPosition(transformComponent.position);
 
+
 			chunkVec offsetPos(0, 0, 0);
 			glm::ivec2 direction(0, -1);
 			chunkVec loadPos;
 			int realSize = (world::CHUNK_LOAD_SIZE * 2) + 1;
 			int sizeSqrd = (realSize * realSize);
-
-			std::vector<chunkVec> chunksToLoad;
-			chunksToLoad.reserve(realSize * realSize * realSize);
-
-			THREAD_CHUNK_MUTEX.lock();
-			for (int x = -(realSize / 2); x <= (realSize / 2); x++) {
-				for (int y = -(realSize / 2); y <= (realSize / 2); y++) {
-					for (int z = -(realSize / 2); z <= (realSize / 2); z++) {
-						loadPos = chunkPos + chunkVec(x, y, z);
-
-						if (!THREAD_CHUNK_MODELS.contains(loadPos) && !scene::WORLD.isChunkLoaded(loadPos)) {
-							chunksToLoad.push_back(chunkPos);
-						}
-					}
-				}
-			}
-			THREAD_CHUNK_MUTEX.unlock();
-
-			boost::sort::pdqsort(chunksToLoad.begin(), chunksToLoad.end(), &world::DistanceCompare);
-
-			for (const chunkVec& chunk : chunksToLoad) {
-				loadPos = chunkPos + chunk;
-
-				std::shared_ptr<Model> model = glg::world::Chunk::generateModel(loadPos);
-
-				auto [triangleArray, triangleMesh, concaveMesh] = glg::world::Chunk::generateConcaveMeshShape(model);
-
-				THREAD_CHUNK_MUTEX.lock();
-				THREAD_CHUNK_MODELS.insert(std::pair<chunkVec, std::tuple<std::shared_ptr<Model>, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>>(loadPos,
-					{ model, triangleArray, triangleMesh, concaveMesh }));
-				THREAD_CHUNK_MUTEX.unlock();
-				break;
-			}
-
-			/*int moveAmount = 1;
+			int moveAmount = 1;
 
 			for (int i = 0, increase = 0, amountMoved = 0; i < sizeSqrd; i++, amountMoved++) {
 				if (increase == 2) {
@@ -129,7 +95,6 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 				loadPos = chunkPos - offsetPos;
 				THREAD_CHUNK_MUTEX.lock();
 				if (!THREAD_CHUNK_MODELS.contains(loadPos) && !scene::WORLD.isChunkLoaded(loadPos)) {
-
 					THREAD_CHUNK_MUTEX.unlock();
 
 					std::shared_ptr<Model> model = glg::world::Chunk::generateModel(loadPos);
@@ -156,7 +121,7 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 
 				offsetPos.x += direction.x;
 				offsetPos.z += direction.y;
-			}*/
+			}
 		}
 
 		scene::PLAYER_MUTEX.unlock();
