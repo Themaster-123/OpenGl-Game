@@ -8,6 +8,7 @@
 #include "../globals/textures.h"
 #include "../mesh_gen/marching_cubes.h"
 #include <boost/multi_array.hpp>
+#include <algorithm>
 
 glg::world::Chunk::Chunk(chunkVec position)
 {
@@ -71,104 +72,33 @@ glg::Object glg::world::Chunk::createObject()
 
 std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& position)
 {
-	//size_t resolution = CHUNK_RESOLUTION;
-
-	//std::vector<Vertex> vertices;
-	//vertices.reserve((resolution + 1) * (resolution + 1));
-	//std::vector<unsigned int> indices(resolution * resolution * 6);
-
-	//for (int x = 0; x <= resolution; x++) {
-	//	for (int z = 0; z <= resolution; z++) {
-	//		float localX, localZ;
-	//		localX = float(x) / resolution * world::CHUNK_SIZE;
-	//		localZ = float(z) / resolution * world::CHUNK_SIZE;
-
-	//		float displacement = world::NOISE_SETTINGS.noise.GetNoise(float(localX + (position.x * world::CHUNK_SIZE)), float(localZ + (position.y * world::CHUNK_SIZE))) * world::NOISE_SETTINGS.displacementHeight;
-
-	//		vertices.emplace_back(glm::vec3(localX, displacement, localZ), glm::vec3(0, 1, 0), glm::vec2(0, 0));
-	//	}
-	//}
-
-	//for (size_t ii = 0, vi = 0, x = 0; x < resolution; x++, vi++) {
-	//	for (size_t z = 0; z < resolution; z++, ii += 6, vi++) {
-	//		indices[ii] = vi;
-	//		indices[ii + 4] = indices[ii + 1] = vi + 1;
-	//		indices[ii + 3] = indices[ii + 2] = vi + resolution + 1;
-	//		indices[ii + 5] = vi + resolution + 2;
-	//	}
-	//}
-
-	//std::vector<Vertex> newVertices;
-	//newVertices.reserve(indices.size());
-	//std::vector<unsigned int> newIndices;
-	//newIndices.reserve(indices.size());
-	//for (size_t i = 0; i < indices.size(); i++) {
-	//	newVertices.push_back(vertices[indices[i]]);
-	//	newIndices.emplace_back(i);
-	//}
-
-	//std::vector<Texture2D> textures { *textures::defaultTexture };
-
-
-	//Mesh mesh(newVertices, newIndices, textures, Material(glm::vec3(1), glm::vec3(1), glm::vec3(.3), 32));
-	//mesh.calculateNormals();
-
-	//auto model = std::make_shared<Model>();
-
-	//model->meshes.push_back(mesh);
-
 	glm::ivec3 resolution = CHUNK_RESOLUTION + glm::ivec3(1);
-	//glm::ivec3 borderChunkSize = CHUNK_SIZE + (c)
 
 	boost::multi_array<Voxel, 3> voxels(boost::extents[(size_t)resolution.x][(size_t)resolution.y][(size_t)resolution.z]);
-	//voxels.reserve();
-
-	/*std::cout << voxels.size();
-
-	float maxNoiseValue = 0;
-
-	for (int x = 0; x < resolution.x; x++) {
-		for (int z = 0; z < resolution.z; z++) {
-			float worldX, worldZ, worldY;
-			worldX = float(x) / resolution.x * world::CHUNK_SIZE.x;
-			worldZ = float(z) / resolution.z * world::CHUNK_SIZE.z;
-			float noiseValue = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldZ + (position.y * world::CHUNK_SIZE.y)));
-			noiseValue = ((noiseValue + 1) / 2);
-
-			float displacementValue = noiseValue * world::NOISE_SETTINGS.displacementHeight / resolution.y * CHUNK_SIZE.y;
-
-			for (int y = 0; y < resolution.y; y++) {
-				worldY = float(y) / resolution.y * world::CHUNK_SIZE.y;
-
-				if (worldY > displacementValue) {
-					noiseValue = 1.1;
-				}
-				else {
-					noiseValue = displacementValue / world::NOISE_SETTINGS.displacementHeight;
-				}
-
-				//std::cout << x + resolution.x * (y + resolution.z * z) << std::endl;
-
-				voxels[x][y][z] = { noiseValue, glm::vec3(worldX, worldY, worldZ) };
-			}
-		}
-	}*/
 
 	float worldX, worldZ, worldY;
 
-	for (int y = 0; y < resolution.y; y++) {
-		for (int x = 0; x < resolution.x; x++) {
-			for (int z = 0; z < resolution.z; z++) {
-				worldX = float(x) / CHUNK_RESOLUTION.x * world::CHUNK_SIZE.x;
+	for (int x = 0; x < resolution.x; x++) {
+		for (int z = 0; z < resolution.z; z++) {
+			worldX = float(x) / CHUNK_RESOLUTION.x * world::CHUNK_SIZE.x;
+			worldZ = float(z) / CHUNK_RESOLUTION.z * world::CHUNK_SIZE.z;
+			float noiseValue = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldZ + (position.y * world::CHUNK_SIZE.y)));
+			noiseValue = ((noiseValue + 1) / 2);
+
+			float displacementValue = noiseValue * world::NOISE_SETTINGS.displacementHeight / CHUNK_RESOLUTION.y * world::CHUNK_SIZE.y + 15;
+
+			for (int y = 0; y < resolution.y; y++) {
 				worldY = float(y) / CHUNK_RESOLUTION.y * world::CHUNK_SIZE.y;
-				worldZ = float(z) / CHUNK_RESOLUTION.z * world::CHUNK_SIZE.z;
-				float noiseValue = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldY),
-					float(worldZ + (position.y * world::CHUNK_SIZE.z)));
-				noiseValue = ((noiseValue + 1) / 2);
 
-				//std::cout << noiseValue << std::endl;
+				//float noiseValue3D = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldY),
+				//	float(worldZ + (position.y * world::CHUNK_SIZE.z)));
+				//noiseValue3D = ((noiseValue3D + 1) / 2);
 
-				voxels[x][y][z] = { noiseValue, glm::vec3(worldX, worldY, worldZ) };
+				float value = worldY - displacementValue;
+
+				//if (noiseValue3D > .3)
+
+				voxels[x][y][z] = { value , glm::vec3(worldX, worldY, worldZ) };
 			}
 		}
 	}
@@ -177,7 +107,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& pos
 
 	std::vector<Texture2D> textures{ *textures::defaultTexture };
 
-	std::shared_ptr<Model> model = cubes.createModel(.4, textures);
+	std::shared_ptr<Model> model = cubes.createModel(.5f, textures);
 	model->meshes[0].calculateNormals();
 
 	return model;
