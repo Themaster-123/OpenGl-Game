@@ -177,7 +177,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& pos
 
 	std::vector<Texture2D> textures{ *textures::defaultTexture };
 
-	std::shared_ptr<Model> model = cubes.createModel(.6, textures);
+	std::shared_ptr<Model> model = cubes.createModel(.4, textures);
 	model->meshes[0].calculateNormals();
 
 	return model;

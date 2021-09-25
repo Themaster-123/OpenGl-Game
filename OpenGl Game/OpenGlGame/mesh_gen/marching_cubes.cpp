@@ -307,6 +307,8 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
+	
+
 	for (int  y = 0; y < voxels.shape()[0] - 1; y++) {
 		for (int x = 0; x < voxels.shape()[1] - 1; x++) {
 			for (int z = 0; z < voxels.shape()[2] - 1; z++) {
@@ -329,7 +331,7 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 	return model;
 }
 
-void glg::MarchingCubes::triangulateCell(const Cell& cell, std::vector<glg::Vertex>& vertices, std::vector<unsigned int>& indices, float isoLevel) const
+void glg::MarchingCubes::triangulateCell(const Cell& cell, std::vector<glg::Vertex>& vertices, std::vector<unsigned int>& indices, float isoLevel)
 {
 	int cubeIndex = 0;
 	glg::Vertex verticesArray[12];
@@ -369,7 +371,7 @@ void glg::MarchingCubes::triangulateCell(const Cell& cell, std::vector<glg::Vert
 	}
 }
 
-glm::vec3 glg::MarchingCubes::interpolateVertexPosition(const Voxel& voxel1, const Voxel& voxel2, float isoLevel) const
+glm::vec3 glg::MarchingCubes::interpolateVertexPosition(const Voxel& voxel1, const Voxel& voxel2, float isoLevel)
 {
 	glm::vec3 pos;
 

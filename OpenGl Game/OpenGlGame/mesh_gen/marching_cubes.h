@@ -30,9 +30,9 @@ namespace glg {
 
 		std::shared_ptr<Model> createModel(float isoLevel, std::vector<Texture2D> textures) const;
 
-		void triangulateCell(const Cell& cell, std::vector<glg::Vertex>& vertices, std::vector<unsigned int>& indices, float isoLevel) const;
+		static void triangulateCell(const Cell& cell, std::vector<glg::Vertex>& vertices, std::vector<unsigned int>& indices, float isoLevel);
 
-		glm::vec3 interpolateVertexPosition(const Voxel& voxel1, const Voxel& voxel2, float isoLevel) const;
+		static glm::vec3 interpolateVertexPosition(const Voxel& voxel1, const Voxel& voxel2, float isoLevel);
 
 		Voxel& getVoxel(const glm::ivec3& pos);
 
