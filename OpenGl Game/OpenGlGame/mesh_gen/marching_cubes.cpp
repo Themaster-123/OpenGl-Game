@@ -341,8 +341,7 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 		vertices.insert(vertices.end(), fVertices.begin(), fVertices.end());
 	}
 
-	Mesh mesh(vertices, indices, textures, Material(glm::vec3(1), glm::vec3(1), glm::vec3(.3), 32));
-	mesh.calculateNormals();
+	Mesh mesh(vertices, indices, textures, Material(glm::vec3(1), glm::vec3(1), glm::vec3(.3), 32), false);
 
 	auto model = std::make_shared<Model>();
 

@@ -77,6 +77,7 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 			const auto& transformComponent = object.get<TransformComponent>();
 
 			chunkVec chunkPos = world::World::getChunkPosition(transformComponent.position);
+			chunkPos.y = 0;
 
 
 			chunkVec offsetPos(0, 0, 0);
