@@ -23,6 +23,8 @@ namespace glg {
 
 		Shader(const char* vertexPath, const char* fragmentPath);
 
+		Shader(const char* computePath);
+
 		void use() {
 			glUseProgram(ID);
 		}
@@ -80,8 +82,7 @@ namespace glg {
 
 		enum class CompileErrorType
 		{
-			Vertex,
-			Fragment,
+			Shader,
 			Program
 		};
 

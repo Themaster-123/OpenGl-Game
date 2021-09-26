@@ -29,13 +29,13 @@ glg::Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vShaderCode, NULL);
 	glCompileShader(vertexShader);
-	checkCompileErrors(vertexShader, CompileErrorType::Vertex);
+	checkCompileErrors(vertexShader, CompileErrorType::Shader);
 
 	// Compiling Fragment Shader
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fShaderCode, NULL);
 	glCompileShader(fragmentShader);
-	checkCompileErrors(fragmentShader, CompileErrorType::Fragment);
+	checkCompileErrors(fragmentShader, CompileErrorType::Shader);
 
 	ID = glCreateProgram();
 	glAttachShader(ID, vertexShader);
@@ -45,5 +45,41 @@ glg::Shader::Shader(const char* vertexPath, const char* fragmentPath)
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	glUseProgram(ID);
+}
+
+glg::Shader::Shader(const char* computePath)
+{
+	std::string computeCode;
+	std::ifstream cShaderFile;
+	cShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+	try {
+		cShaderFile.open(computePath);
+		std::stringstream cShaderStream;
+		cShaderStream << cShaderFile.rdbuf();
+		computeCode = cShaderStream.str();
+	}
+	catch (std::ifstream::failure ex) {
+		std::cout << "Could not read shader file" << std::endl;
+	}
+
+	const char* cShaderCode = computeCode.c_str();
+	unsigned int computeShader;
+	// Compiling Vertex Shader
+	computeShader = glCreateShader(GL_COMPUTE_SHADER);
+	glShaderSource(computeShader, 1, &cShaderCode, NULL);
+	glCompileShader(computeShader);
+	checkCompileErrors(computeShader, CompileErrorType::Shader);
+
+	// Compiling Fragment Shader
+
+
+	ID = glCreateProgram();
+	glAttachShader(ID, computeShader);
+	glLinkProgram(ID);
+	checkCompileErrors(ID, CompileErrorType::Program);
+
+	glDeleteShader(computeShader);
 	glUseProgram(ID);
 }
