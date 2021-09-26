@@ -9,6 +9,7 @@ Shader* shaders::defaultShader;
 void glg::shaders::registerShaders()
 {
 	shaders::defaultShader = addShader(new Shader("assets/shaders/default/VertexShader.vert", "assets/shaders/default/FragmentShader.frag"));
+	shaders::marchingCubesShader = addShader(new Shader("assets/shaders/MarchingCubes.comp"));
 	//std::cout << "defauda" << shaders::defaultShader.ID << std::endl;
 }
 

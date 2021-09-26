@@ -4,6 +4,7 @@
 namespace glg {
 	namespace shaders {
 		extern Shader* defaultShader;
+		extern Shader* marchingCubesShader;
 
 		void registerShaders();
 
