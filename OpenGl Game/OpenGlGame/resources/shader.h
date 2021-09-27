@@ -28,6 +28,17 @@ namespace glg {
 		void use() {
 			glUseProgram(ID);
 		}
+
+		void compute(glm::ivec3 numGroups) {
+			use();
+			glDispatchCompute(numGroups.x, numGroups.y, numGroups.z);
+		}
+
+		void compute(uint32_t x, uint32_t y, uint32_t z) {
+			use();
+			glDispatchCompute(x, y, z);
+		}
+
 		void setBool(const std::string& name, bool value) const {
 			glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
 		}

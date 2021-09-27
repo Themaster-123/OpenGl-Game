@@ -10,6 +10,7 @@
 #include "components/components.h"
 #include "component_systems/component_system.h"
 #include "component_systems/transform_system/transform_system.h"
+#include <thread>
 
 GLFWwindow* glg::GAME_WINDOW;
 unsigned int glg::SCREEN_WIDTH = 800;
@@ -127,7 +128,6 @@ void glg::startRenderLoop()
 		callUpdate();
 
 		callDraw();
-
 		//std::cout << "FPS: " << FRAME_RATE << std::endl;
 
 		glBindVertexArray(0);

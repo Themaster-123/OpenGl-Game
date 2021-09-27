@@ -4,6 +4,8 @@
 #include <vector>
 #include <future>
 #include <GLFW/glfw3.h>
+#include "../globals/shaders.h"
+#include <glm/gtc/type_ptr.hpp>
 
 int edgeTable[256] = {
 0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -297,6 +299,12 @@ int indexTable[256][16] =
 {0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1} };
 
+unsigned int glg::MarchingCubes::ib = 0;
+unsigned int glg::MarchingCubes::gb = 0;
+unsigned int glg::MarchingCubes::ac = 0;
+unsigned int glg::MarchingCubes::MAX_TRIANGLES = 5000;
+unsigned int glg::MarchingCubes::indexTableBufferObject = 0;
+
 glg::MarchingCubes::MarchingCubes(const boost::multi_array<Voxel, 3>& voxels, const glm::vec3& voxelSize)
 {
 	this->voxels.resize(boost::extents[voxels.shape()[0]][voxels.shape()[1]][voxels.shape()[2]]);
@@ -311,7 +319,7 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-	std::vector<std::future<std::tuple<std::vector<Vertex>, std::vector<unsigned int>>>> futures;
+	/*std::vector<std::future<std::tuple<std::vector<Vertex>, std::vector<unsigned int>>>> futures;
 
 	for (int x = 0; x < voxels.shape()[0] - 1; x++) {
 		futures.push_back(std::async(std::launch::async, [this, x, &isoLevel]() ->std::tuple<std::vector<Vertex>, std::vector<unsigned int>> {
@@ -339,7 +347,67 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 		}
 
 		vertices.insert(vertices.end(), fVertices.begin(), fVertices.end());
+	}*/
+
+	typedef boost::multi_array_types::index_range range;
+	
+	shaders::marchingCubesShader->use();
+
+	shaders::marchingCubesShader->setIVec3("size", glm::ivec3(voxels.shape()[0], voxels.shape()[1], voxels.shape()[2]));
+
+	shaders::marchingCubesShader->setFloat("isoLevel", isoLevel);
+
+	if (ib == 0) {
+		glGenBuffers(1, &ib);
+		glGenBuffers(1, &gb);
+		glGenBuffers(1, &ac);
+
+		glGenBuffers(1, &indexTableBufferObject);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, indexTableBufferObject);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(indexTable), &indexTable[0], GL_STATIC_READ);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, indexTableBufferObject);
 	}
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ib);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(voxels.data()), &voxels.data()[0], GL_STATIC_READ);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ib);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, gb);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * MAX_TRIANGLES * 3, glm::value_ptr(glm::vec4(0)) , GL_DYNAMIC_READ);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, gb);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, ac);
+	glBufferData(GL_UNIFORM_BUFFER, 4, (void*)0, GL_STREAM_READ);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, ac);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	shaders::marchingCubesShader->compute(voxels.shape()[0] * voxels.shape()[1] * voxels.shape()[2], 1, 1);
+
+	//std::cout << shaders::marchingCubesShader->ID << std::endl;
+
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	glm::vec4* positions = new glm::vec4[MAX_TRIANGLES * 3]{};
+
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, gb);
+	glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::vec4) * MAX_TRIANGLES * 3, positions);
+
+	for (int i = 0; i < MAX_TRIANGLES * 3; i += 3) {
+		if (positions[i] == glm::vec4(0) && positions[i + 1] == glm::vec4(0) && positions[i + 2] == glm::vec4(0)) {
+			break;
+		}
+		else {
+			vertices.emplace_back(glm::vec3(positions[i]), glm::vec3(0), glm::vec3(0));
+			vertices.emplace_back(glm::vec3(positions[i + 1]), glm::vec3(0), glm::vec3(0));
+			vertices.emplace_back(glm::vec3(positions[i + 2]), glm::vec3(0), glm::vec3(0));
+			indices.push_back(i);
+			indices.push_back(i + 1);
+			indices.push_back(i + 2);
+		}
+	}
+
+	delete[] positions;
 
 	Mesh mesh(vertices, indices, textures, Material(glm::vec3(1), glm::vec3(1), glm::vec3(.3), 32), false);
 
@@ -347,7 +415,7 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 
 	model->meshes.push_back(mesh);
 
-	std::cout << glfwGetTime() - lastTime << std::endl;
+	//std::cout << glfwGetTime() - lastTime << std::endl;
 	
 	return model;
 }

@@ -23,6 +23,12 @@ namespace glg {
 
 	class MarchingCubes {
 	public:
+		static unsigned int indexTableBufferObject;
+		static unsigned int ib;
+		static unsigned int gb;
+		static unsigned int ac;
+		static unsigned int MAX_TRIANGLES;
+
 		boost::multi_array<Voxel, 3> voxels;
 		glm::vec3 voxelSize;
 

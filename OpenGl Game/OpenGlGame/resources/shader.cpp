@@ -43,9 +43,9 @@ glg::Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	glLinkProgram(ID);
 	checkCompileErrors(ID, CompileErrorType::Program);
 
+	use();
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
-	glUseProgram(ID);
 }
 
 glg::Shader::Shader(const char* computePath)
@@ -66,13 +66,11 @@ glg::Shader::Shader(const char* computePath)
 
 	const char* cShaderCode = computeCode.c_str();
 	unsigned int computeShader;
-	// Compiling Vertex Shader
+	// Compiling Compute Shader
 	computeShader = glCreateShader(GL_COMPUTE_SHADER);
 	glShaderSource(computeShader, 1, &cShaderCode, NULL);
 	glCompileShader(computeShader);
 	checkCompileErrors(computeShader, CompileErrorType::Shader);
-
-	// Compiling Fragment Shader
 
 
 	ID = glCreateProgram();
@@ -80,6 +78,6 @@ glg::Shader::Shader(const char* computePath)
 	glLinkProgram(ID);
 	checkCompileErrors(ID, CompileErrorType::Program);
 
+	use();
 	glDeleteShader(computeShader);
-	glUseProgram(ID);
 }

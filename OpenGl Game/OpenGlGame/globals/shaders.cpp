@@ -5,6 +5,7 @@
 using namespace glg;
 
 Shader* shaders::defaultShader;
+Shader* shaders::marchingCubesShader;
 
 void glg::shaders::registerShaders()
 {
