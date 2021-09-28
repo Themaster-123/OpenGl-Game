@@ -7,8 +7,8 @@
 
 namespace glg {
 	struct Voxel {
+		glm::vec4 position;
 		float value;
-		glm::vec3 position;
 	};
 
 	struct Cell {

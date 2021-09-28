@@ -84,6 +84,8 @@ int main() {
 	glfwSwapInterval(0);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	scene::WORLD.loadChunk(chunkVec(0, 0, 0));
+
 	startRenderLoop();
 
 	glfwTerminate();

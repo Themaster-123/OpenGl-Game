@@ -37,8 +37,8 @@ const int edgeTable[256] = {
 
 
 struct Voxel {
-	float value;
 	vec4 pos;
+	float value;
 };
 
 layout(local_size_x = 1, local_size_z = 1, local_size_z = 1) in;
@@ -47,7 +47,7 @@ uniform ivec3 size;
 
 uniform float isoLevel;
 
-layout(binding = 0) uniform atomic_uint counter;
+layout(binding = 3) uniform atomic_uint counter;
 
 layout(std430, binding = 0) readonly buffer InputBuffer {
 	Voxel[] voxels;
@@ -136,9 +136,15 @@ void triangulateCell(Voxel voxel0, Voxel voxel1, Voxel voxel2, Voxel voxel3, Vox
 }
 
 void main() {
-	if (gl_GlobalInvocationID.x >= size.x - 1 || gl_GlobalInvocationID.y >= size.y - 1 || gl_GlobalInvocationID.z >= size.x - 1) return;
+
+	if (gl_GlobalInvocationID.x >= size.x - 1 || gl_GlobalInvocationID.y >= size.y - 1 || gl_GlobalInvocationID.z >= size.z - 1) return;
 
 	ivec3 pos = voxelPos(gl_GlobalInvocationID.x);
+	uint count = atomicCounterIncrement(counter);
+
+	if (count > positions.length()) return;
+
+	positions[count] = vec4(0, getVoxel(pos).value, 0, 0);
 	triangulateCell(getVoxel(pos + ivec3(1, 0, 0)), getVoxel(pos + ivec3(1, 0, 1)), getVoxel(pos + ivec3(0, 0, 1)), getVoxel(pos + ivec3(0, 0, 0)), 
 		getVoxel(pos + ivec3(1, 1, 0)), getVoxel(pos + ivec3(1, 1, 1)), getVoxel(pos + ivec3(0, 1, 1)), getVoxel(pos + ivec3(0, 1, 0)));
 }
