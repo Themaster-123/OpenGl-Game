@@ -74,7 +74,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& pos
 {
 	glm::ivec3 resolution = CHUNK_RESOLUTION + glm::ivec3(1);
 
-	boost::multi_array<Voxel, 3> voxels(boost::extents[(size_t)resolution.x][(size_t)resolution.y][(size_t)resolution.z]);
+	MarchingCubes cubes(resolution);
 
 	float worldX, worldZ, worldY;
 
@@ -102,12 +102,10 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& pos
 
 				//if (noiseValue3D > .3)
 
-				voxels[x][y][z] = { glm::vec4(worldX, worldY, worldZ, 0), value };
+				cubes.getVoxel(glm::ivec3(x, y, z)) = { glm::vec4(worldX, worldY, worldZ, 0), value };
 			}
 		}
 	}
-
-	MarchingCubes cubes(voxels, glm::vec3(1));
 
 	std::vector<Texture2D> textures{ *textures::defaultTexture };
 

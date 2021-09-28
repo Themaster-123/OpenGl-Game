@@ -29,10 +29,10 @@ namespace glg {
 		static unsigned int ac;
 		static unsigned int MAX_TRIANGLES;
 
-		boost::multi_array<Voxel, 3> voxels;
-		glm::vec3 voxelSize;
+		std::vector<Voxel> voxels;
+		glm::ivec3 resolution;
 
-		MarchingCubes(const boost::multi_array<Voxel, 3>& voxels, const glm::vec3& voxelSize);
+		MarchingCubes(glm::ivec3 resolution);
 
 		std::shared_ptr<Model> createModel(float isoLevel, std::vector<Texture2D> textures) const;
 

@@ -34,8 +34,6 @@ const int edgeTable[256] = {
 0xf00, 0xe09, 0xd03, 0xc0a, 0xb06, 0xa0f, 0x905, 0x80c,
 0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0 };
 
-
-
 struct Voxel {
 	vec4 pos;
 	float value;
@@ -62,7 +60,7 @@ layout(std430, binding = 2) readonly buffer IndexTableBuffer {
 };
 
 int voxelIndex(ivec3 pos) {
-	return pos.x + size.x * pos.y * size.x * size.y * pos.z;
+	return (pos.z * size.x * size.y) + (pos.y * size.x) + pos.x;
 }
 
 ivec3 voxelPos(uint index) {
@@ -125,26 +123,25 @@ void triangulateCell(Voxel voxel0, Voxel voxel1, Voxel voxel2, Voxel voxel3, Vox
 
 	for (int i = 0; indexTable[cubeIndex][i] != -1; i += 3) {
 		uint count = atomicCounterIncrement(counter);
+		//positions[count] = vec4(2, 3, 4, 5);
+		if (count * 3 > positions.length()) return;
 
-		if (count > positions.length()) return;
 
 		uint vertIndex = count * 3;
 		positions[vertIndex] = vec4(verticesArray[indexTable[cubeIndex][i]], 0);
 		positions[vertIndex + 1] = vec4(verticesArray[indexTable[cubeIndex][i + 1]], 0);
 		positions[vertIndex + 2] = vec4(verticesArray[indexTable[cubeIndex][i + 2]], 0);
+
+		//positions[count] = vec4(indexTable[cubeIndex][i], indexTable[cubeIndex][i + 1], indexTable[cubeIndex][i + 2], indexTable[cubeIndex][i +3]);
 	}
 }
 
 void main() {
-
 	if (gl_GlobalInvocationID.x >= size.x - 1 || gl_GlobalInvocationID.y >= size.y - 1 || gl_GlobalInvocationID.z >= size.z - 1) return;
 
 	ivec3 pos = voxelPos(gl_GlobalInvocationID.x);
-	uint count = atomicCounterIncrement(counter);
 
-	if (count > positions.length()) return;
-
-	positions[count] = vec4(0, getVoxel(pos).value, 0, 0);
+	//positions[count] = vec4(0, getVoxel(pos).value, 0, 0);
 	triangulateCell(getVoxel(pos + ivec3(1, 0, 0)), getVoxel(pos + ivec3(1, 0, 1)), getVoxel(pos + ivec3(0, 0, 1)), getVoxel(pos + ivec3(0, 0, 0)), 
 		getVoxel(pos + ivec3(1, 1, 0)), getVoxel(pos + ivec3(1, 1, 1)), getVoxel(pos + ivec3(0, 1, 1)), getVoxel(pos + ivec3(0, 1, 0)));
 }
