@@ -438,7 +438,7 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 
 	for (size_t i = 0; i < (size_t)MAX_TRIANGLES * (size_t)3; i += 3) {
 		if (positions[i] == glm::vec4(0) && positions[i + 1] == glm::vec4(0) && positions[i + 2] == glm::vec4(0)) {
-			//break;
+			break;
 		}
 		else {
 			vertices.emplace_back(glm::vec3(positions[i]), glm::vec3(0), glm::vec3(0));
