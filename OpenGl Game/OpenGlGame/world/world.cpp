@@ -1,7 +1,7 @@
 #include "world.h"
 #include "../screen.h"
 
-glm::vec3 glg::world::CHUNK_SIZE = glm::vec3(32);
+glm::vec3 glg::world::CHUNK_SIZE = glm::vec3(32, 32, 32);
 
 unsigned int glg::world::CHUNK_LOAD_SIZE = 4;
 

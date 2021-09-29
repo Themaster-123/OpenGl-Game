@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <mutex>
 #include "../globals/macros.h"
+#include <boost/container_hash/hash.hpp>
 
 namespace glg {
 	namespace world {
@@ -34,8 +35,11 @@ namespace glg {
 		public:
 			struct ChunkPositionComparator {
 				size_t operator()(const chunkVec& vec) const {
-					size_t lhs = std::hash<int>()(vec.x);
-					return lhs ^ (std::hash<int>()(vec.y) + 0x9e3779b9 + (lhs << 6) + (lhs >> 2));
+					size_t hash = 0;
+					boost::hash_combine(hash, vec.x);
+					boost::hash_combine(hash, vec.y);
+					boost::hash_combine(hash, vec.z);
+					return hash;
 				}
 
 			};

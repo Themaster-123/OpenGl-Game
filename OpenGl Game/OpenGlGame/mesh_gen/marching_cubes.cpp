@@ -318,7 +318,7 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-	/*std::vector<std::future<std::tuple<std::vector<Vertex>, std::vector<unsigned int>>>> futures;
+	std::vector<std::future<std::tuple<std::vector<Vertex>, std::vector<unsigned int>>>> futures;
 
 	for (int x = 0; x < resolution.x - 1; x++) {
 		futures.push_back(std::async(std::launch::async, [this, x, &isoLevel]() ->std::tuple<std::vector<Vertex>, std::vector<unsigned int>> {
@@ -346,7 +346,10 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 		}
 
 		vertices.insert(vertices.end(), fVertices.begin(), fVertices.end());
-	}*/
+	}
+
+	/*vertices.reserve(MAX_TRIANGLES * 3);
+	indices.reserve(MAX_TRIANGLES * 3);
 
 	shaders::marchingCubesShader->setIVec3("size", resolution);
 
@@ -354,87 +357,60 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 
 	if (ib == 0) {
 		glGenBuffers(1, &ib);
+
 		glGenBuffers(1, &gb);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, gb);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * MAX_TRIANGLES * 3, NULL, GL_DYNAMIC_READ);
+
 		glGenBuffers(1, &ac);
-		
+		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, ac);
+		glBufferData(GL_ATOMIC_COUNTER_BUFFER, 4, NULL, GL_DYNAMIC_READ);
+
+		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+
 		glGenBuffers(1, &indexTableBufferObject);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, indexTableBufferObject);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(indexTable), &indexTable[0][0], GL_STATIC_READ);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, indexTableBufferObject);
-	}
 
-	std::vector<glm::vec4> glVoxels;
-	glVoxels.reserve(voxels.size());
-
-	for (int i = 0; i < voxels.size(); i++) {
-		glVoxels.emplace_back(voxels[i].position.x, voxels[i].position.y, voxels[i].position.z, voxels[i].value);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ib);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, voxels.size() * sizeof(glm::vec4), glVoxels.data(), GL_DYNAMIC_READ);
-	/*glm::vec4* glVoxels = (glm::vec4*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-	for (int i = 0; i < voxels.size(); i++) {
-		glVoxels[i].x = voxels[i].position.x;
-		glVoxels[i].y = voxels[i].position.y;
-		glVoxels[i].z = voxels[i].position.z;
-		glVoxels[i].w = voxels[i].value;
-	}
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);*/
+	glBufferData(GL_SHADER_STORAGE_BUFFER, voxels.size() * sizeof(glm::vec4), NULL, GL_STATIC_READ);
 
-	//std::cout << voxels.size();
-	//for (size_t entry = 0; entry < voxels.size(); entry++) {
-	//	Voxel v = voxels[entry];
-	//	uint32_t offset = entry * sizeof(glm::vec4);
-	//	glm::vec4 vox = glm::vec4(glm::vec3(v.position), v.value);
-	//	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, sizeof(glm::vec4), glm::value_ptr(vox));
-	//}
-
-	/*glBindBuffer(GL_SHADER_STORAGE_BUFFER, ib);
-	uint8_t* data = (uint8_t*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, voxels.size() * sizeof(glm::vec4), GL_MAP_WRITE_BIT);
+	uint8_t* voxelData = (uint8_t*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, voxels.size() * sizeof(glm::vec4), GL_MAP_WRITE_BIT);
 
 	for (int i = 0; i < voxels.size(); i++) {
 		Voxel v = voxels[i];
 		glm::vec4 vox = glm::vec4(glm::vec3(v.position), v.value);
-		memcpy(data, glm::value_ptr(vox), 16);
-		data += 16;
+		memcpy(voxelData, glm::value_ptr(vox), 16);
+		voxelData += 16;
 	}
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);*/
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
 	glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, ib, 0, voxels.size() * sizeof(glm::vec4));
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, gb);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * MAX_TRIANGLES * 3, NULL, GL_DYNAMIC_READ);
-	glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, gb, 0, sizeof(glm::vec4) * MAX_TRIANGLES * 3);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::vec4) * MAX_TRIANGLES * 3, NULL);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, gb);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 	glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, ac);
-	glBufferData(GL_ATOMIC_COUNTER_BUFFER, 4, (void*)0, GL_STREAM_READ);
+	int data = 0;
+	glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, 4, &data);
 	glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 3, ac);
 	glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
 
-	std::cout << glGetError() << std::endl;
-
 	shaders::marchingCubesShader->compute(voxels.size(), 1, 1);
-
-
-	std::cout << glGetError() << std::endl;
-
-	//std::cout << shaders::marchingCubesShader->ID << std::endl;
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
 
-
-	std::cout << glGetError() << std::endl;
-
-	std::cout << glGetError() << std::endl;
-
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, gb);
-	glm::vec4* positions = (glm::vec4*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::vec4) * MAX_TRIANGLES * 3, GL_MAP_READ_BIT);
-	//glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::vec4) * MAX_TRIANGLES * 3, (void*)(&positions[0]));
-
-	//glm::vec4 test = glm::vec4(0, 4, - 1)
-	std::cout << glGetError() << std::endl;
+	glm::vec4* positions = new glm::vec4[MAX_TRIANGLES * 3];
+	glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::vec4) * MAX_TRIANGLES * 3, &positions[0]);
+	//glm::vec4* positions = (glm::vec4*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(glm::vec4) * MAX_TRIANGLES * 3, GL_MAP_READ_BIT);
 
 	for (size_t i = 0; i < (size_t)MAX_TRIANGLES * (size_t)3; i += 3) {
 		if (positions[i] == glm::vec4(0) && positions[i + 1] == glm::vec4(0) && positions[i + 2] == glm::vec4(0)) {
@@ -449,12 +425,20 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 			indices.push_back(i + 2);
 		}
 	}
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	//glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, gb);
+	//glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * MAX_TRIANGLES * 3, NULL, GL_DYNAMIC_READ);
 
-	std::cout << glGetError() << std::endl;
+	glDeleteBuffers(1, &gb);
+	glGenBuffers(1, &gb);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, gb);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * MAX_TRIANGLES * 3, NULL, GL_DYNAMIC_READ);
 
-	//delete[] positions;
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	std::cout << glGetError() << std::endl;*/
+
+	std::cout << glfwGetTime() - lastTime << std::endl;
 
 	Mesh mesh(vertices, indices, textures, Material(glm::vec3(1), glm::vec3(1), glm::vec3(.3), 32), false);
 
@@ -462,7 +446,6 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 
 	model->meshes.push_back(mesh);
 
-	//std::cout << glfwGetTime() - lastTime << std::endl;
 	
 	return model;
 }

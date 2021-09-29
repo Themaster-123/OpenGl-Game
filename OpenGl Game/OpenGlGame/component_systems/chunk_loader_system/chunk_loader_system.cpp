@@ -12,13 +12,13 @@ std::mutex THREAD_CHUNK_MUTEX;
 
 glg::ChunkLoaderSystem::ChunkLoaderSystem() : ComponentSystem()
 {
-	//loadThread = std::thread(chunkLoadLoop);
+	loadThread = std::thread(chunkLoadLoop);
 }
 
 glg::ChunkLoaderSystem::~ChunkLoaderSystem()
 {
-	//CHUNK_LOAD_LOOP_RUNNING = false;
-	//loadThread.join();
+	CHUNK_LOAD_LOOP_RUNNING = false;
+	loadThread.join();
 }
 
 void glg::ChunkLoaderSystem::update()

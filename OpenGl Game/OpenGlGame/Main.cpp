@@ -85,6 +85,20 @@ int main() {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	scene::WORLD.loadChunk(chunkVec(0, 0, 0));
+	scene::WORLD.loadChunk(chunkVec(0, 0, 1));
+	scene::WORLD.loadChunk(chunkVec(1, 0, 0));
+	scene::WORLD.loadChunk(chunkVec(1, 0, 1));
+	scene::WORLD.loadChunk(chunkVec(1, 0, 2));
+	scene::WORLD.loadChunk(chunkVec(1, 0, 3));
+	scene::WORLD.loadChunk(chunkVec(0, 0, 2));
+	//scene::WORLD.loadChunk(chunkVec(0, 0, 3));
+	//scene::WORLD.loadChunk(chunkVec(0, 0, 4));
+	//scene::WORLD.loadChunk(chunkVec(0, 0, 5));
+	//scene::WORLD.loadChunk(chunkVec(1, 0, 1));
+	//scene::WORLD.loadChunk(chunkVec(0, 1, 0));
+	//scene::WORLD.loadChunk(chunkVec(0, 1, 1));
+	//scene::WORLD.loadChunk(chunkVec(1, 1, 0));
+	//scene::WORLD.loadChunk(chunkVec(1, 1, 1));
 
 	startRenderLoop();
 

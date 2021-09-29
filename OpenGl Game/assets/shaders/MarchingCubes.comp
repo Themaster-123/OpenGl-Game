@@ -128,7 +128,7 @@ void triangulateCell(vec4 voxel0, vec4 voxel1, vec4 voxel2, vec4 voxel3, vec4 vo
 	for (int i = 0; indexTable[cubeIndex][i] != -1; i += 3) {
 		uint count = atomicCounterIncrement(counter);
 		//positions[count] = vec4(2, 3, 4, 5);
-		if (count * 3 > positions.length()) return;
+		if (count > positions.length()) return;
 
 
 		uint vertIndex = count * 3;
