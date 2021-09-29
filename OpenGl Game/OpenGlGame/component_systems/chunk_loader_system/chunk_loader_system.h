@@ -1,4 +1,5 @@
 #pragma once
+#include "../../globals/macros.h"
 #include "../component_system.h"
 #include <thread>
 
@@ -15,6 +16,8 @@ namespace glg {
 		virtual void update();
 
 		static void chunkLoadLoop();
+
+		static std::vector<chunkVec> getClosestChunks(uint32_t chunkSize);
 	};
 }
 

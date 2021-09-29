@@ -67,6 +67,11 @@ void glg::ChunkLoaderSystem::update()
 
 void glg::ChunkLoaderSystem::chunkLoadLoop()
 {
+	int realSize = (world::CHUNK_LOAD_SIZE * 2) + 1;
+	int sizeSqrd = (realSize * realSize);
+
+	
+
 	while (CHUNK_LOAD_LOOP_RUNNING) {
 		//std::this_thread::sleep_for(std::chrono::seconds(1));
 		scene::PLAYER_MUTEX.lock();
@@ -83,8 +88,6 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 			chunkVec offsetPos(0, 0, 0);
 			glm::ivec2 direction(0, -1);
 			chunkVec loadPos;
-			int realSize = (world::CHUNK_LOAD_SIZE * 2) + 1;
-			int sizeSqrd = (realSize * realSize);
 			int moveAmount = 1;
 
 			for (int i = 0, increase = 0, amountMoved = 0; i < sizeSqrd; i++, amountMoved++) {
@@ -94,6 +97,7 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 				}
 
 				loadPos = chunkPos - offsetPos;
+
 				THREAD_CHUNK_MUTEX.lock();
 				if (!THREAD_CHUNK_MODELS.contains(loadPos) && !scene::WORLD.isChunkLoaded(loadPos)) {
 					THREAD_CHUNK_MUTEX.unlock();
@@ -127,4 +131,33 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 
 		scene::PLAYER_MUTEX.unlock();
 	}
+}
+
+std::vector<chunkVec> glg::ChunkLoaderSystem::getClosestChunks(uint32_t chunkSize)
+{
+	uint32_t realSize = (world::CHUNK_LOAD_SIZE * 2) + 1;
+	uint32_t sizeSqrd = (realSize * realSize);
+	uint32_t sizeCubed = (sizeSqrd * realSize);
+
+	std::vector<chunkVec> traversedChunks;
+	traversedChunks.reserve(sizeCubed);
+
+	for (auto z = 0u; z <= 3 * chunkSize; z++) {
+		for (auto x = std::max(0u, z - 2 * chunkSize); x <= std::min(chunkSize, z); x++) {
+			for (auto y = std::max(0u, z - x - chunkSize); y <= std::min(chunkSize, z - x); y++) {
+				chunkVec pos(x, y, z - x - y);
+
+				traversedChunks.emplace_back(chunkSize + pos.x, chunkSize + pos.y, chunkSize + pos.z);
+				if (pos.z) traversedChunks.emplace_back(chunkSize + pos.x, chunkSize + pos.y, chunkSize - pos.z);
+				if (pos.y) traversedChunks.emplace_back(chunkSize + pos.x, chunkSize - pos.y, chunkSize + pos.z);
+				if (pos.y && pos.z) traversedChunks.emplace_back(chunkSize + pos.x, chunkSize - pos.y, chunkSize - pos.z);
+				if (pos.x) traversedChunks.emplace_back(chunkSize - pos.x, chunkSize + pos.y, chunkSize + pos.z);
+				if (pos.x && pos.z) traversedChunks.emplace_back(chunkSize - pos.x, chunkSize + pos.y, chunkSize - pos.z);
+				if (pos.x && pos.y) traversedChunks.emplace_back(chunkSize - pos.x, chunkSize - pos.y, chunkSize + pos.z);
+				if (pos.x && pos.y && pos.z) traversedChunks.emplace_back(chunkSize - pos.x, chunkSize - pos.y, chunkSize - pos.z);
+			}
+		}
+	}
+
+	return traversedChunks;
 }
