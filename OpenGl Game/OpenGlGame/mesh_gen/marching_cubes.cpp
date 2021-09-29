@@ -320,13 +320,13 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 
 	/*std::vector<std::future<std::tuple<std::vector<Vertex>, std::vector<unsigned int>>>> futures;
 
-	for (int x = 0; x < voxels.shape()[0] - 1; x++) {
+	for (int x = 0; x < resolution.x - 1; x++) {
 		futures.push_back(std::async(std::launch::async, [this, x, &isoLevel]() ->std::tuple<std::vector<Vertex>, std::vector<unsigned int>> {
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
 
-			for (int y = 0; y < voxels.shape()[1] - 1; y++) {
-				for (int z = 0; z < voxels.shape()[2] - 1; z++) {
+			for (int y = 0; y < resolution.y - 1; y++) {
+				for (int z = 0; z < resolution.z - 1; z++) {
 					glm::ivec3 pos(x, y, z);
 
 					triangulateCell(Cell{ getVoxel(pos + glm::ivec3(1, 0, 0)), getVoxel(pos + glm::ivec3(1, 0, 1)), getVoxel(pos + glm::ivec3(0, 0, 1)), getVoxel(pos + glm::ivec3(0, 0, 0)),
@@ -348,8 +348,6 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 		vertices.insert(vertices.end(), fVertices.begin(), fVertices.end());
 	}*/
 
-	typedef boost::multi_array_types::index_range range;
-
 	shaders::marchingCubesShader->setIVec3("size", resolution);
 
 	shaders::marchingCubesShader->setFloat("isoLevel", isoLevel);
@@ -361,17 +359,52 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 		
 		glGenBuffers(1, &indexTableBufferObject);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, indexTableBufferObject);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(indexTable), &indexTable[0], GL_STATIC_READ);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(indexTable), &indexTable[0][0], GL_STATIC_READ);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, indexTableBufferObject);
 	}
 
+	std::vector<glm::vec4> glVoxels;
+	glVoxels.reserve(voxels.size());
+
+	for (int i = 0; i < voxels.size(); i++) {
+		glVoxels.emplace_back(voxels[i].position.x, voxels[i].position.y, voxels[i].position.z, voxels[i].value);
+	}
+
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ib);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Voxel) * voxels.size(), &voxels[0], GL_STATIC_READ);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ib);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, voxels.size() * sizeof(glm::vec4), glVoxels.data(), GL_DYNAMIC_READ);
+	/*glm::vec4* glVoxels = (glm::vec4*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+	for (int i = 0; i < voxels.size(); i++) {
+		glVoxels[i].x = voxels[i].position.x;
+		glVoxels[i].y = voxels[i].position.y;
+		glVoxels[i].z = voxels[i].position.z;
+		glVoxels[i].w = voxels[i].value;
+	}
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);*/
+
+	//std::cout << voxels.size();
+	//for (size_t entry = 0; entry < voxels.size(); entry++) {
+	//	Voxel v = voxels[entry];
+	//	uint32_t offset = entry * sizeof(glm::vec4);
+	//	glm::vec4 vox = glm::vec4(glm::vec3(v.position), v.value);
+	//	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, sizeof(glm::vec4), glm::value_ptr(vox));
+	//}
+
+	/*glBindBuffer(GL_SHADER_STORAGE_BUFFER, ib);
+	uint8_t* data = (uint8_t*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, voxels.size() * sizeof(glm::vec4), GL_MAP_WRITE_BIT);
+
+	for (int i = 0; i < voxels.size(); i++) {
+		Voxel v = voxels[i];
+		glm::vec4 vox = glm::vec4(glm::vec3(v.position), v.value);
+		memcpy(data, glm::value_ptr(vox), 16);
+		data += 16;
+	}
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);*/
+
+	glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, ib, 0, voxels.size() * sizeof(glm::vec4));
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, gb);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * MAX_TRIANGLES * 3, NULL, GL_DYNAMIC_READ);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, gb);
+	glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, gb, 0, sizeof(glm::vec4) * MAX_TRIANGLES * 3);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
@@ -382,7 +415,7 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 
 	std::cout << glGetError() << std::endl;
 
-	shaders::marchingCubesShader->compute(resolution.x * resolution.y * resolution.z, 1, 1);
+	shaders::marchingCubesShader->compute(voxels.size(), 1, 1);
 
 
 	std::cout << glGetError() << std::endl;
@@ -405,7 +438,7 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 
 	for (size_t i = 0; i < (size_t)MAX_TRIANGLES * (size_t)3; i += 3) {
 		if (positions[i] == glm::vec4(0) && positions[i + 1] == glm::vec4(0) && positions[i + 2] == glm::vec4(0)) {
-			break;
+			//break;
 		}
 		else {
 			vertices.emplace_back(glm::vec3(positions[i]), glm::vec3(0), glm::vec3(0));
@@ -416,6 +449,7 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 			indices.push_back(i + 2);
 		}
 	}
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
 
 	std::cout << glGetError() << std::endl;
@@ -475,7 +509,7 @@ void glg::MarchingCubes::triangulateCell(const Cell& cell, std::vector<glg::Vert
 
 glm::vec3 glg::MarchingCubes::interpolateVertexPosition(const Voxel& voxel1, const Voxel& voxel2, float isoLevel)
 {
-	glm::vec3 pos;
+	glm::vec3 pos(0);
 
 	if (abs(isoLevel - voxel1.value) < 0.00001)
 		return voxel1.position;
@@ -521,4 +555,8 @@ glg::Voxel& glg::Cell::operator[](size_t index)
 const glg::Voxel& glg::Cell::operator[](size_t index) const
 {
 	return voxels[index];
+}
+
+glg::Voxel::Voxel(glm::vec3 position, float value) : position(position, 0), value(value)
+{
 }

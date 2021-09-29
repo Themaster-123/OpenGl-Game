@@ -39,7 +39,7 @@ struct Voxel {
 	float value;
 };
 
-layout(local_size_x = 1, local_size_z = 1, local_size_z = 1) in;
+layout(local_size_x = 1) in;
 
 uniform ivec3 size;
 
@@ -48,7 +48,7 @@ uniform float isoLevel;
 layout(binding = 3) uniform atomic_uint counter;
 
 layout(std430, binding = 0) readonly buffer InputBuffer {
-	Voxel[] voxels;
+	vec4 voxels[];
 };
 
 layout(std430, binding = 1) writeonly buffer GeomBuffer {
@@ -72,39 +72,43 @@ ivec3 voxelPos(uint index) {
 	return ivec3(x, y, z);
 }
 
-Voxel getVoxel(ivec3 pos) {
+vec4 getVoxel(ivec3 pos) {
 	return voxels[voxelIndex(pos)];
 }
 
-vec3 interpolateVertexPosition(Voxel voxel1, Voxel voxel2) {
+vec4 getVoxel(uint index) {
+	return voxels[index];
+}
+
+vec3 interpolateVertexPosition(vec4 voxel1, vec4 voxel2) {
 	vec3 pos;
 
-	if (abs(isoLevel - voxel1.value) < 0.00001)
-		return voxel1.pos.xyz;
-	if (abs(isoLevel - voxel2.value) < 0.00001)
-		return voxel2.pos.xyz;
-	if (abs(voxel1.value - voxel2.value) < 0.00001)
-		return voxel1.pos.xyz;
-	float mu = (isoLevel - voxel1.value) / (voxel2.value - voxel1.value);
-	pos.x = voxel1.pos.x + mu * (voxel2.pos.x - voxel1.pos.x);
-	pos.y = voxel1.pos.y + mu * (voxel2.pos.y - voxel1.pos.y);
-	pos.z = voxel1.pos.z + mu * (voxel2.pos.z - voxel1.pos.z);
+	if (abs(isoLevel - voxel1.w) < 0.00001)
+		return voxel1.xyz;
+	if (abs(isoLevel - voxel2.w) < 0.00001)
+		return voxel2.xyz;
+	if (abs(voxel1.w - voxel2.w) < 0.00001)
+		return voxel1.xyz;
+	float mu = (isoLevel - voxel1.w) / (voxel2.w - voxel1.w);
+	pos.x = voxel1.x + mu * (voxel2.x - voxel1.x);
+	pos.y = voxel1.y + mu * (voxel2.y - voxel1.y);
+	pos.z = voxel1.z + mu * (voxel2.z - voxel1.z);
 
 	return pos;
 }
 
-void triangulateCell(Voxel voxel0, Voxel voxel1, Voxel voxel2, Voxel voxel3, Voxel voxel4, Voxel voxel5, Voxel voxel6, Voxel voxel7) {
+void triangulateCell(vec4 voxel0, vec4 voxel1, vec4 voxel2, vec4 voxel3, vec4 voxel4, vec4 voxel5, vec4 voxel6, vec4 voxel7) {
 	int cubeIndex = 0;
 	vec3 verticesArray[12];
 
-	if (voxel0.value < isoLevel) cubeIndex |= 1;
-	if (voxel1.value < isoLevel) cubeIndex |= 2;
-	if (voxel2.value < isoLevel) cubeIndex |= 4;
-	if (voxel3.value < isoLevel) cubeIndex |= 8;
-	if (voxel4.value < isoLevel) cubeIndex |= 16;
-	if (voxel5.value < isoLevel) cubeIndex |= 32;
-	if (voxel6.value < isoLevel) cubeIndex |= 64;
-	if (voxel7.value < isoLevel) cubeIndex |= 128;
+	if (voxel0.w < isoLevel) cubeIndex |= 1;
+	if (voxel1.w < isoLevel) cubeIndex |= 2;
+	if (voxel2.w < isoLevel) cubeIndex |= 4;
+	if (voxel3.w < isoLevel) cubeIndex |= 8;
+	if (voxel4.w < isoLevel) cubeIndex |= 16;
+	if (voxel5.w < isoLevel) cubeIndex |= 32;
+	if (voxel6.w < isoLevel) cubeIndex |= 64;
+	if (voxel7.w < isoLevel) cubeIndex |= 128;
 
 	if (edgeTable[cubeIndex] == 0) return;
 
@@ -132,16 +136,21 @@ void triangulateCell(Voxel voxel0, Voxel voxel1, Voxel voxel2, Voxel voxel3, Vox
 		positions[vertIndex + 1] = vec4(verticesArray[indexTable[cubeIndex][i + 1]], 0);
 		positions[vertIndex + 2] = vec4(verticesArray[indexTable[cubeIndex][i + 2]], 0);
 
-		//positions[count] = vec4(indexTable[cubeIndex][i], indexTable[cubeIndex][i + 1], indexTable[cubeIndex][i + 2], indexTable[cubeIndex][i +3]);
+		//positions[vertIndex] = vec4(voxel1);
+		//positions[vertIndex + 1] = vec4(voxel2);
+		//positions[vertIndex + 2] = vec4(voxel3);
 	}
 }
 
 void main() {
-	if (gl_GlobalInvocationID.x >= size.x - 1 || gl_GlobalInvocationID.y >= size.y - 1 || gl_GlobalInvocationID.z >= size.z - 1) return;
-
 	ivec3 pos = voxelPos(gl_GlobalInvocationID.x);
 
+	if (pos.x >= size.x - 1 || pos.y >= size.y - 1 || pos.z >= size.z - 1) return;
+	uint index = gl_GlobalInvocationID.x;
+
+	//uint count = atomicCounterIncrement(counter);
+	//positions[gl_GlobalInvocationID.x] = vec4(getVoxel(index));
 	//positions[count] = vec4(0, getVoxel(pos).value, 0, 0);
-	triangulateCell(getVoxel(pos + ivec3(1, 0, 0)), getVoxel(pos + ivec3(1, 0, 1)), getVoxel(pos + ivec3(0, 0, 1)), getVoxel(pos + ivec3(0, 0, 0)), 
-		getVoxel(pos + ivec3(1, 1, 0)), getVoxel(pos + ivec3(1, 1, 1)), getVoxel(pos + ivec3(0, 1, 1)), getVoxel(pos + ivec3(0, 1, 0)));
+	triangulateCell(getVoxel(index + voxelIndex(ivec3(1, 0, 0))), getVoxel(index + voxelIndex(ivec3(1, 0, 1))), getVoxel(index + voxelIndex(ivec3(0, 0, 1))), getVoxel(index + voxelIndex(ivec3(0, 0, 0))), 
+		getVoxel(index + voxelIndex(ivec3(1, 1, 0))), getVoxel(index + voxelIndex(ivec3(1, 1, 1))), getVoxel(index + voxelIndex(ivec3(0, 1, 1))), getVoxel(index + voxelIndex(ivec3(0, 1, 0))));
 }

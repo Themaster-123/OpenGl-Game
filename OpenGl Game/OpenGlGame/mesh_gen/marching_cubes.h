@@ -9,6 +9,11 @@ namespace glg {
 	struct Voxel {
 		glm::vec4 position;
 		float value;
+		//float padding[3];
+
+		Voxel() = default;
+
+		Voxel(glm::vec3 position, float value);
 	};
 
 	struct Cell {

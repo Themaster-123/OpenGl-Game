@@ -102,7 +102,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& pos
 
 				//if (noiseValue3D > .3)
 
-				cubes.getVoxel(glm::ivec3(x, y, z)) = { glm::vec4(worldX, worldY, worldZ, 0), value };
+				cubes.getVoxel(glm::ivec3(x, y, z)) = Voxel(glm::vec3(worldX, worldY, worldZ), value);
 			}
 		}
 	}
