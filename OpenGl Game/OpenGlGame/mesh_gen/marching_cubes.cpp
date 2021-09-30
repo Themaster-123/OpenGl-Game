@@ -438,7 +438,7 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	std::cout << glGetError() << std::endl;*/
 
-	std::cout << glfwGetTime() - lastTime << std::endl;
+	//std::cout << glfwGetTime() - lastTime << std::endl;
 
 	Mesh mesh(vertices, indices, textures, Material(glm::vec3(1), glm::vec3(1), glm::vec3(.3), 32), false);
 

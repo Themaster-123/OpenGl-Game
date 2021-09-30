@@ -92,7 +92,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& pos
 
 				float noiseValue3D = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldY) + (position.y * world::CHUNK_SIZE.y),
 					float(worldZ + (position.z * world::CHUNK_SIZE.z)));
-				noiseValue3D = -((noiseValue3D + 1) / 2);
+				//noiseValue3D = -((noiseValue3D + 1) / 2);
 				noiseValue3D *= world::NOISE_SETTINGS.displacementHeight;
 
 				float value = float(worldY) + (position.y * world::CHUNK_SIZE.y);

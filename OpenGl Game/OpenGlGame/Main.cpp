@@ -55,6 +55,8 @@ int main() {
 	Object worldLight;
 	worldLight.addComponent<TransformComponent>(glm::vec3(), glm::vec3(-45, 0, 0));
 	worldLight.addComponent<DirectionalLightComponent>();
+	worldLight.get<LightComponent>().ambient = glm::vec3(.4f);
+	worldLight.get<LightComponent>().diffuse = glm::vec3(.7f);
 
 	// creates other stuff
 	Object playerObject;

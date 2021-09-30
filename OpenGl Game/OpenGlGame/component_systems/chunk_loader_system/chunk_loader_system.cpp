@@ -70,7 +70,8 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 	int realSize = (world::CHUNK_LOAD_SIZE * 2) + 1;
 	int sizeSqrd = (realSize * realSize);
 
-	
+	// gets chunks ordered center to edges
+	std::vector<chunkVec> chunksCTE = getClosestChunks(world::CHUNK_LOAD_SIZE);
 
 	while (CHUNK_LOAD_LOOP_RUNNING) {
 		//std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -82,12 +83,32 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 			const auto& transformComponent = object.get<TransformComponent>();
 
 			chunkVec chunkPos = world::World::getChunkPosition(transformComponent.position);
-			chunkPos.y = 0;
-
-
-			chunkVec offsetPos(0, 0, 0);
-			glm::ivec2 direction(0, -1);
+			//chunkPos.y = 0;
 			chunkVec loadPos;
+
+			for (chunkVec offset : chunksCTE) {
+				loadPos = chunkPos - offset;
+				THREAD_CHUNK_MUTEX.lock();
+				if (!THREAD_CHUNK_MODELS.contains(loadPos) && !scene::WORLD.isChunkLoaded(loadPos)) {
+					THREAD_CHUNK_MUTEX.unlock();
+
+					std::shared_ptr<Model> model = glg::world::Chunk::generateModel(loadPos);
+
+					auto [triangleArray, triangleMesh, concaveMesh] = glg::world::Chunk::generateConcaveMeshShape(model);
+
+					THREAD_CHUNK_MUTEX.lock();
+					THREAD_CHUNK_MODELS.insert(std::pair<chunkVec, std::tuple<std::shared_ptr<Model>, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>>(loadPos,
+						{ model, triangleArray, triangleMesh, concaveMesh }));
+					THREAD_CHUNK_MUTEX.unlock();
+					break;
+				}
+				else {
+					THREAD_CHUNK_MUTEX.unlock();
+				}
+			}
+
+			/*chunkVec offsetPos(0, 0, 0);
+			glm::ivec2 direction(0, -1);
 			int moveAmount = 1;
 
 			for (int i = 0, increase = 0, amountMoved = 0; i < sizeSqrd; i++, amountMoved++) {
@@ -126,7 +147,7 @@ void glg::ChunkLoaderSystem::chunkLoadLoop()
 
 				offsetPos.x += direction.x;
 				offsetPos.z += direction.y;
-			}
+			}*/
 		}
 
 		scene::PLAYER_MUTEX.unlock();
@@ -142,7 +163,7 @@ std::vector<chunkVec> glg::ChunkLoaderSystem::getClosestChunks(uint32_t chunkSiz
 	std::vector<chunkVec> traversedChunks;
 	traversedChunks.reserve(sizeCubed);
 
-	for (auto z = 0u; z <= 3 * chunkSize; z++) {
+	/*for (auto z = 0u; z <= 3 * chunkSize; z++) {
 		for (auto x = std::max(0u, z - 2 * chunkSize); x <= std::min(chunkSize, z); x++) {
 			for (auto y = std::max(0u, z - x - chunkSize); y <= std::min(chunkSize, z - x); y++) {
 				chunkVec pos(x, y, z - x - y);
@@ -157,6 +178,36 @@ std::vector<chunkVec> glg::ChunkLoaderSystem::getClosestChunks(uint32_t chunkSiz
 				if (pos.x && pos.y && pos.z) traversedChunks.emplace_back(chunkSize - pos.x, chunkSize - pos.y, chunkSize - pos.z);
 			}
 		}
+	}*/
+	chunkVec offsetPos(0, 0, 0);
+	glm::ivec2 direction(0, -1);
+	int moveAmount = 1;
+
+	for (int i = 0, increase = 0, amountMoved = 0; i < sizeSqrd; i++, amountMoved++) {
+		if (increase == 2) {
+			moveAmount++;
+			increase = 0;
+		}
+
+		traversedChunks.push_back(offsetPos);
+
+		for (int i = 1; i <= chunkSize; i++) {
+			traversedChunks.push_back(offsetPos + chunkVec(0, -i, 0));
+		}
+		for (int i = 1; i <= chunkSize; i++) {
+			traversedChunks.push_back(offsetPos + chunkVec(0, i, 0));
+		}
+
+		if (amountMoved == moveAmount) {
+			amountMoved = 0;
+			int oldDirX = direction.x;
+			direction.x = -direction.y;
+			direction.y = oldDirX;
+			increase++;
+		}
+
+		offsetPos.x += direction.x;
+		offsetPos.z += direction.y;
 	}
 
 	return traversedChunks;
