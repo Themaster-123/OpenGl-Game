@@ -11,17 +11,19 @@ glg::world::NoiseSettings glg::world::NOISE_SETTINGS;
 
 void glg::world::setNoiseSetting()
 {
-	FastNoiseLite noise;
+	/*FastNoiseLite noise;
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetFrequency(0.02);
 	noise.SetFractalOctaves(5);
 	noise.SetFractalGain(0.5);
 	noise.SetFractalLacunarity(2.00);
-	noise.SetFractalType(noise.FractalType_FBm);
+	noise.SetFractalType(noise.FractalType_FBm);*/
+	FastNoise::SmartNode<> noise = FastNoise::NewFromEncodedNodeTree("EQACAAAAAAAgQBAAAAAAQBkAEwDD9Sg/DQAEAAAAAAAgQAkAAGZmJj8AAAAAPwEEAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM3MTD4AMzMzPwAAAAA/");
+	//FastNoise::SmartNode<> noise = FastNoise::New<FastNoise::Simplex>();
 	NOISE_SETTINGS = NoiseSettings(noise, 78);
 }
 
-glg::world::NoiseSettings::NoiseSettings(FastNoiseLite& noise, float displacementHeight)
+glg::world::NoiseSettings::NoiseSettings(FastNoise::SmartNode<>& noise, float displacementHeight)
 {
 	this->noise = noise;
 	this->displacementHeight = displacementHeight;
@@ -101,4 +103,28 @@ int glg::world::World::getChunkDistance(const chunkVec& chunkPos1, const chunkVe
 
 bool glg::world::DistanceCompare(const chunkVec& vec1, const chunkVec& vec2) {
 	return glg::world::World::getChunkDistance(chunkVec(0), vec1) < glg::world::World::getChunkDistance(chunkVec(0), vec2);
+}
+
+float glg::world::NoiseSettings::getNoise(float x, float y, float z, float frequency, int seed)
+{
+	return noise->GenSingle3D(x * frequency, y * frequency, z * frequency, seed);
+}
+
+std::vector<float> glg::world::NoiseSettings::GenUniformNoise3D(glm::ivec3 start, glm::ivec3 size, float frequency, int seed)
+{
+	std::vector<float> tempOutput(size.x * size.y * size.z);
+	std::vector<float> output;
+	output.reserve(size.x * size.y * size.z);
+
+	noise->GenUniformGrid3D(tempOutput.data(), start.x, start.y, start.z, size.x, size.y, size.z, frequency, seed);
+
+	for (int i = 0, z = 0; z < size.x; z++) {
+		for (int y = 0; y < size.y; y++) {
+			for (int x = 0; x < size.z; x++, i++) {
+				output.push_back(tempOutput[i]);
+			}
+		}
+	}
+
+	return output;
 }

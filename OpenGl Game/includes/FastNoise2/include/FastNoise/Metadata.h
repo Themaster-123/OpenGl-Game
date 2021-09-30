@@ -37,7 +37,7 @@ namespace FastNoise
         }
 
         /// <returns>Metadata for given Metadata::id</returns>
-        static const Metadata* GetFromId( uint16_t nodeId )
+        static const Metadata* GetFromId( std::uint16_t nodeId )
         {
             if( nodeId < sAllMetadata.size() )
             {
@@ -51,9 +51,6 @@ namespace FastNoise
         template<typename T>
         static const Metadata& Get()
         {
-            static_assert( std::is_base_of<Generator, T>::value, "This function should only be used for FastNoise node classes, for example FastNoise::Simplex" );
-            static_assert( std::is_member_function_pointer<decltype(&T::GetMetadata)>::value, "Cannot get Metadata for abstract node class, use a derived class, for example: Fractal -> FractalFBm" );
-
             return Impl::GetMetadata<T>();
         }
 
@@ -109,14 +106,14 @@ namespace FastNoise
             union ValueUnion
             {
                 float f;
-                int i;
+                std::int32_t i;
 
                 ValueUnion( float v = 0 )
                 {
                     f = v;
                 }
 
-                ValueUnion( int v )
+                ValueUnion( std::int32_t v )
                 {
                     i = v;
                 }
@@ -126,7 +123,7 @@ namespace FastNoise
                     return f;
                 }
 
-                operator int()
+                operator std::int32_t()
                 {
                     return i;
                 }
@@ -169,7 +166,7 @@ namespace FastNoise
             std::function<bool( Generator*, SmartNodeArg<> )> setNodeFunc;
         };
 
-        uint16_t id;
+        std::uint16_t id;
         const char* name;
         std::vector<const char*> groups;
 
@@ -195,11 +192,11 @@ namespace FastNoise
         }
 
     private:
-        static uint16_t AddMetadata( const Metadata* newMetadata )
+        static std::uint16_t AddMetadata( const Metadata* newMetadata )
         {
             sAllMetadata.emplace_back( newMetadata );
 
-            return (uint16_t)sAllMetadata.size() - 1;
+            return (std::uint16_t)sAllMetadata.size() - 1;
         }
 
         static std::vector<const Metadata*> sAllMetadata;

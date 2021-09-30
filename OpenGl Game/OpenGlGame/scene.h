@@ -1,7 +1,6 @@
 #pragma once
 #include <entt/entt.hpp>
 #include "component_systems/component_system.h"
-#include <fastnoise/FastNoiseLite.h>
 #include <mutex>
 
 namespace glg {
