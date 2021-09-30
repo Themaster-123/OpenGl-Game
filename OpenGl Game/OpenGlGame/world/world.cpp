@@ -18,7 +18,7 @@ void glg::world::setNoiseSetting()
 	noise.SetFractalGain(0.5);
 	noise.SetFractalLacunarity(2.00);
 	noise.SetFractalType(noise.FractalType_FBm);*/
-	FastNoise::SmartNode<> noise = FastNoise::NewFromEncodedNodeTree("EQACAAAAAAAgQBAAAAAAQBkAEwDD9Sg/DQAEAAAAAAAgQAkAAGZmJj8AAAAAPwEEAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM3MTD4AMzMzPwAAAAA/");
+	FastNoise::SmartNode<> noise = FastNoise::NewFromEncodedNodeTree("EABcjyJAEQACAAAAAAAgQBAAAAAAQBkAEwDD9Sg/DQAEAAAAAAAgQAkAAGZmJj8AAAAAPwEEAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM3MTD4AMzMzPwAAAAA/AAAAgD8=");
 	//FastNoise::SmartNode<> noise = FastNoise::New<FastNoise::Simplex>();
 	NOISE_SETTINGS = NoiseSettings(noise, 78);
 }

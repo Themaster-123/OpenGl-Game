@@ -78,7 +78,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& pos
 
 	float worldX, worldZ, worldY;
 	std::vector<float> noiseOutput = world::NOISE_SETTINGS.GenUniformNoise3D(glm::ivec3(position.x * world::CHUNK_SIZE.x, position.y * world::CHUNK_SIZE.y, position.z * world::CHUNK_SIZE.z), 
-		glm::ivec3(resolution.x, resolution.y, resolution.z), .02f, 0);
+		glm::ivec3(resolution.x, resolution.y, resolution.z), .0050f, 0);
 
 	for (int i = 0, x = 0; x < resolution.x; x++) {
 		for (int z = 0; z < resolution.z; z++) {
@@ -112,7 +112,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& pos
 
 	std::vector<Texture2D> textures{ *textures::defaultTexture };
 
-	std::shared_ptr<Model> model = cubes.createModel(.5f, textures);
+	std::shared_ptr<Model> model = cubes.createModel(0.0f, textures);
 	model->meshes[0].calculateNormals();
 
 	return model;

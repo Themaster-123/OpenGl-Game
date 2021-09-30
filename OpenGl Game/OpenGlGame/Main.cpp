@@ -70,7 +70,7 @@ int main() {
 
 	rp3d::SphereShape* sphereShape = PHYSICS_COMMON.createSphereShape(1.0f);
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 0; i++) {
 		Object obj;
 		obj.addComponent<TransformComponent>(glm::vec3(-28, 100, -28));
 		obj.addComponent<ModelComponent>(models::sphereModel, shaders::defaultShader);
