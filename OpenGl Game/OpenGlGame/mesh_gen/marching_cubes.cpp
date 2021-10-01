@@ -7,6 +7,7 @@
 #include "../globals/shaders.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
+#include <boost/container_hash/hash.hpp>
 
 int edgeTable[256] = {
 0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -338,14 +339,37 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 			}));
 	}
 
+	std::unordered_map<size_t, uint32_t> dupeVertices;
+
 	for (auto& mFuture : futures) {
 		auto [fVertices, fIndices] = mFuture.get();
 
-		for (auto& index : fIndices) {
+		/*for (auto& index : fIndices) {
 			indices.push_back(vertices.size() + index);
+		}*/
+
+		vertices.reserve(fVertices.size());
+
+		for (int i = 0; i < fVertices.size(); i++) {
+			auto& vertex = fVertices[i];
+			auto& index = fIndices[i];
+
+			size_t hash = 0;
+			boost::hash_combine(hash, vertex.position.x);
+			boost::hash_combine(hash, vertex.position.y);
+			boost::hash_combine(hash, vertex.position.z);
+
+			if (!dupeVertices.contains(hash)) {
+				dupeVertices[hash] = vertices.size();
+				indices.push_back(vertices.size());
+				vertices.push_back(vertex);
+			}
+			else {
+				indices.push_back(dupeVertices[hash]);
+			}
 		}
 
-		vertices.insert(vertices.end(), fVertices.begin(), fVertices.end());
+		//vertices.insert(vertices.end(), fVertices.begin(), fVertices.end());
 	}
 
 	/*vertices.reserve(MAX_TRIANGLES * 3);
@@ -492,6 +516,28 @@ void glg::MarchingCubes::triangulateCell(const Cell& cell, std::vector<glg::Vert
 
 glm::vec3 glg::MarchingCubes::interpolateVertexPosition(const Voxel& voxel1, const Voxel& voxel2, float isoLevel)
 {
+	/*const Voxel* v1;
+	const Voxel* v2;
+
+	if (voxel2 < voxel1) {
+		v1 = &voxel2;
+		v2 = &voxel1;
+	}
+	else {
+		v1 = &voxel1;
+		v2 = &voxel2;
+	}
+
+	glm::vec3 pos;
+	if (abs(v1->value - v2->value) > 0.00001) {
+		pos = v1->position + (v2->position - v1->position) / (v2->value - v1->value) * (isoLevel - v1->value);
+	}
+	else {
+		pos = v1->position;
+	}
+
+	return pos;*/
+
 	glm::vec3 pos(0);
 
 	if (abs(isoLevel - voxel1.value) < 0.00001)
@@ -542,4 +588,30 @@ const glg::Voxel& glg::Cell::operator[](size_t index) const
 
 glg::Voxel::Voxel(glm::vec3 position, float value) : position(position, 0), value(value)
 {
+}
+
+bool glg::Voxel::operator<(const Voxel& other) const
+{
+	if (position.x < other.position.x) {
+		return true;
+	}
+	else if (position.x > other.position.x) {
+		return false;
+	}
+
+	if (position.y < other.position.y) {
+		return true;
+	}
+	else if (position.y > other.position.y) {
+		return false;
+	}
+
+	if (position.y < other.position.y) {
+		return true;
+	}
+	else if (position.y > other.position.y) {
+		return false;
+	}
+
+	return false;
 }

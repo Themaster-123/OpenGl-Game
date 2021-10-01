@@ -14,6 +14,8 @@ namespace glg {
 		Voxel() = default;
 
 		Voxel(glm::vec3 position, float value);
+
+		bool operator< (const Voxel& other) const;
 	};
 
 	struct Cell {
