@@ -344,11 +344,11 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 	for (auto& mFuture : futures) {
 		auto [fVertices, fIndices] = mFuture.get();
 
-		/*for (auto& index : fIndices) {
+		for (auto& index : fIndices) {
 			indices.push_back(vertices.size() + index);
-		}*/
+		}
 
-		vertices.reserve(fVertices.size());
+		/*vertices.reserve(fVertices.size());
 
 		for (int i = 0; i < fVertices.size(); i++) {
 			auto& vertex = fVertices[i];
@@ -367,9 +367,9 @@ std::shared_ptr<glg::Model> glg::MarchingCubes::createModel(float isoLevel, std:
 			else {
 				indices.push_back(dupeVertices[hash]);
 			}
-		}
+		}*/
 
-		//vertices.insert(vertices.end(), fVertices.begin(), fVertices.end());
+		vertices.insert(vertices.end(), fVertices.begin(), fVertices.end());
 	}
 
 	/*vertices.reserve(MAX_TRIANGLES * 3);
