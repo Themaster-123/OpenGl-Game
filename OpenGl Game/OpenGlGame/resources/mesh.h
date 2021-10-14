@@ -28,13 +28,15 @@ namespace glg {
 		std::vector<Texture2D> textures;
 		Material material;
 		bool setupMeshV;
+		bool useIndices;
 
-		Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture2D>& textures, const Material material = Material(), bool setupMesh = true) {
+		Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture2D>& textures, const Material material = Material(), bool setupMesh = true, bool useIndices = true) {
 			this->vertices = vertices;
 			this->indices = indices;
 			this->textures = textures;
 			this->material = material;
 			this->setupMeshV = setupMesh;
+			this->useIndices = useIndices;
 
 			if (setupMeshV) {
 				this->setupMesh();
@@ -47,6 +49,7 @@ namespace glg {
 			textures = mesh.textures;
 			material = mesh.material;
 			setupMeshV = mesh.setupMeshV;
+			useIndices = mesh.useIndices;
 
 			if (setupMeshV) {
 				setupMesh();
@@ -80,7 +83,8 @@ namespace glg {
 			
 			shader.use();
 			glBindVertexArray(VAO);
-			glDrawElements(GL_TRIANGLES, (int) indices.size(), GL_UNSIGNED_INT, 0);
+			if (useIndices) glDrawElements(GL_TRIANGLES, (int)indices.size(), GL_UNSIGNED_INT, 0);
+			else glDrawArrays(GL_TRIANGLES, 0, (int)vertices.size());
 			glBindVertexArray(0);
 			glActiveTexture(GL_TEXTURE0);
 
@@ -117,8 +121,10 @@ namespace glg {
 
 			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+			if (indices.size() != 0) {
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+			}
 
 			// vertex positions
 			glEnableVertexAttribArray(0);

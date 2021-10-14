@@ -159,6 +159,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="OpenGlGame\components\box_cull_component\box_cull_component.cpp" />
+    <ClCompile Include="OpenGlGame\components\chunk_strip_component\chunk_strip_component.cpp" />
     <ClCompile Include="OpenGlGame\components\lod_component\lod_component.cpp" />
     <ClCompile Include="OpenGlGame\component_systems\chunk_loader_system\chunk_loader_system.cpp" />
     <ClCompile Include="OpenGlGame\components\light_components\attenuation\attenuation_light_component.cpp" />
@@ -193,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\components\box_cull_component\box_cull_component.h" />
+    <ClInclude Include="OpenGlGame\components\chunk_strip_component\chunk_strip_component.h" />
     <ClInclude Include="OpenGlGame\components\lod_component\lod_component.h" />
     <ClInclude Include="OpenGlGame\component_systems\chunk_loader_system\chunk_loader_system.h" />
     <ClInclude Include="OpenGlGame\components\light_components\attenuation\attenuation_light_component.h" />

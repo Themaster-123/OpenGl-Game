@@ -25,12 +25,12 @@ glg::world::Chunk::Chunk(chunkVec position, std::shared_ptr<Model> model, rp3d::
 , triangleMesh(triangleMesh), concaveMesh(concaveMesh)*/
 {
 	this->model = model;
-	object = createObject();
+	//object = createObject();
 }
 
 glg::world::Chunk::~Chunk()
 {
-	object.destory();
+	//object.destory();
 	PHYSICS_MUTEX.lock();
 	//delete triangleArray;
 	//PHYSICS_COMMON.destroyTriangleMesh(triangleMesh);

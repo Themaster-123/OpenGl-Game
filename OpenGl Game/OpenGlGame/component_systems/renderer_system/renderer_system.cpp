@@ -78,6 +78,7 @@ void glg::RendererSystem::draw()
 		index++;
 	}
 
+
 	auto cameraView = scene::REGISTRY.view<CameraComponent, TransformComponent>();
 
 	for (auto cameraEntity : cameraView) {
@@ -86,6 +87,10 @@ void glg::RendererSystem::draw()
 		auto [cameraComponent, transformComponent] = camObj.get<CameraComponent, TransformComponent>(cameraView);
 
 		ViewFrustum frustum (cameraComponent, transformComponent);
+
+		/*scene::REGISTRY.sort<ModelComponent>([&transformComponent](const entt::entity model1, const entt::entity model2) {
+			return glm::distance2(Object(model1).get<TransformComponent>().position, transformComponent.position) < glm::distance2(Object(model2).get<TransformComponent>().position, transformComponent.position)
+			});*/
 
 		auto modelView = scene::REGISTRY.view<ModelComponent, TransformComponent>(entt::exclude<PhysicsComponent>);
 

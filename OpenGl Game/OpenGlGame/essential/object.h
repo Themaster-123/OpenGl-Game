@@ -11,7 +11,7 @@ namespace glg {
 
 		Object(entt::entity entity);
 
-		Object(Object& obj);
+		Object(const Object& obj);
 
 		~Object();
 

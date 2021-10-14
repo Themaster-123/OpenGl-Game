@@ -10,6 +10,7 @@ namespace glg {
 		class Chunk {
 		public:
 			chunkVec position;
+			int modelExtent;
 
 			Chunk(chunkVec position);
 

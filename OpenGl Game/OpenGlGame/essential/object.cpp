@@ -13,7 +13,7 @@ glg::Object::Object(entt::entity entity)
 	entityId = entity;
 }
 
-glg::Object::Object(Object& obj)
+glg::Object::Object(const Object& obj)
 {
 	entityId = obj.entityId;
 }

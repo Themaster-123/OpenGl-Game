@@ -13,3 +13,4 @@
 #include "light_components/attenuation/spot_light_component.h"
 #include "lod_component/lod_component.h"
 #include "box_cull_component/box_cull_component.h"
+#include "chunk_strip_component/chunk_strip_component.h"

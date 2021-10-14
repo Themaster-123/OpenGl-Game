@@ -47,20 +47,36 @@ namespace glg {
 					boost::hash_combine(hash, vec.z);
 					return hash;
 				}
+			};
 
+			struct ChunkPositionComparator2D {
+				size_t operator()(const glm::ivec2& vec) const {
+					size_t hash = 0;
+					boost::hash_combine(hash, vec.x);
+					boost::hash_combine(hash, vec.y);
+					return hash;
+				}
 			};
 
 			std::unordered_map<chunkVec, std::shared_ptr<Chunk>, ChunkPositionComparator> chunks;
 
+			std::unordered_map<glm::ivec2, Object, ChunkPositionComparator2D> chunkModels;
+
 			World();
 
-			void loadChunk(chunkVec chunkPos);
+			void loadChunk(const chunkVec& chunkPos);
 
-			void loadChunk(chunkVec chunkPos, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh);
+			void loadChunk(const chunkVec& chunkPos, std::shared_ptr<Model> model, rp3d::TriangleVertexArray* triangleArray, rp3d::TriangleMesh* triangleMesh, rp3d::ConcaveMeshShape* concaveMesh);
+
+			int loadChunkModel(const chunkVec& chunkPos, std::shared_ptr<Model> model);
 
 			void unloadChunk(const chunkVec& chunkPos);
 
+			void unloadChunkModel(const chunkVec& chunkPos);
+
 			bool isChunkLoaded(const chunkVec& chunkPos) const;
+
+			int chunkToIndex(const chunkVec& chunkPos) const;
 
 			static chunkVec getChunkPosition(glm::vec3 position);
 

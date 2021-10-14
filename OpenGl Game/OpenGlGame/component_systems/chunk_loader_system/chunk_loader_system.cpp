@@ -27,7 +27,7 @@ void glg::ChunkLoaderSystem::update()
 	for (auto [pos, threadChunk] : THREAD_CHUNK_MODELS) {
 		auto [model, triangleArray, triangleMesh, concaveMesh] = threadChunk;
 		if (!scene::WORLD.isChunkLoaded(pos)) {
-			model->meshes[0].setupMesh();
+			//model->meshes[0].setupMesh();
 			scene::WORLD.loadChunk(pos, model, triangleArray, triangleMesh, concaveMesh);
 		}
 		else {
