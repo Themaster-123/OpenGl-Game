@@ -6,7 +6,7 @@
 
 glm::vec3 glg::world::CHUNK_SIZE = glm::vec3(32);
 
-unsigned int glg::world::CHUNK_LOAD_SIZE = 4;
+unsigned int glg::world::CHUNK_LOAD_SIZE = 12;
 
 glm::ivec3 glg::world::CHUNK_RESOLUTION = glm::ivec3(32);
 
@@ -159,9 +159,9 @@ void glg::world::World::unloadChunkModel(const chunkVec& chunkPos) {
 }
 
 bool glg::world::World::isChunkLoaded(const chunkVec& chunkPos) const {
-	bool locked = chunksMutex.try_lock();
+	chunksMutex.lock();
 	bool contains = chunks.contains(chunkPos);
-	if (locked) chunksMutex.unlock();
+	chunksMutex.unlock();
 	return contains;
 }
 
