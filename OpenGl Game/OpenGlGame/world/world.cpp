@@ -39,9 +39,11 @@ glg::world::World::World() : chunks()
 void glg::world::World::loadChunk(const chunkVec& chunkPos)
 {
 	if (!isChunkLoaded(chunkPos)) {
-		chunksMutex.lock();
+		std::shared_ptr<Model> model = glg::world::Chunk::generateModel(chunkPos);
+
+		auto [triangleArray, triangleMesh, concaveMesh] = glg::world::Chunk::generateConcaveMeshShape(model);
 		chunks.insert(std::pair<chunkVec, std::shared_ptr<Chunk>>(chunkPos, std::make_shared<Chunk>(chunkPos)));
-		chunksMutex.unlock();
+		loadChunk(chunkPos, model, triangleArray, triangleMesh, concaveMesh);
 	}
 }
 
@@ -69,12 +71,12 @@ int glg::world::World::loadChunkModel(const chunkVec& chunkPos, std::shared_ptr<
 		object.addComponent<TransformComponent>(glm::vec3(chunkPos.x * CHUNK_SIZE.x, 0, chunkPos.z * CHUNK_SIZE.z));
 		object.addComponent<ModelComponent>(cModel, shaders::defaultShader);
 		object.addComponent<ChunkStripComponent>();
-		object.addComponent<BoxCullComponent>(glm::vec3(CHUNK_SIZE.x, CHUNK_LOAD_SIZE * CHUNK_SIZE.y, CHUNK_SIZE.z), glm::vec3(CHUNK_SIZE.x, 0, CHUNK_SIZE.z));
+		object.addComponent<BoxCullComponent>(glm::vec3(CHUNK_SIZE.x / 2, CHUNK_LOAD_SIZE * CHUNK_SIZE.y, CHUNK_SIZE.z / 2), glm::vec3(CHUNK_SIZE.x / 2, 0, CHUNK_SIZE.z / 2));
 
 
 		chunkModels.insert(std::pair<const glm::ivec2, Object>(modelPos, object));
 	}
-	auto [modelComponent, chunkStripComponent] = chunkModels[modelPos].get<ModelComponent, ChunkStripComponent>();
+	auto [modelComponent, chunkStripComponent, boxCullComponent] = chunkModels[modelPos].get<ModelComponent, ChunkStripComponent, BoxCullComponent>();
 
 	Model* cModel = modelComponent.model;
 	Mesh& cMesh = cModel->meshes[0];
@@ -94,6 +96,7 @@ int glg::world::World::loadChunkModel(const chunkVec& chunkPos, std::shared_ptr<
 	chunkStripComponent.chunks.push_back(chunkPos);
 
 
+	updateBoxCull(chunkStripComponent, boxCullComponent);
 	return mesh.vertices.size();
 }
 
@@ -110,40 +113,48 @@ void glg::world::World::unloadChunk(const chunkVec& chunkPos)
 void glg::world::World::unloadChunkModel(const chunkVec& chunkPos) {
 	glm::ivec2 modelPos(chunkPos.x, chunkPos.z);
 
-	if (!chunkModels.contains(modelPos) || !chunks.contains(chunkPos)) return;
+	if (!chunkModels.contains(modelPos)) return;
 
 	std::shared_ptr<Chunk> uChunk = chunks[chunkPos];
 
-	auto [modelComponent, chunkStripComponent] = chunkModels[modelPos].get<ModelComponent, ChunkStripComponent>();
+	auto [modelComponent, chunkStripComponent, boxCullComponent] = chunkModels[modelPos].get<ModelComponent, ChunkStripComponent, BoxCullComponent>();
+
+	if (find(chunkStripComponent.chunks.begin(), chunkStripComponent.chunks.end(), chunkPos) == chunkStripComponent.chunks.end()) {
+		return;
+	}
+
 	Model* model = modelComponent.model;
 	Mesh& mesh = model->meshes[0];
 
 	int index = chunkToIndex(chunkPos);
 
-	if (index > mesh.vertices.size() || index + uChunk->modelExtent > mesh.vertices.size()) {
-		//chunkModels[modelPos].destory();
-		//delete model;
-		//chunkModels.erase(modelPos);
-		return;
-	}
+	//if (index > mesh.vertices.size() || index + uChunk->modelExtent > mesh.vertices.size()) {
+	//	return;
+	//}
 
 	mesh.vertices.erase(mesh.vertices.begin() + index, mesh.vertices.begin() + index + uChunk->modelExtent);
+	//chunkStripComponent.chunks.erase(std::remove(chunkStripComponent.chunks.begin(), chunkStripComponent.chunks.end(), chunkPos), chunkStripComponent.chunks.end());
+
+	for (int i = 0; i < chunkStripComponent.chunks.size(); i++) {
+		if (chunkPos == chunkStripComponent.chunks[i]) {
+			chunkStripComponent.chunks.erase(chunkStripComponent.chunks.begin() + i);
+			break;
+		}
+	}
 
 	if (mesh.vertices.size() == 0) {
 		chunkModels[modelPos].destory();
 		delete model;
 		chunkModels.erase(modelPos);
 	}
-	std::remove(chunkStripComponent.chunks.begin(), chunkStripComponent.chunks.end(), chunkPos);
-	mesh.setupMesh();
-	/*chunkVec currentPos = chunkPos + chunkVec(0, 1, 0);
+	else {
+		updateBoxCull(chunkStripComponent, boxCullComponent);
+	}
+	
+	/*else {
+		glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
 
-	while (isChunkLoaded(currentPos)) {
-		std::shared_ptr<Chunk> chunk = chunks[currentPos];
-
-		chunk->modelMin -= uChunk->modelExtent;
-
-		currentPos += chunkVec(0, 1, 0);
+		glBufferSubData(GL_ARRAY_BUFFER, index * sizeof(Vertex), uChunk->modelExtent * sizeof(Vertex), NULL);
 	}*/
 }
 
@@ -202,7 +213,13 @@ int glg::world::World::chunkToIndex(const chunkVec& chunkPos) const
 		const auto& chunkStripComponent = object.get<ChunkStripComponent>();
 		const auto& sChunks = chunkStripComponent.chunks;
 
-		int stripIndex = std::distance(sChunks.begin(), find(sChunks.begin(), sChunks.end(), chunkPos));
+		auto stripChunkIt = find(sChunks.begin(), sChunks.end(), chunkPos);
+
+		//if (stripChunkIt == sChunks.end()) {
+		//	return -1;
+		//}
+
+		int stripIndex = std::distance(sChunks.begin(), stripChunkIt);
 
 		for (int i = 0; i < stripIndex; i++) {
 			auto chunkIt = chunks.find(sChunks[i]);
@@ -217,6 +234,36 @@ int glg::world::World::chunkToIndex(const chunkVec& chunkPos) const
 	}
 
 	return -1;
+}
+
+void glg::world::World::updateBoxCull(const ChunkStripComponent& stripChunkComp, BoxCullComponent& boxCullComp) {
+	int minY = std::numeric_limits<int>::max();
+	int maxY = std::numeric_limits<int>::min();
+
+	const auto& sChunks = stripChunkComp.chunks;
+
+	for (int i = 0; i < sChunks.size(); i++) {
+		const chunkVec& chunkPos = sChunks[i];
+
+		if (chunkPos.y < minY) {
+			minY = chunkPos.y;
+		}
+
+		if (chunkPos.y > maxY) {
+			maxY = chunkPos.y;
+		}
+	}
+
+	if (minY == std::numeric_limits<int>::max()) {
+		minY = 0;
+		maxY = 0;
+	}
+
+	float worldMinY = minY * CHUNK_SIZE.y;
+	float worldMaxY = maxY * CHUNK_SIZE.y;
+
+	boxCullComp.offset.y = (worldMinY + worldMaxY) / 2;
+	boxCullComp.size.y = abs(worldMaxY - worldMinY) / 2;
 }
 
 bool glg::world::DistanceCompare(const chunkVec& vec1, const chunkVec& vec2) {

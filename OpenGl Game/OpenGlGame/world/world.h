@@ -7,6 +7,7 @@
 #include <boost/container_hash/hash.hpp>
 #include <fastnoise/FastNoise.h>
 #include <fastnoise/SmartNode.h>
+#include "../components/components.h"
 
 namespace glg {
 	namespace world {
@@ -77,6 +78,8 @@ namespace glg {
 			bool isChunkLoaded(const chunkVec& chunkPos) const;
 
 			int chunkToIndex(const chunkVec& chunkPos) const;
+
+			void updateBoxCull(const ChunkStripComponent& stripChunkComp, BoxCullComponent& boxCullComp);
 
 			static chunkVec getChunkPosition(glm::vec3 position);
 

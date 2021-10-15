@@ -29,6 +29,8 @@ namespace glg {
 		Material material;
 		bool setupMeshV;
 		bool useIndices;
+		unsigned int VAO = 0, VBO, EBO;
+		uint32_t meshSize;
 
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture2D>& textures, const Material material = Material(), bool setupMesh = true, bool useIndices = true) {
 			this->vertices = vertices;
@@ -84,7 +86,7 @@ namespace glg {
 			shader.use();
 			glBindVertexArray(VAO);
 			if (useIndices) glDrawElements(GL_TRIANGLES, (int)indices.size(), GL_UNSIGNED_INT, 0);
-			else glDrawArrays(GL_TRIANGLES, 0, (int)vertices.size());
+			else glDrawArrays(GL_TRIANGLES, 0, (int)meshSize);
 			glBindVertexArray(0);
 			glActiveTexture(GL_TEXTURE0);
 
@@ -120,7 +122,7 @@ namespace glg {
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
-
+			meshSize = vertices.size();
 			if (indices.size() != 0) {
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 				glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
@@ -138,8 +140,5 @@ namespace glg {
 
 			glBindVertexArray(0);
 		}
-
-	private:
-		unsigned int VAO = 0, VBO, EBO;
 	};
 }
