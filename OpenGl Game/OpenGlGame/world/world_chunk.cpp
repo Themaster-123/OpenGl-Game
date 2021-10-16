@@ -78,7 +78,7 @@ std::shared_ptr<glg::Model> glg::world::Chunk::generateModel(const chunkVec& pos
 
 	float worldX, worldZ, worldY;
 	std::vector<float> noiseOutput = world::NOISE_SETTINGS.GenUniformNoise3D(glm::ivec3(position.x * CHUNK_RESOLUTION.x, position.y * CHUNK_RESOLUTION.y, position.z * CHUNK_RESOLUTION.z),
-		glm::ivec3(resolution.x, resolution.y, resolution.z), .0050f, 0);
+		glm::ivec3(resolution.x, resolution.y, resolution.z), .0050f, 2);
 
 	for (int i = 0, x = 0; x < resolution.x; x++) {
 		for (int z = 0; z < resolution.z; z++) {
