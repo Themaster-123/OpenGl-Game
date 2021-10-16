@@ -118,7 +118,7 @@ void glg::startRenderLoop()
 		calculateDeltaTime();
 		calculateFrameRate();
 
-		glClearColor(.3f, 0, .2f, 1);
+		glClearColor(95.0f / 255, 203.0f / 255, 243.0f / 255, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0, 0, 0, 0);
 		glClear(GL_DEPTH_BUFFER_BIT);

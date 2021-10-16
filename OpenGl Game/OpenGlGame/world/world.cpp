@@ -6,7 +6,7 @@
 
 glm::vec3 glg::world::CHUNK_SIZE = glm::vec3(32);
 
-unsigned int glg::world::CHUNK_LOAD_SIZE = 12;
+unsigned int glg::world::CHUNK_LOAD_SIZE = 6;
 
 glm::ivec3 glg::world::CHUNK_RESOLUTION = glm::ivec3(32);
 
