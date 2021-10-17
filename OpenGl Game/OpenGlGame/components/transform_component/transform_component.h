@@ -9,17 +9,18 @@ namespace glg {
 	struct TransformComponent
 	{
 	public:
+		Object world;
 		glm::vec3 position;
 		glm::quat rotation;
 		glm::vec3 front;
 		glm::vec3 up;
 		glm::vec3 right;
 
-		TransformComponent(glm::vec3 position = glm::vec3(), glm::quat rotation = glm::identity<glm::quat>());
+		TransformComponent(Object world, glm::vec3 position = glm::vec3(), glm::quat rotation = glm::identity<glm::quat>());
 
-		TransformComponent(glm::vec3 position, glm::vec3 rotation);
+		TransformComponent(Object world, glm::vec3 position, glm::vec3 rotation);
 
-		TransformComponent(const rp3d::Transform& transform);
+		//TransformComponent(const rp3d::Transform& transform);
 
 		virtual bool operator==(const TransformComponent& other) const;
 
