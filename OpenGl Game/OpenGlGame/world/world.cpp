@@ -4,11 +4,7 @@
 #include "../globals/shaders.h"
 #include "../globals/textures.h"
 
-glm::vec3 glg::world::CHUNK_SIZE = glm::vec3(32);
 
-unsigned int glg::world::CHUNK_LOAD_SIZE = 6;
-
-glm::ivec3 glg::world::CHUNK_RESOLUTION = glm::ivec3(32);
 
 glg::world::NoiseSettings glg::world::NOISE_SETTINGS;
 

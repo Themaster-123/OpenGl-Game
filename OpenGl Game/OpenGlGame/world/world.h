@@ -12,11 +12,7 @@
 namespace glg {
 	namespace world {
 
-		extern unsigned int CHUNK_LOAD_SIZE;
 
-		extern glm::ivec3 CHUNK_RESOLUTION;
-
-		extern glm::vec3 CHUNK_SIZE;
 
 		void setNoiseSetting();
 

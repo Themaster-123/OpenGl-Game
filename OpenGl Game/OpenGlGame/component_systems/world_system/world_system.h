@@ -5,6 +5,12 @@
 #include "../../components/components.h"
 
 namespace glg {
+	extern unsigned int CHUNK_LOAD_SIZE;
+
+	extern glm::ivec3 CHUNK_RESOLUTION;
+
+	extern glm::vec3 CHUNK_SIZE;
+
 	class WorldSystem : public ComponentSystem {
 	public:
 		WorldSystem();
@@ -12,5 +18,9 @@ namespace glg {
 		static void onDestroy(entt::registry& registry, entt::entity entity);
 
 		static void loadChunk(const chunkVec& chunkPos, const WorldComponent& worldComponent);
+
+		static bool isChunkLoaded(const chunkVec& chunkPos, const WorldComponent& worldComponent);
+
+		static chunkVec getChunkPosition(const glm::vec3 position);
 	};
 }
