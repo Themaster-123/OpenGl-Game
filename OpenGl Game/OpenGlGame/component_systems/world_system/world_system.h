@@ -9,6 +9,8 @@ namespace glg {
 	public:
 		WorldSystem();
 
+		static void onDestroy(entt::registry& registry, entt::entity entity);
+
 		static void loadChunk(const chunkVec& chunkPos, const WorldComponent& worldComponent);
 	};
 }
