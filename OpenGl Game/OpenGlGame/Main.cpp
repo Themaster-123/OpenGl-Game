@@ -20,7 +20,6 @@
 #include "essential/object.h"
 #include "components/components.h"
 #include "component_systems/component_system.h"
-#include "world/world.h"
 #include "globals/textures.h"
 
 using namespace glg;
@@ -44,22 +43,25 @@ int main() {
 	lockCursor(window, true);
 	// load all OpenGl function pointers
 	loadOpenGlFunctions();
-	world::setNoiseSetting();
 	shaders::registerShaders();
 	models::registerModels();
 	textures::registerTextures();
 	registerPhysics();
 	ComponentSystem::addSystems();
-	
+
+	// creates world
+	Object world;
+	world.addComponent<WorldComponent>();
 
 	Object worldLight;
-	worldLight.addComponent<TransformComponent>(glm::vec3(), glm::vec3(-45, 0, 0));
+	worldLight.addComponent<TransformComponent>(world, glm::vec3(), glm::vec3(-45, 0, 0));
 	worldLight.addComponent<DirectionalLightComponent>();
 	worldLight.get<LightComponent>().ambient = glm::vec3(.4f);
 	worldLight.get<LightComponent>().diffuse = glm::vec3(.7f);
 
 	// creates other stuff
 	Object playerObject;
+	playerObject.addComponent<TransformComponent>(world);
 	playerObject.addComponent<CameraComponent>();
 	playerObject.addComponent<PlayerComponent>();
 	playerObject.addComponent<SpotLightComponent>();

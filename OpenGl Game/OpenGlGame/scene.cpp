@@ -1,13 +1,10 @@
 #include "scene.h"
-#include "world/world.h"
 
 using namespace glg;
 
 entt::registry scene::REGISTRY;
 
 entt::dispatcher scene::DISPATCHER;
-
-world::World scene::WORLD;
 
 std::mutex scene::PLAYER_MUTEX;
 

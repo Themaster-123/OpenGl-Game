@@ -4,17 +4,12 @@
 #include <mutex>
 
 namespace glg {
-	namespace world {
-		class World;
-	}
 
 	namespace scene {
 
 		extern entt::registry REGISTRY;
 
 		extern entt::dispatcher DISPATCHER;
-
-		extern world::World WORLD;
 
 		extern std::mutex PLAYER_MUTEX;
 
