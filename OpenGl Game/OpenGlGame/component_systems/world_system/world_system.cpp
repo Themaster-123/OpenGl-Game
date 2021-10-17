@@ -3,3 +3,8 @@
 glg::WorldSystem::WorldSystem()
 {
 }
+
+void glg::WorldSystem::loadChunk(const chunkVec& chunkPos, const WorldComponent& worldComponent)
+{
+
+}
