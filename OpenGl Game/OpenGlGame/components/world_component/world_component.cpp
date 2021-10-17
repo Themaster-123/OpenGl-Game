@@ -10,3 +10,7 @@ glg::WorldComponent& glg::WorldComponent::operator=(const WorldComponent& other)
 	this->chunks = other.chunks;
 	return *this;
 }
+
+glg::Chunk::Chunk(chunkVec position, int modelExtent) : position(position), modelExtent(modelExtent)
+{
+}

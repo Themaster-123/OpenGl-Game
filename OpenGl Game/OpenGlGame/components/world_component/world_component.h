@@ -27,7 +27,10 @@ namespace glg {
 	};
 
 	struct Chunk {
+		Chunk(chunkVec position, int modelExtent);
 
+		chunkVec position;
+		int modelExtent;
 	};
 
 	struct WorldComponent {
