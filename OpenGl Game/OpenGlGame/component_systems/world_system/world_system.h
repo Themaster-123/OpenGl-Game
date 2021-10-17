@@ -3,6 +3,7 @@
 #include "../../globals/macros.h"
 #include <glm/glm.hpp>
 #include "../../components/components.h"
+#include <memory>
 
 namespace glg {
 	extern unsigned int CHUNK_LOAD_SIZE;
@@ -17,10 +18,20 @@ namespace glg {
 
 		static void onDestroy(entt::registry& registry, entt::entity entity);
 
-		static void loadChunk(const chunkVec& chunkPos, const WorldComponent& worldComponent);
+		static void loadChunk(const chunkVec& chunkPos, std::shared_ptr<Model> model, WorldComponent& worldComponent);
 
 		static bool isChunkLoaded(const chunkVec& chunkPos, const WorldComponent& worldComponent);
 
 		static chunkVec getChunkPosition(const glm::vec3 position);
+
+		static int loadChunkModel(const chunkVec& chunkPos, std::shared_ptr<Model> model, WorldComponent& worldComponent);
+		
+		static void unloadChunkModel(const chunkVec& chunkPos, WorldComponent& worldComponent);
+
+		static void updateBoxCull(const ChunkStripComponent& stripChunkComp, BoxCullComponent& boxCullComp);
+
+		static int chunkToIndex(const chunkVec& chunkPos, const WorldComponent& worldComponent);
+
+		static int getChunkDistance(const chunkVec& chunkPos1, const chunkVec& chunkPos2);
 	};
 }
