@@ -177,6 +177,7 @@
     <ClCompile Include="OpenGlGame\component_systems\renderer_system\renderer_system.cpp" />
     <ClCompile Include="OpenGlGame\component_systems\transform_system\transform_system.cpp" />
     <ClCompile Include="includes\glad\src\glad.c" />
+    <ClCompile Include="OpenGlGame\component_systems\world_system\world_system.cpp" />
     <ClCompile Include="OpenGlGame\essential\object.cpp" />
     <ClCompile Include="OpenGlGame\globals\models.cpp" />
     <ClCompile Include="OpenGlGame\globals\shaders.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="OpenGlGame\component_systems\player_system\player_system.h" />
     <ClInclude Include="OpenGlGame\component_systems\renderer_system\renderer_system.h" />
     <ClInclude Include="OpenGlGame\component_systems\transform_system\transform_system.h" />
+    <ClInclude Include="OpenGlGame\component_systems\world_system\world_system.h" />
     <ClInclude Include="OpenGlGame\essential\object.h" />
     <ClInclude Include="OpenGlGame\globals\macros.h" />
     <ClInclude Include="OpenGlGame\globals\models.h" />
