@@ -5,6 +5,7 @@
 #include <boost/container_hash/hash.hpp>
 #include <mutex>
 #include <FastNoise/FastNoise.h>
+#include "../../essential/object.h"
 
 namespace glg {
 	class Object;

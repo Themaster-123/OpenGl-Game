@@ -236,5 +236,8 @@
     <ClInclude Include="OpenGlGame\component_systems\world_system\world_system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGlGame\components\scene_component\scene_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

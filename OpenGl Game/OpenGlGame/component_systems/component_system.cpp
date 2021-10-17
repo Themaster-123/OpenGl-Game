@@ -4,7 +4,7 @@
 #include "transform_system/transform_system.h"
 #include "physics_system/physics_system.h"
 #include "player_system/player_system.h"
-#include "chunk_loader_system/chunk_loader_system.h"
+#include "world_system/world_system.h"
 
 
 glg::ComponentSystem::ComponentSystem()
@@ -38,5 +38,5 @@ void glg::ComponentSystem::addSystems()
 	new TransformSystem();
 	new PhysicsSystem();
 	new PlayerSystem();
-	new ChunkLoaderSystem();
+	new WorldSystem();
 }

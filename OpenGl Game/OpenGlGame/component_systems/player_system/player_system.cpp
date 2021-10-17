@@ -3,7 +3,6 @@
 #include "../../screen.h"
 #include "../transform_system/transform_system.h"
 #include "../../scene.h"
-#include "../../world/world.h"
 
 glg::PlayerSystem::PlayerSystem() : ComponentSystem()
 {

@@ -5,7 +5,6 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include "physics.h"
-#include "world/world.h"
 #include <entt/entt.hpp>
 #include "components/components.h"
 #include "component_systems/component_system.h"
