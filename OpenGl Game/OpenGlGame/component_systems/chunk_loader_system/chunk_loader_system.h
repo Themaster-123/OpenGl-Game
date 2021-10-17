@@ -8,7 +8,7 @@ namespace glg {
 	class ChunkLoaderSystem : public ComponentSystem
 	{
 	public:
-		std::thread loadThread;
+
 
 		ChunkLoaderSystem();
 
@@ -16,9 +16,7 @@ namespace glg {
 
 		virtual void update();
 
-		static void chunkLoadLoop();
 
-		static std::vector<chunkVec> getClosestChunks(uint32_t chunkSize);
 	};
 }
 

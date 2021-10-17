@@ -14,7 +14,11 @@ namespace glg {
 
 	class WorldSystem : public ComponentSystem {
 	public:
+		std::thread loadThread;
+
 		WorldSystem();
+
+		~WorldSystem();
 
 		static void onDestroy(entt::registry& registry, entt::entity entity);
 
@@ -35,5 +39,9 @@ namespace glg {
 		static int chunkToIndex(const chunkVec& chunkPos, const WorldComponent& worldComponent);
 
 		static int getChunkDistance(const chunkVec& chunkPos1, const chunkVec& chunkPos2);
+
+		static void chunkLoadLoop();
+
+		static std::vector<chunkVec> getClosestChunks(uint32_t chunkSize);
 	};
 }
