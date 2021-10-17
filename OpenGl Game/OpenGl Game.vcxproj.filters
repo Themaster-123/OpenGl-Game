@@ -54,12 +54,6 @@
     <ClCompile Include="OpenGlGame\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGlGame\world\world.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGlGame\world\world_chunk.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="OpenGlGame\essential\object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -165,12 +159,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OpenGlGame\scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\world\world.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\world\world_chunk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OpenGlGame\essential\object.h">
