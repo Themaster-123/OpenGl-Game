@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <glm/glm.hpp>
 #include <boost/container_hash/hash.hpp>
+#include <mutex>
 
 namespace glg {
 	class Object;
@@ -37,6 +38,8 @@ namespace glg {
 		std::unordered_map<chunkVec, std::shared_ptr<Chunk>, ChunkPositionComparator> chunks;
 
 		std::unordered_map<glm::ivec2, Object, ChunkPositionComparator2D> chunkModels;
+
+		mutable std::mutex chunksMutex;
 
 		WorldComponent();
 
