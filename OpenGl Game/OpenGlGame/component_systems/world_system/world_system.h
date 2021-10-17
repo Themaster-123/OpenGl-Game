@@ -43,5 +43,7 @@ namespace glg {
 		static void chunkLoadLoop();
 
 		static std::vector<chunkVec> getClosestChunks(uint32_t chunkSize);
+
+		static std::shared_ptr<Model> generateModel(const chunkVec& position, const WorldComponent& worldComponent);
 	};
 }

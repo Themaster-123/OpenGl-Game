@@ -41,12 +41,12 @@ glg::NoiseSettings::NoiseSettings(FastNoise::SmartNode<>& noise)
 	NOISE_SETTINGS = NoiseSettings(noise, 78);
 }*/
 
-float glg::NoiseSettings::getNoise(float x, float y, float z, float frequency, int seed)
+float glg::NoiseSettings::getNoise(float x, float y, float z, float frequency, int seed) const
 {
 	return noise->GenSingle3D(x * frequency, y * frequency, z * frequency, seed);
 }
 
-std::vector<float> glg::NoiseSettings::GenUniformNoise3D(glm::ivec3 start, glm::ivec3 size, float frequency, int seed)
+std::vector<float> glg::NoiseSettings::GenUniformNoise3D(glm::ivec3 start, glm::ivec3 size, float frequency, int seed) const
 {
 	std::vector<float> tempOutput(size.x * size.y * size.z);
 	std::vector<float> output;

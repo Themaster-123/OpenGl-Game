@@ -35,9 +35,9 @@ namespace glg {
 
 		NoiseSettings(FastNoise::SmartNode<>& noise);
 
-		float getNoise(float x, float y, float z, float frequency, int seed);
+		float getNoise(float x, float y, float z, float frequency, int seed) const;
 
-		std::vector<float> GenUniformNoise3D(glm::ivec3 start, glm::ivec3 size, float frequency, int seed);
+		std::vector<float> GenUniformNoise3D(glm::ivec3 start, glm::ivec3 size, float frequency, int seed) const;
 	};
 
 	struct Chunk {

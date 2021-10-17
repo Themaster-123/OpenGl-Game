@@ -3,6 +3,7 @@
 #include "../../globals/shaders.h"
 #include <thread>
 #include <atomic>
+#include "../../mesh_gen/marching_cubes.h"
 
 glm::vec3 glg::CHUNK_SIZE = glm::vec3(32);
 
@@ -12,7 +13,7 @@ glm::ivec3 glg::CHUNK_RESOLUTION = glm::ivec3(32);
 
 std::atomic<bool> CHUNK_LOAD_LOOP_RUNNING = true;
 
-std::unordered_map<chunkVec, std::tuple<std::shared_ptr<glg::Model>, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>, glg::ChunkPositionComparator> THREAD_CHUNK_MODELS;
+std::unordered_map<chunkVec, std::shared_ptr<glg::Model>, glg::ChunkPositionComparator> THREAD_CHUNK_MODELS;
 std::mutex THREAD_CHUNK_MUTEX;
 
 glg::WorldSystem::WorldSystem() : ComponentSystem()
@@ -153,7 +154,7 @@ void glg::WorldSystem::unloadChunkModel(const chunkVec& chunkPos, WorldComponent
 	Model* model = modelComponent.model;
 	Mesh& mesh = model->meshes[0];
 
-	int index = chunkToIndex(chunkPos);
+	int index = chunkToIndex(chunkPos, worldComponent);
 
 	//if (index > mesh.vertices.size() || index + uChunk->modelExtent > mesh.vertices.size()) {
 	//	return;
@@ -270,6 +271,8 @@ void glg::WorldSystem::chunkLoadLoop()
 
 			const auto& transformComponent = object.get<TransformComponent>();
 
+			const auto& worldComponent = transformComponent.world.get<WorldComponent>();
+
 			chunkVec chunkPos = getChunkPosition(transformComponent.position);
 			//chunkPos.y = 0;
 			chunkVec loadPos;
@@ -277,16 +280,14 @@ void glg::WorldSystem::chunkLoadLoop()
 			for (chunkVec offset : chunksCTE) {
 				loadPos = chunkPos - offset;
 				THREAD_CHUNK_MUTEX.lock();
-				if (!THREAD_CHUNK_MODELS.contains(loadPos) && !scene::WORLD.isChunkLoaded(loadPos)) {
+				if (!THREAD_CHUNK_MODELS.contains(loadPos) && !isChunkLoaded(loadPos, worldComponent)) {
 					THREAD_CHUNK_MUTEX.unlock();
 
-					std::shared_ptr<Model> model = glg::world::Chunk::generateModel(loadPos);
-
-					auto [triangleArray, triangleMesh, concaveMesh] = glg::world::Chunk::generateConcaveMeshShape(model);
+					std::shared_ptr<Model> model = generateModel(loadPos, worldComponent);
 
 					THREAD_CHUNK_MUTEX.lock();
-					THREAD_CHUNK_MODELS.insert(std::pair<chunkVec, std::tuple<std::shared_ptr<Model>, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>>(loadPos,
-						{ model, triangleArray, triangleMesh, concaveMesh }));
+					THREAD_CHUNK_MODELS.insert(std::pair<chunkVec, std::shared_ptr<Model>>(loadPos,
+						model));
 					THREAD_CHUNK_MUTEX.unlock();
 					break;
 				}
@@ -294,48 +295,6 @@ void glg::WorldSystem::chunkLoadLoop()
 					THREAD_CHUNK_MUTEX.unlock();
 				}
 			}
-
-			/*chunkVec offsetPos(0, 0, 0);
-			glm::ivec2 direction(0, -1);
-			int moveAmount = 1;
-
-			for (int i = 0, increase = 0, amountMoved = 0; i < sizeSqrd; i++, amountMoved++) {
-				if (increase == 2) {
-					moveAmount++;
-					increase = 0;
-				}
-
-				loadPos = chunkPos - offsetPos;
-
-				THREAD_CHUNK_MUTEX.lock();
-				if (!THREAD_CHUNK_MODELS.contains(loadPos) && !scene::WORLD.isChunkLoaded(loadPos)) {
-					THREAD_CHUNK_MUTEX.unlock();
-
-					std::shared_ptr<Model> model = glg::world::Chunk::generateModel(loadPos);
-
-					auto [triangleArray, triangleMesh, concaveMesh] = glg::world::Chunk::generateConcaveMeshShape(model);
-
-					THREAD_CHUNK_MUTEX.lock();
-					THREAD_CHUNK_MODELS.insert(std::pair<chunkVec, std::tuple<std::shared_ptr<Model>, rp3d::TriangleVertexArray*, rp3d::TriangleMesh*, rp3d::ConcaveMeshShape*>>(loadPos,
-						{ model, triangleArray, triangleMesh, concaveMesh }));
-					THREAD_CHUNK_MUTEX.unlock();
-					break;
-				}
-				else {
-					THREAD_CHUNK_MUTEX.unlock();
-				}
-
-				if (amountMoved == moveAmount) {
-					amountMoved = 0;
-					int oldDirX = direction.x;
-					direction.x = -direction.y;
-					direction.y = oldDirX;
-					increase++;
-				}
-
-				offsetPos.x += direction.x;
-				offsetPos.z += direction.y;
-			}*/
 		}
 
 		scene::PLAYER_MUTEX.unlock();
@@ -383,4 +342,52 @@ std::vector<chunkVec> glg::WorldSystem::getClosestChunks(uint32_t chunkSize)
 	}
 
 	return traversedChunks;
+}
+
+std::shared_ptr<glg::Model> glg::WorldSystem::generateModel(const chunkVec& position, const WorldComponent& worldComponent)
+{
+	glm::ivec3 resolution = CHUNK_RESOLUTION + glm::ivec3(1);
+
+	MarchingCubes cubes(resolution);
+
+	float worldX, worldZ, worldY;
+	std::vector<float> noiseOutput = worldComponent.noiseSettings.GenUniformNoise3D(glm::ivec3(position.x * CHUNK_RESOLUTION.x, position.y * CHUNK_RESOLUTION.y, position.z * CHUNK_RESOLUTION.z),
+		glm::ivec3(resolution.x, resolution.y, resolution.z), .0050f, 2);
+
+	for (int i = 0, x = 0; x < resolution.x; x++) {
+		for (int z = 0; z < resolution.z; z++) {
+			worldX = float(x) / CHUNK_RESOLUTION.x * CHUNK_SIZE.x;
+			worldZ = float(z) / CHUNK_RESOLUTION.z * CHUNK_SIZE.z;
+			//float noiseValue = world::NOISE_SETTINGS.noise.GetNoise(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldZ + (position.z * world::CHUNK_SIZE.y)));
+			//noiseValue = ((noiseValue + 1) / 2);
+
+			//float displacementValue = noiseValue * world::NOISE_SETTINGS.displacementHeight / CHUNK_RESOLUTION.y * world::CHUNK_SIZE.y + 15;
+
+			for (int y = 0; y < resolution.y; y++, i++) {
+				worldY = float(y) / CHUNK_RESOLUTION.y * CHUNK_SIZE.y;
+
+				//float noiseValue3D = world::NOISE_SETTINGS.noise->ge(float(worldX + (position.x * world::CHUNK_SIZE.x)), float(worldY) + (position.y * world::CHUNK_SIZE.y),
+				//	float(worldZ + (position.z * world::CHUNK_SIZE.z)));
+				////noiseValue3D = -((noiseValue3D + 1) / 2);
+				//noiseValue3D *= world::NOISE_SETTINGS.displacementHeight;
+
+				//float value = float(worldY) + (position.y * world::CHUNK_SIZE.y);
+
+				//value += noiseValue3D;
+
+				float value = noiseOutput[(z * resolution.x * resolution.y) + (y * resolution.x) + x];
+
+				//if (noiseValue3D > .3)
+
+				cubes.getVoxel(glm::ivec3(x, y, z)) = Voxel(glm::vec3(worldX, worldY, worldZ), value);
+			}
+		}
+	}
+
+	std::vector<Texture2D> textures{ *textures::defaultTexture };
+
+	std::shared_ptr<Model> model = cubes.createModel(0.0f, textures);
+	model->meshes[0].calculateNormals();
+
+	return model;
 }
