@@ -28,6 +28,58 @@ glg::WorldSystem::~WorldSystem()
 	loadThread.join();
 }
 
+void glg::WorldSystem::update()
+{
+	auto view = scene::REGISTRY.view<WorldComponent>();
+
+	for (auto worldEntity : view) {
+		Object world(worldEntity);
+
+		auto& worldComponent = world.get<WorldComponent>();
+
+		for (auto [pos, threadChunkModel] : THREAD_CHUNK_MODELS) {
+			auto model = threadChunkModel;
+			if (!isChunkLoaded(pos, worldComponent)) {
+				//model->meshes[0].setupMesh();
+				loadChunk(pos, model, worldComponent);
+			}
+			else {
+				//PHYSICS_COMMON.destroyTriangleMesh(triangleMesh);
+				//PHYSICS_COMMON.destroyConcaveMeshShape(concaveMesh);
+			}
+		}
+		THREAD_CHUNK_MUTEX.lock();
+		THREAD_CHUNK_MODELS.clear();
+		THREAD_CHUNK_MUTEX.unlock();
+
+		auto playerView = scene::REGISTRY.view<PlayerComponent, TransformComponent>();
+
+		for (auto entity : playerView) {
+			Object object(entity);
+
+			const auto& transformComponent = playerView.get<TransformComponent>(entity);
+
+			chunkVec chunkPos = getChunkPosition(transformComponent.position);
+
+			std::vector<chunkVec> chunksToDelete;
+
+			for (const auto& [pos, chunk] : worldComponent.chunks) {
+				unsigned int distance = unsigned(getChunkDistance(chunkPos, pos));
+
+				if (distance >= (CHUNK_LOAD_SIZE * 2) + 1) {
+					chunksToDelete.push_back(pos);
+				}
+			}
+
+			for (auto& pos : chunksToDelete) {
+				unloadChunk(pos, worldComponent);
+			}
+		}
+	}
+
+	
+}
+
 void glg::WorldSystem::onDestroy(entt::registry& registry, entt::entity entity)
 {
 	Object object(entity);

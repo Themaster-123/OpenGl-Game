@@ -60,6 +60,8 @@ namespace glg {
 
 		WorldComponent(NoiseSettings noiseSettings);
 
-		WorldComponent& operator=(const WorldComponent& other);
+		WorldComponent(const WorldComponent& other);
+
+		virtual WorldComponent& operator=(const WorldComponent& other);
 	};
 }

@@ -10,6 +10,11 @@ glg::WorldComponent::WorldComponent(NoiseSettings noiseSettings) : chunks(), chu
 {
 }
 
+glg::WorldComponent::WorldComponent(const WorldComponent& other)
+{
+	this->operator=(other);
+}
+
 glg::WorldComponent& glg::WorldComponent::operator=(const WorldComponent& other)
 {
 	this->chunkModels = other.chunkModels;

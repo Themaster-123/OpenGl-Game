@@ -105,9 +105,6 @@
     <ClCompile Include="OpenGlGame\components\light_components\attenuation\spot_light_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGlGame\component_systems\chunk_loader_system\chunk_loader_system.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="OpenGlGame\components\lod_component\lod_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -213,9 +210,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OpenGlGame\components\light_components\attenuation\spot_light_component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGlGame\component_systems\chunk_loader_system\chunk_loader_system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OpenGlGame\components\lod_component\lod_component.h">
