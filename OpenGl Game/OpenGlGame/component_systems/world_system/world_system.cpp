@@ -36,6 +36,16 @@ void glg::WorldSystem::loadChunk(const chunkVec& chunkPos, std::shared_ptr<Model
 	}
 }
 
+void glg::WorldSystem::unloadChunk(const chunkVec& chunkPos, WorldComponent& worldComponent)
+{
+	if (isChunkLoaded(chunkPos, worldComponent)) {
+		worldComponent.chunksMutex.lock();
+		unloadChunkModel(chunkPos, worldComponent);
+		worldComponent.chunks.erase(chunkPos);
+		worldComponent.chunksMutex.unlock();
+	}
+}
+
 bool glg::WorldSystem::isChunkLoaded(const chunkVec& chunkPos, const WorldComponent& worldComponent)
 {
 	worldComponent.chunksMutex.lock();

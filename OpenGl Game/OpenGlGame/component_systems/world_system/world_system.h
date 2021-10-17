@@ -20,6 +20,8 @@ namespace glg {
 
 		static void loadChunk(const chunkVec& chunkPos, std::shared_ptr<Model> model, WorldComponent& worldComponent);
 
+		void unloadChunk(const chunkVec& chunkPos, WorldComponent& worldComponent);
+
 		static bool isChunkLoaded(const chunkVec& chunkPos, const WorldComponent& worldComponent);
 
 		static chunkVec getChunkPosition(const glm::vec3 position);
