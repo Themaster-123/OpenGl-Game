@@ -16,19 +16,7 @@ namespace glg {
 
 		void setNoiseSetting();
 
-		struct NoiseSettings {
-			FastNoise::SmartNode<> noise;
 
-			float displacementHeight;
-
-			NoiseSettings() = default;
-
-			NoiseSettings(FastNoise::SmartNode<>& noise, float displacementHeight);
-
-			float getNoise(float x, float y, float z, float frequency, int seed);
-
-			std::vector<float> GenUniformNoise3D(glm::ivec3 start, glm::ivec3 size, float frequency, int seed);
-		};
 
 		extern NoiseSettings NOISE_SETTINGS;
 

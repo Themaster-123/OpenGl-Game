@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <boost/container_hash/hash.hpp>
 #include <mutex>
+#include <FastNoise/FastNoise.h>
 
 namespace glg {
 	class Object;
@@ -27,6 +28,18 @@ namespace glg {
 		}
 	};
 
+	struct NoiseSettings {
+		FastNoise::SmartNode<> noise;
+
+		NoiseSettings() = default;
+
+		NoiseSettings(FastNoise::SmartNode<>& noise);
+
+		float getNoise(float x, float y, float z, float frequency, int seed);
+
+		std::vector<float> GenUniformNoise3D(glm::ivec3 start, glm::ivec3 size, float frequency, int seed);
+	};
+
 	struct Chunk {
 		Chunk(chunkVec position, int modelExtent);
 
@@ -39,9 +52,13 @@ namespace glg {
 
 		std::unordered_map<glm::ivec2, Object, ChunkPositionComparator2D> chunkModels;
 
+		NoiseSettings noiseSettings;
+
 		mutable std::mutex chunksMutex;
 
 		WorldComponent();
+
+		WorldComponent(NoiseSettings noiseSettings);
 
 		WorldComponent& operator=(const WorldComponent& other);
 	};
