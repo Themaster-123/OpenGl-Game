@@ -32,7 +32,7 @@ glg::world::NoiseSettings::NoiseSettings(FastNoise::SmartNode<>& noise, float di
 	this->displacementHeight = displacementHeight;
 }
 
-glg::world::World::World() : chunks()
+glg::world::World::World() : chunks(), chunkModels()
 {
 }
 

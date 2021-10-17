@@ -129,6 +129,9 @@
     <ClCompile Include="OpenGlGame\components\chunk_strip_component\chunk_strip_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGlGame\components\world_component\world_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGlGame\resources\shader.h">
@@ -240,6 +243,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OpenGlGame\components\chunk_strip_component\chunk_strip_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGlGame\components\world_component\world_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
