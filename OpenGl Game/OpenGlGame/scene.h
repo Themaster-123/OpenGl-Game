@@ -7,16 +7,26 @@ namespace glg {
 
 	namespace scene {
 
-		extern entt::registry REGISTRY;
 
-		extern entt::dispatcher DISPATCHER;
-
-		extern std::mutex PLAYER_MUTEX;
 
 		extern std::vector<entt::entity> PLAYERS;
 
-		std::vector<ComponentSystem*>& getSystems();
+		class Scene;
 
-		void callPhysicsUpdate();
+		std::vector<ComponentSystem*>& getGlobalSystems();
+
+		class Scene {
+		public:
+			static std::vector<Scene> SCENES;
+
+			entt::registry registry;
+
+			std::mutex PLAYER_MUTEX;
+
+			Scene();
+
+			void callPhysicsUpdate();
+
+		};
 	}
 }

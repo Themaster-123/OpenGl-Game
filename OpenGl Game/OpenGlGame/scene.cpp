@@ -2,10 +2,6 @@
 
 using namespace glg;
 
-entt::registry scene::REGISTRY;
-
-entt::dispatcher scene::DISPATCHER;
-
 std::mutex scene::PLAYER_MUTEX;
 
 std::vector<entt::entity> scene::PLAYERS;
@@ -23,4 +19,8 @@ void scene::callPhysicsUpdate()
 	for (int i = 0; i < systems.size(); i++) {
 		systems[i]->physicsUpdate();
 	}
+}
+
+glg::scene::Scene::Scene() : registry()
+{
 }
