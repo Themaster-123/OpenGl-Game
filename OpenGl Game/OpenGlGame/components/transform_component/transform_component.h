@@ -9,7 +9,7 @@ namespace glg {
 	struct TransformComponent
 	{
 	public:
-		Object world;
+		Object scene;
 		glm::vec3 position;
 		glm::quat rotation;
 		glm::vec3 front;

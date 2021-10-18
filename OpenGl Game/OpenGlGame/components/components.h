@@ -15,3 +15,4 @@
 #include "box_cull_component/box_cull_component.h"
 #include "chunk_strip_component/chunk_strip_component.h"
 #include "world_component/world_component.h"
+#include "scene_component/scene_component.h"

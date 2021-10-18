@@ -323,7 +323,7 @@ void glg::WorldSystem::chunkLoadLoop()
 
 			const auto& transformComponent = object.get<TransformComponent>();
 
-			const auto& worldComponent = transformComponent.world.get<WorldComponent>();
+			const auto& worldComponent = transformComponent.scene.get<WorldComponent>();
 
 			chunkVec chunkPos = getChunkPosition(transformComponent.position);
 			//chunkPos.y = 0;
