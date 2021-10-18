@@ -8,21 +8,26 @@ std::vector<ComponentSystem*>& scene::getGlobalSystems()
 	return vector;
 }
 
-void scene::Scene::callPhysicsUpdate()
+void scene::callPhysicsUpdate()
 {
-	auto systems = getSystems();
+	auto systems = getGlobalSystems();
 
 	for (int i = 0; i < systems.size(); i++) {
-		systems[i]->physicsUpdate();
+		systems[i]->globalPhysicsUpdate();
+
+		for (Scene& scene : Scene::SCENES) {
+			systems[i]->physicsUpdate(scene);
+		}
 	}
 }
 
-std::vector<ComponentSystem*>& glg::scene::Scene::getSystems()
+/*std::vector<ComponentSystem*>& glg::scene::Scene::getSystems()
 {
 	static std::vector<ComponentSystem*> vector;
 	return vector;
-}
+}*/
 
 glg::scene::Scene::Scene() : registry()
 {
+
 }

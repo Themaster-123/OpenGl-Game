@@ -9,6 +9,8 @@ namespace glg {
 
 		std::vector<ComponentSystem*>& getGlobalSystems();
 
+		void callPhysicsUpdate();
+
 		class Scene {
 		public:
 			static std::vector<Scene> SCENES;
@@ -19,9 +21,7 @@ namespace glg {
 
 			Scene();
 
-			void callPhysicsUpdate();
-
-			std::vector<ComponentSystem*>& getSystems();
+			//std::vector<ComponentSystem*>& getSystems();
 
 		};
 	}

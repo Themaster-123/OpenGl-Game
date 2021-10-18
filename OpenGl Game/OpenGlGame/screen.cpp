@@ -22,18 +22,26 @@ static float lastMouseY;
 
 void glg::callDraw()
 {
-	auto& systems = scene::getSystems();
+	auto& systems = scene::getGlobalSystems();
 
 	for (int i = 0; i < systems.size(); i++) {
-		systems[i]->draw();
+		systems[i]->globalDraw();
+
+		for (scene::Scene& scene : scene::Scene::SCENES) {
+			systems[i]->draw(scene);
+		}
 	}
 }
 
 void glg::callUpdate() {
-	auto& systems = scene::getSystems();
+	auto& systems = scene::getGlobalSystems();
 
 	for (int i = 0; i < systems.size(); i++) {
-		systems[i]->update();
+		systems[i]->globalUpdate();
+
+		for (scene::Scene& scene : scene::Scene::SCENES) {
+			systems[i]->update(scene);
+		}
 	}
 }
 
@@ -74,10 +82,14 @@ void glg::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	lastMouseX = (float)xpos;
 	lastMouseY = (float)ypos;
 
-	auto& systems = scene::getSystems();
+	auto& systems = scene::getGlobalSystems();
 
 	for (int i = 0; i < systems.size(); i++) {
-		systems[i]->onMouseMovement(xOffset, yOffset, (float)xpos, (float)ypos);
+		systems[i]->globalOnMouseMovement(xOffset, yOffset, (float)xpos, (float)ypos);
+
+		for (scene::Scene& scene : scene::Scene::SCENES) {
+			systems[i]->onMouseMovement(xOffset, yOffset, (float)xpos, (float)ypos, scene);
+		}
 	}
 }
 

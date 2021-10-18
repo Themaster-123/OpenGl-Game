@@ -7,9 +7,11 @@ namespace glg {
 	class Object
 	{
 	public:
+		scene::Scene* scene;
+
 		Object();
 
-		Object(entt::entity entity);
+		Object(entt::entity entity, scene::Scene scene);
 
 		Object(const Object& obj);
 
@@ -23,12 +25,12 @@ namespace glg {
 
 		template <typename... Component>
 		decltype(auto) get() const {
-			return const_cast<entt::registry*>(&scene::REGISTRY)->get<Component...>(entityId);
+			return const_cast<entt::registry*>(&scene->registry)->get<Component...>(entityId);
 		}
 
 		template <typename... Component>
 		decltype(auto) get() {
-			return scene::REGISTRY.get<Component...>(entityId);
+			return scene->registry.get<Component...>(entityId);
 		}
 
 		template <typename... Component, typename View>
@@ -73,47 +75,47 @@ namespace glg {
 	template<typename Component, typename... Args>
 	inline decltype(auto) Object::addComponent(Args&&... args)
 	{
-		return scene::REGISTRY.emplace<Component>(entityId, args...);
+		return scene->registry.emplace<Component>(entityId, args...);
 	}
 	template<typename Component, typename ...Args>
 	inline decltype(auto) Object::getOrAddComponent(Args && ...args)
 	{
-		return scene::REGISTRY.get_or_emplace<Component>(entityId, args...);
+		return scene->registry.get_or_emplace<Component>(entityId, args...);
 	}
 
 	template<typename ...Component>
 	inline bool Object::allOf() const
 	{
-		return scene::REGISTRY.all_of<Component...>(entityId);
+		return scene->registry.all_of<Component...>(entityId);
 	}
 
 	template<typename ...Component>
 	inline bool Object::anyOf() const
 	{
-		return scene::REGISTRY.any_of<Component...>(entityId);
+		return scene->registry.any_of<Component...>(entityId);
 	}
 
 	template<typename Component, typename ComponentSys>
 	inline void Object::addConstruct()
 	{
-		scene::REGISTRY.on_construct<Component>().connect<&ComponentSys::onConstruct>();
+		scene.registry->on_construct<Component>().connect<&ComponentSys::onConstruct>();
 	}
 
 	template<typename Component, typename ComponentSys>
 	inline void Object::addDestroy()
 	{
-		scene::REGISTRY.on_destroy<Component>().connect<&ComponentSys::onDestroy>();
+		scene.registry->on_destroy<Component>().connect<&ComponentSys::onDestroy>();
 	}
 
 	template<typename Component, auto Function>
 	inline void Object::addConstruct()
 	{
-		scene::REGISTRY.on_construct<Component>().connect<Function>();
+		scene.registry->on_construct<Component>().connect<Function>();
 	}
 
 	template<typename Component, auto Function>
 	inline void Object::addDestroy()
 	{
-		scene::REGISTRY.on_destroy<Component>().connect<Function>();
+		scene.registry->on_destroy<Component>().connect<Function>();
 	}
 }

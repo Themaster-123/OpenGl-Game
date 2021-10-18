@@ -1,5 +1,6 @@
 #pragma once
 #include <entt/entt.hpp>
+#include "../scene.h"
 
 namespace glg {
 	class ComponentSystem {
@@ -8,13 +9,21 @@ namespace glg {
 
 		virtual ~ComponentSystem() = default;
 
-		virtual void draw();
+		virtual void draw(scene::Scene& scene);
 
-		virtual void update();
+		virtual void globalDraw();
 
-		virtual void physicsUpdate();
+		virtual void update(scene::Scene& scene);
 
-		virtual void onMouseMovement(float xOffset, float yOffset, float xPos, float yPos);
+		virtual void physicsUpdate(scene::Scene& scene);
+
+		virtual void globalUpdate();
+
+		virtual void globalPhysicsUpdate();
+
+		virtual void onMouseMovement(float xOffset, float yOffset, float xPos, float yPos, scene::Scene& scene);
+
+		virtual void globalOnMouseMovement(float xOffset, float yOffset, float xPos, float yPos);
 
 		static void onConstruct(entt::registry& registry, entt::entity entity);
 

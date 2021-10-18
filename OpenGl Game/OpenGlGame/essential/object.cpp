@@ -3,19 +3,20 @@
 
 using namespace glg;
 
-Object::Object()
+Object::Object() : scene(&scene::Scene::SCENES[0])
 {
-	entityId = scene::REGISTRY.create();
+	entityId = scene->registry.create();
 }
 
-glg::Object::Object(entt::entity entity)
+glg::Object::Object(entt::entity entity, scene::Scene scene) : scene(&scene)
 {
 	entityId = entity;
 }
 
 glg::Object::Object(const Object& obj)
 {
-	entityId = obj.entityId;
+	this->scene = obj.scene;
+	this->entityId = obj.entityId;
 }
 
 Object::~Object()
@@ -29,10 +30,10 @@ entt::entity Object::getEntityId()
 
 void glg::Object::destory()
 {
-	scene::REGISTRY.destroy(entityId);
+	scene->registry.destroy(entityId);
 }
 
 bool glg::Object::isValid()
 {
-	return scene::REGISTRY.valid(entityId);
+	return scene->registry.valid(entityId);
 }
