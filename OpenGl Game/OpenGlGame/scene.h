@@ -7,12 +7,6 @@ namespace glg {
 
 	namespace scene {
 
-
-
-		extern std::vector<entt::entity> PLAYERS;
-
-		class Scene;
-
 		std::vector<ComponentSystem*>& getGlobalSystems();
 
 		class Scene {
@@ -26,6 +20,8 @@ namespace glg {
 			Scene();
 
 			void callPhysicsUpdate();
+
+			std::vector<ComponentSystem*>& getSystems();
 
 		};
 	}
