@@ -8,7 +8,12 @@ Object::Object() : scene(&scene::Scene::SCENES[0])
 	entityId = scene->registry.create();
 }
 
-glg::Object::Object(entt::entity entity, scene::Scene scene) : scene(&scene)
+glg::Object::Object(scene::Scene& scene) : scene(&scene)
+{
+	entityId = this->scene->registry.create();
+}
+
+glg::Object::Object(entt::entity entity, scene::Scene& scene) : scene(&scene)
 {
 	entityId = entity;
 }

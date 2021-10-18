@@ -28,13 +28,12 @@ glg::WorldSystem::~WorldSystem()
 	loadThread.join();
 }
 
-void glg::WorldSystem::update()
+void glg::WorldSystem::update(scene::Scene scene)
 {
-	for (scene::Scene& scene : scene::Scene::SCENES) {
 		auto view = scene.registry.view<WorldComponent>();
 
 		for (auto worldEntity : view) {
-			Object world(worldEntity);
+			Object world(worldEntity, scene);
 
 			auto& worldComponent = world.get<WorldComponent>();
 
@@ -56,7 +55,7 @@ void glg::WorldSystem::update()
 			auto playerView = scene.registry.view<PlayerComponent, TransformComponent>();
 
 			for (auto entity : playerView) {
-				Object object(entity);
+				Object object(entity, scene);
 
 				const auto& transformComponent = playerView.get<TransformComponent>(entity);
 
@@ -77,7 +76,7 @@ void glg::WorldSystem::update()
 				}
 			}
 		}
-	}
+	
 
 
 
@@ -326,11 +325,11 @@ void glg::WorldSystem::chunkLoadLoop()
 			auto playerView = scene.registry.view<PlayerComponent>();
 
 			for (auto entity : playerView) {
-				Object object(entity);
+				Object object(entity, scene);
 
 				const auto& transformComponent = object.get<TransformComponent>();
 
-				const auto& worldComponent = Object(scene.registry.view<WorldComponent>()[0]).get<WorldComponent>();
+				const auto& worldComponent = Object(scene.registry.view<WorldComponent>()[0], scene).get<WorldComponent>();
 
 				chunkVec chunkPos = getChunkPosition(transformComponent.position);
 				//chunkPos.y = 0;

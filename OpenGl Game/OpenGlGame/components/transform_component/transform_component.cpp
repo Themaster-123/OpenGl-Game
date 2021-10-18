@@ -21,7 +21,6 @@ glg::TransformComponent::TransformComponent(Object world, glm::vec3 position, gl
 	this->front = glm::normalize(rotation * glm::vec3(0, 0, -1));
 	this->right = glm::normalize(rotation * glm::vec3(1, 0, 0));
 	this->up = glm::normalize(rotation * glm::vec3(0, 1, 0));
-	this->scene = world;
 }
 
 glg::TransformComponent::TransformComponent(Object world, glm::vec3 position, glm::vec3 rotation) : TransformComponent(world, position, glm::quat(glm::radians(rotation)))
@@ -49,7 +48,6 @@ TransformComponent& glg::TransformComponent::operator=(const TransformComponent&
 	this->front = other.front;
 	this->right = other.right;
 	this->up = other.up;
-	this->scene = other.scene;
 	return *this;
 }
 
