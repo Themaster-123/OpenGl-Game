@@ -10,12 +10,12 @@ std::vector<ComponentSystem*>& scene::getGlobalSystems()
 
 void scene::callPhysicsUpdate()
 {
-	auto systems = getGlobalSystems();
+	auto& systems = getGlobalSystems();
 
 	for (int i = 0; i < systems.size(); i++) {
 		systems[i]->globalPhysicsUpdate();
 
-		for (Scene& scene : Scene::SCENES) {
+		for (Scene* scene : Scene::SCENES) {
 			systems[i]->physicsUpdate(scene);
 		}
 	}
@@ -29,5 +29,9 @@ void scene::callPhysicsUpdate()
 
 glg::scene::Scene::Scene() : registry()
 {
+	auto& systems = getGlobalSystems();
 
+	for (int i = 0; i < systems.size(); i++) {
+
+	}
 }

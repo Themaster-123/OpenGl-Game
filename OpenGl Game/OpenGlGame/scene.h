@@ -13,7 +13,7 @@ namespace glg {
 
 		class Scene {
 		public:
-			static std::vector<Scene> SCENES;
+			static std::vector<Scene*> SCENES;
 
 			entt::registry registry;
 

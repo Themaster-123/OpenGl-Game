@@ -27,7 +27,7 @@ void glg::callDraw()
 	for (int i = 0; i < systems.size(); i++) {
 		systems[i]->globalDraw();
 
-		for (scene::Scene& scene : scene::Scene::SCENES) {
+		for (scene::Scene* scene : scene::Scene::SCENES) {
 			systems[i]->draw(scene);
 		}
 	}
@@ -39,7 +39,7 @@ void glg::callUpdate() {
 	for (int i = 0; i < systems.size(); i++) {
 		systems[i]->globalUpdate();
 
-		for (scene::Scene& scene : scene::Scene::SCENES) {
+		for (scene::Scene* scene : scene::Scene::SCENES) {
 			systems[i]->update(scene);
 		}
 	}
