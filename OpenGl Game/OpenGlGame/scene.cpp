@@ -32,6 +32,6 @@ glg::scene::Scene::Scene() : registry()
 	auto& systems = getGlobalSystems();
 
 	for (int i = 0; i < systems.size(); i++) {
-
+		systems[i]->registerDependencies(this);
 	}
 }

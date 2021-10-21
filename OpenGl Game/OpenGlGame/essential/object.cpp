@@ -3,7 +3,7 @@
 
 using namespace glg;
 
-Object::Object() : scene(&scene::Scene::SCENES[0])
+Object::Object() : scene(scene::Scene::SCENES[0])
 {
 	entityId = scene->registry.create();
 }
