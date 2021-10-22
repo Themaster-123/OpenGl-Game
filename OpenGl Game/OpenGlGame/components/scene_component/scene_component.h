@@ -1,9 +1,12 @@
 #pragma once
+#include "../../scene.h"
 
 namespace glg {
 	struct SceneComponent {
-		SceneComponent() = default;
+		Scene* scene;
 
-		SceneComponent& operator=(const SceneComponent& other) {};
+		SceneComponent(Scene* scene);
+
+		SceneComponent& operator=(const SceneComponent& other);
 	};
 }
