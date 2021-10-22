@@ -9,7 +9,7 @@ void glg::TransformSystem::setPosition(Object& object, glm::vec3 position)
 {
 	auto& transformComponent = object.get<TransformComponent>();
 	transformComponent.position = position;
-	scene::DISPATCHER.trigger<TransformSystem::onTransformUpdate>(object, transformComponent);
+	Scene::DISPATCHER.trigger<TransformSystem::onTransformUpdate>(object, transformComponent);
 }
 
 void glg::TransformSystem::setRotation(Object& object, glm::quat rotation)
@@ -17,7 +17,7 @@ void glg::TransformSystem::setRotation(Object& object, glm::quat rotation)
 	auto& transformComponent = object.get<TransformComponent>();
 	transformComponent.rotation = rotation;
 	updateVectors(object);
-	scene::DISPATCHER.trigger<TransformSystem::onTransformUpdate>(object, transformComponent);
+	Scene::DISPATCHER.trigger<TransformSystem::onTransformUpdate>(object, transformComponent);
 }
 
 void glg::TransformSystem::setRotation(Object& object, glm::vec3 rotation)
@@ -33,7 +33,7 @@ void glg::TransformSystem::setTransform(Object& object, TransformComponent& tran
 	transformComponent.rotation = transform.rotation;
 	updateVectors(object);
 	
-	scene::DISPATCHER.trigger<TransformSystem::onTransformUpdate>(object, transformComponent);
+	Scene::DISPATCHER.trigger<TransformSystem::onTransformUpdate>(object, transformComponent);
 }
 
 void glg::TransformSystem::updateVectors(Object& object)

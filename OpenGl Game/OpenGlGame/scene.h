@@ -6,6 +6,8 @@
 namespace glg {
 	class Scene {
 	public:
+		static entt::dispatcher DISPATCHER;
+
 		static std::vector<Scene*> SCENES;
 
 		entt::registry registry;
