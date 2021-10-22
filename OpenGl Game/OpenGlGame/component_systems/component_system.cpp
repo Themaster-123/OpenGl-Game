@@ -9,10 +9,10 @@
 
 glg::ComponentSystem::ComponentSystem()
 {
-	scene::getGlobalSystems().push_back(this);
+	Scene::getGlobalSystems().push_back(this);
 }
 
-void glg::ComponentSystem::draw(scene::Scene* scene)
+void glg::ComponentSystem::draw(Scene* scene)
 {
 }
 
@@ -20,11 +20,11 @@ void glg::ComponentSystem::globalDraw()
 {
 }
 
-void glg::ComponentSystem::update(scene::Scene* scene)
+void glg::ComponentSystem::update(Scene* scene)
 {
 }
 
-void glg::ComponentSystem::physicsUpdate(scene::Scene* scene)
+void glg::ComponentSystem::physicsUpdate(Scene* scene)
 {
 }
 
@@ -36,7 +36,7 @@ void glg::ComponentSystem::globalPhysicsUpdate()
 {
 }
 
-void glg::ComponentSystem::onMouseMovement(float xOffset, float yOffset, float xPos, float yPos, scene::Scene& scene)
+void glg::ComponentSystem::onMouseMovement(float xOffset, float yOffset, float xPos, float yPos, Scene* scene)
 {
 }
 
@@ -44,7 +44,7 @@ void glg::ComponentSystem::globalOnMouseMovement(float xOffset, float yOffset, f
 {
 }
 
-void glg::ComponentSystem::registerDependencies(scene::Scene* scene)
+void glg::ComponentSystem::registerDependencies(Scene* scene)
 {
 }
 

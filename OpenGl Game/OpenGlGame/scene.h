@@ -4,25 +4,19 @@
 #include <mutex>
 
 namespace glg {
+	class Scene {
+	public:
+		static std::vector<Scene*> SCENES;
 
-	namespace scene {
+		entt::registry registry;
 
-		std::vector<ComponentSystem*>& getGlobalSystems();
+		std::mutex PLAYER_MUTEX;
 
-		void callPhysicsUpdate();
+		Scene();
 
-		class Scene {
-		public:
-			static std::vector<Scene*> SCENES;
+		static std::vector<ComponentSystem*>& getGlobalSystems();
 
-			entt::registry registry;
+		static void callPhysicsUpdate();
 
-			std::mutex PLAYER_MUTEX;
-
-			Scene();
-
-			//std::vector<ComponentSystem*>& getSystems();
-
-		};
-	}
+	};
 }

@@ -2,13 +2,13 @@
 
 using namespace glg;
 
-std::vector<ComponentSystem*>& scene::getGlobalSystems()
+std::vector<ComponentSystem*>& Scene::getGlobalSystems()
 {
 	static std::vector<ComponentSystem*> vector;
 	return vector;
 }
 
-void scene::callPhysicsUpdate()
+void Scene::callPhysicsUpdate()
 {
 	auto& systems = getGlobalSystems();
 
@@ -27,8 +27,9 @@ void scene::callPhysicsUpdate()
 	return vector;
 }*/
 
-glg::scene::Scene::Scene() : registry()
+glg::Scene::Scene() : registry()
 {
+	SCENES.push_back(this);
 	auto& systems = getGlobalSystems();
 
 	for (int i = 0; i < systems.size(); i++) {

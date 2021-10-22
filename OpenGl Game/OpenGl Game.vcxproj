@@ -161,6 +161,7 @@
     <ClCompile Include="OpenGlGame\components\box_cull_component\box_cull_component.cpp" />
     <ClCompile Include="OpenGlGame\components\chunk_strip_component\chunk_strip_component.cpp" />
     <ClCompile Include="OpenGlGame\components\lod_component\lod_component.cpp" />
+    <ClCompile Include="OpenGlGame\components\scene_component\scene_component.cpp" />
     <ClCompile Include="OpenGlGame\components\world_component\world_component.cpp" />
     <ClCompile Include="OpenGlGame\components\light_components\attenuation\attenuation_light_component.cpp" />
     <ClCompile Include="OpenGlGame\components\light_components\directional_light_component.cpp" />

@@ -20,7 +20,9 @@ namespace glg {
 
 		~WorldSystem();
 
-		void update(scene::Scene scene);
+		void update(Scene* scene);
+
+		void registerDependencies(Scene* scene);
 
 		static void onDestroy(entt::registry& registry, entt::entity entity);
 

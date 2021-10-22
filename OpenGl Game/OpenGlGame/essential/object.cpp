@@ -1,21 +1,23 @@
 #include "object.h"
 #include "../scene.h"
+#include "../components/components.h"
 
 using namespace glg;
 
-Object::Object() : scene(scene::Scene::SCENES[0])
+Object::Object() : scene(Scene::SCENES[0])
 {
 	entityId = scene->registry.create();
 }
 
-glg::Object::Object(scene::Scene* scene) : scene(scene)
+glg::Object::Object(Scene* scene) : scene(scene)
 {
 	entityId = this->scene->registry.create();
 }
 
-glg::Object::Object(entt::entity entity, scene::Scene* scene) : scene(scene)
+glg::Object::Object(entt::entity entity)
 {
 	entityId = entity;
+	this->scene = get<SceneComponent>().scene;
 }
 
 glg::Object::Object(const Object& obj)

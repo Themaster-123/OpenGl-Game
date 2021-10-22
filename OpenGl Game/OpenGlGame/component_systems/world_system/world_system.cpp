@@ -18,7 +18,6 @@ std::mutex THREAD_CHUNK_MUTEX;
 
 glg::WorldSystem::WorldSystem() : ComponentSystem()
 {
-	Object::addDestroy<WorldComponent, WorldSystem>();
 	loadThread = std::thread(chunkLoadLoop);
 }
 
@@ -28,12 +27,12 @@ glg::WorldSystem::~WorldSystem()
 	loadThread.join();
 }
 
-void glg::WorldSystem::update(scene::Scene scene)
+void glg::WorldSystem::update(Scene* scene)
 {
-		auto view = scene.registry.view<WorldComponent>();
+		auto view = scene->registry.view<WorldComponent>();
 
 		for (auto worldEntity : view) {
-			Object world(worldEntity, scene);
+			Object world(worldEntity);
 
 			auto& worldComponent = world.get<WorldComponent>();
 
@@ -52,10 +51,10 @@ void glg::WorldSystem::update(scene::Scene scene)
 			THREAD_CHUNK_MODELS.clear();
 			THREAD_CHUNK_MUTEX.unlock();
 
-			auto playerView = scene.registry.view<PlayerComponent, TransformComponent>();
+			auto playerView = scene->registry.view<PlayerComponent, TransformComponent>();
 
 			for (auto entity : playerView) {
-				Object object(entity, scene);
+				Object object(entity);
 
 				const auto& transformComponent = playerView.get<TransformComponent>(entity);
 
@@ -80,7 +79,13 @@ void glg::WorldSystem::update(scene::Scene scene)
 
 
 
+
 	
+}
+
+void glg::WorldSystem::registerDependencies(Scene* scene)
+{
+	Object::addDestroy<WorldComponent, WorldSystem>(scene);
 }
 
 void glg::WorldSystem::onDestroy(entt::registry& registry, entt::entity entity)
@@ -311,54 +316,57 @@ int glg::WorldSystem::getChunkDistance(const chunkVec& chunkPos1, const chunkVec
 
 void glg::WorldSystem::chunkLoadLoop()
 {
-	for (scene::Scene& scene : scene::Scene::SCENES) {
-		int realSize = (CHUNK_LOAD_SIZE * 2) + 1;
-		int sizeSqrd = (realSize * realSize);
+	int realSize = (CHUNK_LOAD_SIZE * 2) + 1;
+	int sizeSqrd = (realSize * realSize);
 
-		// gets chunks ordered center to edges
-		std::vector<chunkVec> chunksCTE = getClosestChunks(CHUNK_LOAD_SIZE);
+	// gets chunks ordered center to edges
+	std::vector<chunkVec> chunksCTE = getClosestChunks(CHUNK_LOAD_SIZE);
 
-		while (CHUNK_LOAD_LOOP_RUNNING) {
-			//std::this_thread::sleep_for(std::chrono::seconds(1));
-			scene.PLAYER_MUTEX.lock();
+	while (CHUNK_LOAD_LOOP_RUNNING) {
+		//std::this_thread::sleep_for(std::chrono::seconds(1));
+		//scene->PLAYER_MUTEX.lock();
 
-			auto playerView = scene.registry.view<PlayerComponent>();
+		for (Scene* scene : Scene::SCENES) {
 
-			for (auto entity : playerView) {
-				Object object(entity, scene);
+			auto worldView = scene->registry.view<WorldComponent>();
 
-				const auto& transformComponent = object.get<TransformComponent>();
+			for (auto world : worldView) {
+				auto playerView = scene->registry.view<PlayerComponent>();
 
-				const auto& worldComponent = Object(scene.registry.view<WorldComponent>()[0], scene).get<WorldComponent>();
+				const auto& worldComponent = Object(world).get<WorldComponent>();
 
-				chunkVec chunkPos = getChunkPosition(transformComponent.position);
-				//chunkPos.y = 0;
-				chunkVec loadPos;
+				for (auto entity : playerView) {
+					Object object(entity);
 
-				for (chunkVec offset : chunksCTE) {
-					loadPos = chunkPos - offset;
-					THREAD_CHUNK_MUTEX.lock();
-					if (!THREAD_CHUNK_MODELS.contains(loadPos) && !isChunkLoaded(loadPos, worldComponent)) {
-						THREAD_CHUNK_MUTEX.unlock();
+					const auto& transformComponent = object.get<TransformComponent>();
 
-						std::shared_ptr<Model> model = generateModel(loadPos, worldComponent);
+					chunkVec chunkPos = getChunkPosition(transformComponent.position);
+					//chunkPos.y = 0;
+					chunkVec loadPos;
 
+					for (chunkVec offset : chunksCTE) {
+						loadPos = chunkPos - offset;
 						THREAD_CHUNK_MUTEX.lock();
-						THREAD_CHUNK_MODELS.insert(std::pair<chunkVec, std::shared_ptr<Model>>(loadPos,
-							model));
-						THREAD_CHUNK_MUTEX.unlock();
-						break;
-					}
-					else {
-						THREAD_CHUNK_MUTEX.unlock();
+						if (!THREAD_CHUNK_MODELS.contains(loadPos) && !isChunkLoaded(loadPos, worldComponent)) {
+							THREAD_CHUNK_MUTEX.unlock();
+
+							std::shared_ptr<Model> model = generateModel(loadPos, worldComponent);
+
+							THREAD_CHUNK_MUTEX.lock();
+							THREAD_CHUNK_MODELS.insert(std::pair<chunkVec, std::shared_ptr<Model>>(loadPos,
+								model));
+							THREAD_CHUNK_MUTEX.unlock();
+							break;
+						}
+						else {
+							THREAD_CHUNK_MUTEX.unlock();
+						}
 					}
 				}
+				//scene->PLAYER_MUTEX.unlock();
 			}
-			scene.PLAYER_MUTEX.unlock();
-
 		}
 	}
-
 }
 
 std::vector<chunkVec> glg::WorldSystem::getClosestChunks(uint32_t chunkSize)

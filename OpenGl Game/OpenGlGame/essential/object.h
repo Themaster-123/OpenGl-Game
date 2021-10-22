@@ -7,13 +7,13 @@ namespace glg {
 	class Object
 	{
 	public:
-		scene::Scene* scene;
+		Scene* scene;
 
 		Object();
 
-		Object(scene::Scene* scene);
+		Object(Scene* scene);
 
-		Object(entt::entity entity, scene::Scene* scene);
+		Object(entt::entity entity);
 
 		Object(const Object& obj);
 
@@ -58,16 +58,16 @@ namespace glg {
 		bool anyOf() const;
 
 		template<typename Component, typename ComponentSys>
-		static void addConstruct(scene::Scene* scene);
+		static void addConstruct(Scene* scene);
 
 		template<typename Component, typename ComponentSys>
-		static void addDestroy(scene::Scene* scene);
+		static void addDestroy(Scene* scene);
 
 		template<typename Component, auto Function>
-		static void addConstruct(scene::Scene* scene);
+		static void addConstruct(Scene* scene);
 
 		template<typename Component, auto Function>
-		static void addDestroy(scene::Scene* scene);
+		static void addDestroy(Scene* scene);
 
 	private:
 		entt::entity entityId;
@@ -98,25 +98,25 @@ namespace glg {
 	}
 
 	template<typename Component, typename ComponentSys>
-	inline void Object::addConstruct(scene::Scene* scene)
+	inline void Object::addConstruct(Scene* scene)
 	{
 		scene->registry.on_construct<Component>().connect<&ComponentSys::onConstruct>();
 	}
 
 	template<typename Component, typename ComponentSys>
-	inline void Object::addDestroy(scene::Scene* scene)
+	inline void Object::addDestroy(Scene* scene)
 	{
 		scene->registry.on_destroy<Component>().connect<&ComponentSys::onDestroy>();
 	}
 
 	template<typename Component, auto Function>
-	inline void Object::addConstruct(scene::Scene* scene)
+	inline void Object::addConstruct(Scene* scene)
 	{
 		scene->registry.on_construct<Component>().connect<Function>();
 	}
 
 	template<typename Component, auto Function>
-	inline void Object::addDestroy(scene::Scene* scene)
+	inline void Object::addDestroy(Scene* scene)
 	{
 		scene->registry.on_destroy<Component>().connect<Function>();
 	}
