@@ -9,7 +9,7 @@ namespace glg {
 	public:
 		Scene* scene;
 
-		Object();
+		//Object();
 
 		Object(Scene* scene);
 

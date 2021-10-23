@@ -16,6 +16,10 @@ namespace glg {
 
 		Scene();
 
+		~Scene();
+
+		void clear();
+
 		static std::vector<ComponentSystem*>& getGlobalSystems();
 
 		static void callPhysicsUpdate();

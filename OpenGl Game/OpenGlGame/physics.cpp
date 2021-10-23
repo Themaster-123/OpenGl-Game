@@ -25,7 +25,7 @@ void glg::physicsFrame()
 	while (ACCUMULATOR >= PHYSICS_TIME_STEP) {
 		PHYSICS_MUTEX.lock();
 		PHYSICS_WORLD->update(PHYSICS_TIME_STEP);
-		scene::callPhysicsUpdate();
+		Scene::callPhysicsUpdate();
 		PHYSICS_MUTEX.unlock();
 
 		ACCUMULATOR -= PHYSICS_TIME_STEP; 

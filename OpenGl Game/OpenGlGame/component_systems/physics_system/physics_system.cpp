@@ -5,14 +5,11 @@
 
 glg::PhysicsSystem::PhysicsSystem() : ComponentSystem()
 {
-	Object::addConstruct<PhysicsComponent, PhysicsSystem>();
-	Object::addDestroy<PhysicsComponent, PhysicsSystem>();
-	scene::DISPATCHER.sink<TransformSystem::onTransformUpdate>().connect<&PhysicsSystem::onTransformUpdate>();
 }
 
-void glg::PhysicsSystem::physicsUpdate()
+void glg::PhysicsSystem::physicsUpdate(Scene* scene)
 {
-	auto view = scene::REGISTRY.view<PhysicsComponent, TransformComponent>();
+	auto view = scene->registry.view<PhysicsComponent, TransformComponent>();
 
 	for (auto entity : view) {
 		Object obj(entity);
@@ -22,6 +19,13 @@ void glg::PhysicsSystem::physicsUpdate()
 		transformComponent.position = physicsTransform.getPosition();
 		transformComponent.rotation = physicsTransform.getOrientation();
 	}
+}
+
+void glg::PhysicsSystem::registerDependencies(Scene* scene)
+{
+	Object::addConstruct<PhysicsComponent, PhysicsSystem>(scene);
+	Object::addDestroy<PhysicsComponent, PhysicsSystem>(scene);
+	Scene::DISPATCHER.sink<TransformSystem::onTransformUpdate>().connect<&PhysicsSystem::onTransformUpdate>();
 }
 
 void glg::PhysicsSystem::onConstruct(entt::registry& registry, entt::entity entity)

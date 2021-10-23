@@ -45,7 +45,9 @@ namespace glg {
 	public:
 		RendererSystem();
 
-		virtual void draw();
+		virtual void draw(Scene* scene);
+
+		void registerDependencies(Scene* scene);
 
 		static void onConstruct(entt::registry& registry, entt::entity entity);
 

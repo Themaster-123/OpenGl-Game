@@ -11,23 +11,15 @@
 
 glg::RendererSystem::RendererSystem() : ComponentSystem()
 {
-	Object::addConstruct<ModelComponent, RendererSystem>();
-	Object::addConstruct<CameraComponent, &RendererSystem::onCameraConstruct>();
-	Object::addConstruct<LightComponent, RendererSystem>();
-	Object::addConstruct<DirectionalLightComponent, &RendererSystem::onLightConstruct>();
-	Object::addConstruct<AttenuationLightComponent, &RendererSystem::onLightConstruct>();
-	Object::addConstruct<PointLightComponent, &RendererSystem::onAttenuationLightConstruct>();
-	Object::addConstruct<SpotLightComponent, &RendererSystem::onAttenuationLightConstruct>();
-	Object::addConstruct<LodComponent, &RendererSystem::onLodConstruct>();
 }
 
-void glg::RendererSystem::draw()
+void glg::RendererSystem::draw(Scene* scene)
 {
-	scene::REGISTRY.sort<LightComponent>([](const auto& light1, const auto& light2) {
+	scene->registry.sort<LightComponent>([](const auto& light1, const auto& light2) {
 		return light1.priority > light2.priority;
 	});
 
-	auto lightView = scene::REGISTRY.view<LightComponent>();
+	auto lightView = scene->registry.view<LightComponent>();
 
 	int index = 0;
 	for (auto entity : lightView) {
@@ -79,7 +71,7 @@ void glg::RendererSystem::draw()
 	}
 
 
-	auto cameraView = scene::REGISTRY.view<CameraComponent, TransformComponent>();
+	auto cameraView = scene->registry.view<CameraComponent, TransformComponent>();
 
 	for (auto cameraEntity : cameraView) {
 		Object camObj(cameraEntity);
@@ -92,20 +84,32 @@ void glg::RendererSystem::draw()
 			return glm::distance2(Object(model1).get<TransformComponent>().position, transformComponent.position) < glm::distance2(Object(model2).get<TransformComponent>().position, transformComponent.position)
 			});*/
 
-		auto modelView = scene::REGISTRY.view<ModelComponent, TransformComponent>(entt::exclude<PhysicsComponent>);
+		auto modelView = scene->registry.view<ModelComponent, TransformComponent>(entt::exclude<PhysicsComponent>);
 
 		for (auto entity : modelView) {
 			Object obj(entity);
 			drawModel(obj, cameraComponent, transformComponent, frustum);
 		}
 
-		auto physicsModelView = scene::REGISTRY.view<ModelComponent, PhysicsComponent, TransformComponent>();
+		auto physicsModelView = scene->registry.view<ModelComponent, PhysicsComponent, TransformComponent>();
 
 		for (auto entity : physicsModelView) {
 			Object obj(entity);
 			RendererSystem::drawPhysicsModel(obj, cameraComponent, transformComponent, frustum);
 		}
 	}
+}
+
+void glg::RendererSystem::registerDependencies(Scene* scene)
+{
+	Object::addConstruct<ModelComponent, RendererSystem>(scene);
+	Object::addConstruct<CameraComponent, &RendererSystem::onCameraConstruct>(scene);
+	Object::addConstruct<LightComponent, RendererSystem>(scene);
+	Object::addConstruct<DirectionalLightComponent, &RendererSystem::onLightConstruct>(scene);
+	Object::addConstruct<AttenuationLightComponent, &RendererSystem::onLightConstruct>(scene);
+	Object::addConstruct<PointLightComponent, &RendererSystem::onAttenuationLightConstruct>(scene);
+	Object::addConstruct<SpotLightComponent, &RendererSystem::onAttenuationLightConstruct>(scene);
+	Object::addConstruct<LodComponent, &RendererSystem::onLodConstruct>(scene);
 }
 
 void glg::RendererSystem::onConstruct(entt::registry& registry, entt::entity entity)
@@ -147,9 +151,7 @@ void glg::RendererSystem::drawModel(const Object& object, const CameraComponent&
 
 void glg::RendererSystem::drawPhysicsModel(const Object& object, const CameraComponent& cameraComponent, const TransformComponent& cameraTransformComponent, ViewFrustum frustum)
 {
-	const auto [transformComponent, physicsComponent] = object.get<TransformComponent, PhysicsComponent>();
-
-	auto cameraView = scene::REGISTRY.view<CameraComponent, TransformComponent>();
+	const auto [transformComponent, physicsComponent, sceneComponent] = object.get<TransformComponent, PhysicsComponent, SceneComponent>();
 
 	drawModel(object, TransformSystem::interpolateTransforms(physicsComponent.prevTransform, transformComponent, std::min(FACTOR, 1.0f)), cameraComponent, cameraTransformComponent, frustum);
 }

@@ -26,7 +26,7 @@ namespace glg {
 
 		static void onDestroy(entt::registry& registry, entt::entity entity);
 
-		static void loadChunk(const chunkVec& chunkPos, std::shared_ptr<Model> model, WorldComponent& worldComponent);
+		static void loadChunk(const chunkVec& chunkPos, std::shared_ptr<Model> model, WorldComponent& worldComponent, Scene* scene);
 
 		void unloadChunk(const chunkVec& chunkPos, WorldComponent& worldComponent);
 
@@ -34,7 +34,7 @@ namespace glg {
 
 		static chunkVec getChunkPosition(const glm::vec3 position);
 
-		static int loadChunkModel(const chunkVec& chunkPos, std::shared_ptr<Model> model, WorldComponent& worldComponent);
+		static int loadChunkModel(const chunkVec& chunkPos, std::shared_ptr<Model> model, WorldComponent& worldComponent, Scene* scene);
 		
 		static void unloadChunkModel(const chunkVec& chunkPos, WorldComponent& worldComponent);
 

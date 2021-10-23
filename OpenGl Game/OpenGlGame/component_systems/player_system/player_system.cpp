@@ -6,12 +6,11 @@
 
 glg::PlayerSystem::PlayerSystem() : ComponentSystem()
 {
-	Object::addConstruct<PlayerComponent, PlayerSystem>();
 }
 
-void glg::PlayerSystem::update()
+void glg::PlayerSystem::update(Scene* scene)
 {
-	auto playerView = scene::REGISTRY.view<PlayerComponent, TransformComponent>();
+	auto playerView = scene->registry.view<PlayerComponent, TransformComponent>();
 
 	for (auto entity : playerView) {
 		Object object(entity);
@@ -41,9 +40,9 @@ void glg::PlayerSystem::update()
 	}
 }
 
-void glg::PlayerSystem::onMouseMovement(float xOffset, float yOffset, float xPos, float yPos)
+void glg::PlayerSystem::onMouseMovement(float xOffset, float yOffset, float xPos, float yPos, Scene* scene)
 {
-	auto playerView = scene::REGISTRY.view<PlayerComponent, TransformComponent, LookableComponent>();
+	auto playerView = scene->registry.view<PlayerComponent, TransformComponent, LookableComponent>();
 
 	for (auto entity : playerView) {
 		Object object(entity);
@@ -59,12 +58,17 @@ void glg::PlayerSystem::onMouseMovement(float xOffset, float yOffset, float xPos
 	}
 }
 
+void glg::PlayerSystem::registerDependencies(Scene* scene)
+{
+	Object::addConstruct<PlayerComponent, PlayerSystem>(scene);
+}
+
 void glg::PlayerSystem::onConstruct(entt::registry& registry, entt::entity entity)
 {
-	scene::PLAYER_MUTEX.lock();
+	//scene::PLAYER_MUTEX.lock();
 	Object object(entity);
 	object.getOrAddComponent<CameraComponent>();
 	object.getOrAddComponent<LookableComponent>();
-	scene::PLAYERS.push_back(entity);
-	scene::PLAYER_MUTEX.unlock();
+	//scene::PLAYERS.push_back(entity);
+	//scene::PLAYER_MUTEX.unlock();
 }

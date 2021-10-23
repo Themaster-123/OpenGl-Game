@@ -13,9 +13,6 @@ glm::ivec3 glg::CHUNK_RESOLUTION = glm::ivec3(32);
 
 std::atomic<bool> CHUNK_LOAD_LOOP_RUNNING = true;
 
-std::unordered_map<chunkVec, std::shared_ptr<glg::Model>, glg::ChunkPositionComparator> THREAD_CHUNK_MODELS;
-std::mutex THREAD_CHUNK_MUTEX;
-
 glg::WorldSystem::WorldSystem() : ComponentSystem()
 {
 	loadThread = std::thread(chunkLoadLoop);
@@ -29,58 +26,52 @@ glg::WorldSystem::~WorldSystem()
 
 void glg::WorldSystem::update(Scene* scene)
 {
-		auto view = scene->registry.view<WorldComponent>();
+	auto view = scene->registry.view<WorldComponent>();
 
-		for (auto worldEntity : view) {
-			Object world(worldEntity);
+	for (auto worldEntity : view) {
+		Object world(worldEntity);
 
-			auto& worldComponent = world.get<WorldComponent>();
+		auto& worldComponent = world.get<WorldComponent>();
 
-			for (auto [pos, threadChunkModel] : THREAD_CHUNK_MODELS) {
-				auto model = threadChunkModel;
-				if (!isChunkLoaded(pos, worldComponent)) {
-					//model->meshes[0].setupMesh();
-					loadChunk(pos, model, worldComponent);
-				}
-				else {
-					//PHYSICS_COMMON.destroyTriangleMesh(triangleMesh);
-					//PHYSICS_COMMON.destroyConcaveMeshShape(concaveMesh);
-				}
+		for (auto [pos, threadChunkModel] : worldComponent.chunkModelsToLoad) {
+			auto model = threadChunkModel;
+			if (!isChunkLoaded(pos, worldComponent)) {
+				//model->meshes[0].setupMesh();
+				loadChunk(pos, model, worldComponent, scene);
 			}
-			THREAD_CHUNK_MUTEX.lock();
-			THREAD_CHUNK_MODELS.clear();
-			THREAD_CHUNK_MUTEX.unlock();
-
-			auto playerView = scene->registry.view<PlayerComponent, TransformComponent>();
-
-			for (auto entity : playerView) {
-				Object object(entity);
-
-				const auto& transformComponent = playerView.get<TransformComponent>(entity);
-
-				chunkVec chunkPos = getChunkPosition(transformComponent.position);
-
-				std::vector<chunkVec> chunksToDelete;
-
-				for (const auto& [pos, chunk] : worldComponent.chunks) {
-					unsigned int distance = unsigned(getChunkDistance(chunkPos, pos));
-
-					if (distance >= (CHUNK_LOAD_SIZE * 2) + 1) {
-						chunksToDelete.push_back(pos);
-					}
-				}
-
-				for (auto& pos : chunksToDelete) {
-					unloadChunk(pos, worldComponent);
-				}
+			else {
+				//PHYSICS_COMMON.destroyTriangleMesh(triangleMesh);
+				//PHYSICS_COMMON.destroyConcaveMeshShape(concaveMesh);
 			}
 		}
-	
+		worldComponent.chunkModelsMutex.lock();
+		worldComponent.chunkModelsToLoad.clear();
+		worldComponent.chunkModelsMutex.unlock();
 
+		auto playerView = scene->registry.view<PlayerComponent, TransformComponent>();
 
+		for (auto entity : playerView) {
+			Object object(entity);
 
+			const auto& transformComponent = playerView.get<TransformComponent>(entity);
 
-	
+			chunkVec chunkPos = getChunkPosition(transformComponent.position);
+
+			std::vector<chunkVec> chunksToDelete;
+
+			for (const auto& [pos, chunk] : worldComponent.chunks) {
+				unsigned int distance = unsigned(getChunkDistance(chunkPos, pos));
+
+				if (distance >= (CHUNK_LOAD_SIZE * 2) + 1) {
+					chunksToDelete.push_back(pos);
+				}
+			}
+
+			for (auto& pos : chunksToDelete) {
+				unloadChunk(pos, worldComponent);
+			}
+		}
+	}
 }
 
 void glg::WorldSystem::registerDependencies(Scene* scene)
@@ -98,11 +89,11 @@ void glg::WorldSystem::onDestroy(entt::registry& registry, entt::entity entity)
 	}
 }
 
-void glg::WorldSystem::loadChunk(const chunkVec& chunkPos, std::shared_ptr<Model> model, WorldComponent& worldComponent)
+void glg::WorldSystem::loadChunk(const chunkVec& chunkPos, std::shared_ptr<Model> model, WorldComponent& worldComponent, Scene* scene)
 {
 	if (!isChunkLoaded(chunkPos, worldComponent)) {
 		worldComponent.chunksMutex.lock();
-		auto extent = loadChunkModel(chunkPos, model, worldComponent);
+		auto extent = loadChunkModel(chunkPos, model, worldComponent, scene);
 
 		std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(chunkPos, extent);
 		worldComponent.chunks.insert(std::pair<chunkVec, std::shared_ptr<Chunk>>(chunkPos, chunk));
@@ -157,12 +148,12 @@ chunkVec glg::WorldSystem::getChunkPosition(const glm::vec3 position)
 	return chunkPos;
 }
 
-int glg::WorldSystem::loadChunkModel(const chunkVec& chunkPos, std::shared_ptr<Model> model, WorldComponent& worldComponent)
+int glg::WorldSystem::loadChunkModel(const chunkVec& chunkPos, std::shared_ptr<Model> model, WorldComponent& worldComponent, Scene* scene)
 {
 	glm::ivec2 modelPos(chunkPos.x, chunkPos.z);
 
 	if (!worldComponent.chunkModels.contains(modelPos)) {
-		Object object;
+		Object object(scene);
 		Model* cModel = new Model();
 		cModel->meshes.emplace_back(std::vector<Vertex>(), std::vector<unsigned int>(), std::vector<Texture2D> { *textures::defaultTexture }, Material(), true, false);
 		object.addComponent<TransformComponent>(glm::vec3(chunkPos.x * CHUNK_SIZE.x, 0, chunkPos.z * CHUNK_SIZE.z));
@@ -173,7 +164,7 @@ int glg::WorldSystem::loadChunkModel(const chunkVec& chunkPos, std::shared_ptr<M
 
 		worldComponent.chunkModels.insert(std::pair<const glm::ivec2, Object>(modelPos, object));
 	}
-	auto [modelComponent, chunkStripComponent, boxCullComponent] = worldComponent.chunkModels[modelPos].get<ModelComponent, ChunkStripComponent, BoxCullComponent>();
+	auto [modelComponent, chunkStripComponent, boxCullComponent] = worldComponent.chunkModels.find(modelPos)->second.get<ModelComponent, ChunkStripComponent, BoxCullComponent>();
 
 	Model* cModel = modelComponent.model;
 	Mesh& cMesh = cModel->meshes[0];
@@ -205,7 +196,7 @@ void glg::WorldSystem::unloadChunkModel(const chunkVec& chunkPos, WorldComponent
 
 	std::shared_ptr<Chunk> uChunk = worldComponent.chunks[chunkPos];
 
-	auto [modelComponent, chunkStripComponent, boxCullComponent] = worldComponent.chunkModels[modelPos].get<ModelComponent, ChunkStripComponent, BoxCullComponent>();
+	auto [modelComponent, chunkStripComponent, boxCullComponent] = worldComponent.chunkModels.find(modelPos)->second.get<ModelComponent, ChunkStripComponent, BoxCullComponent>();
 
 	if (std::find(chunkStripComponent.chunks.begin(), chunkStripComponent.chunks.end(), chunkPos) == chunkStripComponent.chunks.end()) {
 		return;
@@ -231,7 +222,7 @@ void glg::WorldSystem::unloadChunkModel(const chunkVec& chunkPos, WorldComponent
 	}
 
 	if (mesh.vertices.size() == 0) {
-		worldComponent.chunkModels[modelPos].destory();
+		worldComponent.chunkModels.find(modelPos)->second.destory();
 		delete model;
 		worldComponent.chunkModels.erase(modelPos);
 	}
@@ -333,7 +324,7 @@ void glg::WorldSystem::chunkLoadLoop()
 			for (auto world : worldView) {
 				auto playerView = scene->registry.view<PlayerComponent>();
 
-				const auto& worldComponent = Object(world).get<WorldComponent>();
+				auto& worldComponent = Object(world).get<WorldComponent>();
 
 				for (auto entity : playerView) {
 					Object object(entity);
@@ -346,20 +337,20 @@ void glg::WorldSystem::chunkLoadLoop()
 
 					for (chunkVec offset : chunksCTE) {
 						loadPos = chunkPos - offset;
-						THREAD_CHUNK_MUTEX.lock();
-						if (!THREAD_CHUNK_MODELS.contains(loadPos) && !isChunkLoaded(loadPos, worldComponent)) {
-							THREAD_CHUNK_MUTEX.unlock();
+						worldComponent.chunkModelsMutex.lock();
+						if (!worldComponent.chunkModelsToLoad.contains(loadPos) && !isChunkLoaded(loadPos, worldComponent)) {
+							worldComponent.chunkModelsMutex.unlock();
 
 							std::shared_ptr<Model> model = generateModel(loadPos, worldComponent);
 
-							THREAD_CHUNK_MUTEX.lock();
-							THREAD_CHUNK_MODELS.insert(std::pair<chunkVec, std::shared_ptr<Model>>(loadPos,
+							worldComponent.chunkModelsMutex.lock();
+							worldComponent.chunkModelsToLoad.insert(std::pair<chunkVec, std::shared_ptr<Model>>(loadPos,
 								model));
-							THREAD_CHUNK_MUTEX.unlock();
+							worldComponent.chunkModelsMutex.unlock();
 							break;
 						}
 						else {
-							THREAD_CHUNK_MUTEX.unlock();
+							worldComponent.chunkModelsMutex.unlock();
 						}
 					}
 				}

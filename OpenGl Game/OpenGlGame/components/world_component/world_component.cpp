@@ -1,6 +1,6 @@
 #include "world_component.h"
 
-glg::WorldComponent::WorldComponent() : chunks(), chunkModels(), chunksMutex()
+glg::WorldComponent::WorldComponent() : chunks(), chunkModels(), chunksMutex(), chunkModelsToLoad()
 {
 	FastNoise::SmartNode<> noise = FastNoise::NewFromEncodedNodeTree("EABcjyJAEQACAAAAAAAgQBAAAAAAQBkAEwDD9Sg/DQAEAAAAAAAgQAkAAGZmJj8AAAAAPwEEAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM3MTD4AMzMzPwAAAAA/AAAAgD8=");
 	this->noiseSettings = NoiseSettings(noise);
@@ -20,6 +20,7 @@ glg::WorldComponent& glg::WorldComponent::operator=(const WorldComponent& other)
 	this->chunkModels = other.chunkModels;
 	this->chunks = other.chunks;
 	this->noiseSettings = other.noiseSettings;
+	this->chunkModelsToLoad = other.chunkModelsToLoad;
 	return *this;
 }
 

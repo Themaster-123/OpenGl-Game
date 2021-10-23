@@ -6,12 +6,12 @@ namespace glg {
 	public:
 		PlayerSystem();
 
-		virtual void update();
+		virtual void update(Scene* scene);
 
-		virtual void onMouseMovement(float xOffset, float yOffset, float xPos, float yPos);
+		virtual void onMouseMovement(float xOffset, float yOffset, float xPos, float yPos, Scene* scene);
+
+		void registerDependencies(Scene* scene);
 
 		static void onConstruct(entt::registry& registry, entt::entity entity);
-
-		static void beforeOnContruct(entt::registry& registry, entt::entity entity);
 	};
 }

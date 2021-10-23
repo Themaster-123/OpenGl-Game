@@ -1,8 +1,9 @@
 #pragma once
 #include <entt/entt.hpp>
-#include "../scene.h"
 
 namespace glg {
+	class Scene;
+
 	class ComponentSystem {
 	public:
 		ComponentSystem();

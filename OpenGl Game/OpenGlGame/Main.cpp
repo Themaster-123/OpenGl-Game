@@ -49,18 +49,20 @@ int main() {
 	registerPhysics();
 	ComponentSystem::addSystems();
 
+	Scene scene;
+
 	// creates world
-	Object world;
+	Object world(&scene);
 	world.addComponent<WorldComponent>();
 
-	Object worldLight;
+	Object worldLight(&scene);
 	worldLight.addComponent<TransformComponent>(world, glm::vec3(), glm::vec3(-45, 0, 0));
 	worldLight.addComponent<DirectionalLightComponent>();
 	worldLight.get<LightComponent>().ambient = glm::vec3(.4f);
 	worldLight.get<LightComponent>().diffuse = glm::vec3(.7f);
 
 	// creates other stuff
-	Object playerObject;
+	Object playerObject(&scene);
 	playerObject.addComponent<TransformComponent>(world);
 	playerObject.addComponent<CameraComponent>();
 	playerObject.addComponent<PlayerComponent>();
@@ -73,7 +75,7 @@ int main() {
 	rp3d::SphereShape* sphereShape = PHYSICS_COMMON.createSphereShape(1.0f);
 
 	for (int i = 0; i < 0; i++) {
-		Object obj;
+		Object obj(&scene);
 		obj.addComponent<TransformComponent>(glm::vec3(-28, 100, -28));
 		obj.addComponent<ModelComponent>(models::sphereModel, shaders::defaultShader);
 		rp3d::RigidBody* body = PHYSICS_WORLD->createRigidBody(obj.get<TransformComponent>());
@@ -121,7 +123,7 @@ void loadOpenGlFunctions() {
 
 void cleanUp()
 {
-	for (auto* system : scene::getSystems()) {
+	for (auto* system : Scene::getGlobalSystems()) {
 		delete system;
 	}
 }

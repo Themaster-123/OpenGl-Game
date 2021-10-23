@@ -36,3 +36,14 @@ glg::Scene::Scene() : registry()
 		systems[i]->registerDependencies(this);
 	}
 }
+
+glg::Scene::~Scene()
+{
+	std::remove(SCENES.begin(), SCENES.end(), this);
+	registry.clear();
+}
+
+void glg::Scene::clear()
+{
+	registry.clear();
+}

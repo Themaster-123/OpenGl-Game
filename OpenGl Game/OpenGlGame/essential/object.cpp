@@ -4,10 +4,10 @@
 
 using namespace glg;
 
-Object::Object() : scene(Scene::SCENES[0])
-{
-	entityId = scene->registry.create();
-}
+//Object::Object() : scene(Scene::SCENES[0])
+//{
+//	entityId = scene->registry.create();
+//}
 
 glg::Object::Object(Scene* scene) : scene(scene)
 {

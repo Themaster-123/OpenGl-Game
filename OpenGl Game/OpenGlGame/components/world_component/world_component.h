@@ -6,6 +6,7 @@
 #include <mutex>
 #include <FastNoise/FastNoise.h>
 #include "../../essential/object.h"
+#include "../../resources/model.h"
 
 namespace glg {
 	class Object;
@@ -52,6 +53,10 @@ namespace glg {
 		std::unordered_map<chunkVec, std::shared_ptr<Chunk>, ChunkPositionComparator> chunks;
 
 		std::unordered_map<glm::ivec2, Object, ChunkPositionComparator2D> chunkModels;
+
+		std::unordered_map<chunkVec, std::shared_ptr<glg::Model>, ChunkPositionComparator> chunkModelsToLoad;
+
+		std::mutex chunkModelsMutex;
 
 		NoiseSettings noiseSettings;
 
