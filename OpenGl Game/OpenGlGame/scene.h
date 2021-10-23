@@ -2,6 +2,7 @@
 #include <entt/entt.hpp>
 #include "component_systems/component_system.h"
 #include <mutex>
+#include <vector>
 
 namespace glg {
 	class Scene {

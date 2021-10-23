@@ -2,6 +2,10 @@
 
 using namespace glg;
 
+entt::dispatcher Scene::DISPATCHER;
+
+std::vector<Scene*> Scene::SCENES;
+
 std::vector<ComponentSystem*>& Scene::getGlobalSystems()
 {
 	static std::vector<ComponentSystem*> vector;

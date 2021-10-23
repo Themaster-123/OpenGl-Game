@@ -12,6 +12,7 @@ using namespace glg;
 glg::Object::Object(Scene* scene) : scene(scene)
 {
 	entityId = this->scene->registry.create();
+	addComponent<SceneComponent>(scene);
 }
 
 glg::Object::Object(entt::entity entity)

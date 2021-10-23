@@ -1,5 +1,9 @@
 #include "scene_component.h"
 
+glg::SceneComponent::SceneComponent()
+{
+}
+
 glg::SceneComponent::SceneComponent(Scene* scene)
 {
 	this->scene = scene;
@@ -8,5 +12,6 @@ glg::SceneComponent::SceneComponent(Scene* scene)
 glg::SceneComponent& glg::SceneComponent::operator=(const SceneComponent& other)
 {
 	this->scene = other.scene;
+	return *this;
 }
 
