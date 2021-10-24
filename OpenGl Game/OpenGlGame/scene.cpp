@@ -39,6 +39,8 @@ glg::Scene::Scene() : registry()
 	for (int i = 0; i < systems.size(); i++) {
 		systems[i]->registerDependencies(this);
 	}
+
+	registry.set<Scene*>(this);
 }
 
 glg::Scene::~Scene()

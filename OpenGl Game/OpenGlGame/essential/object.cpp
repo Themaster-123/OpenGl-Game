@@ -15,10 +15,14 @@ glg::Object::Object(Scene* scene) : scene(scene)
 	addComponent<SceneComponent>(scene);
 }
 
-glg::Object::Object(entt::entity entity)
+glg::Object::Object(entt::entity entity, Scene* scene)
 {
 	entityId = entity;
-	this->scene = get<SceneComponent>().scene;
+	this->scene = scene;
+}
+
+glg::Object::Object(entt::entity entity, entt::registry& scene) : Object(entity, scene.ctx<Scene*>())
+{
 }
 
 glg::Object::Object(const Object& obj)

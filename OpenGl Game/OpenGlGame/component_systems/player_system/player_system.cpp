@@ -13,7 +13,7 @@ void glg::PlayerSystem::update(Scene* scene)
 	auto playerView = scene->registry.view<PlayerComponent, TransformComponent>();
 
 	for (auto entity : playerView) {
-		Object object(entity);
+		Object object(entity, scene);
 
 		auto [playerComponent, transformComponent] = playerView.get<PlayerComponent, TransformComponent>(entity);
 
@@ -45,7 +45,7 @@ void glg::PlayerSystem::onMouseMovement(float xOffset, float yOffset, float xPos
 	auto playerView = scene->registry.view<PlayerComponent, TransformComponent, LookableComponent>();
 
 	for (auto entity : playerView) {
-		Object object(entity);
+		Object object(entity, scene);
 
 		auto [playerComponent, transformComponent, lookableComponent] = playerView.get<PlayerComponent, TransformComponent, LookableComponent>(entity);
 		
@@ -66,7 +66,7 @@ void glg::PlayerSystem::registerDependencies(Scene* scene)
 void glg::PlayerSystem::onConstruct(entt::registry& registry, entt::entity entity)
 {
 	//scene::PLAYER_MUTEX.lock();
-	Object object(entity);
+	Object object(entity, registry);
 	object.getOrAddComponent<CameraComponent>();
 	object.getOrAddComponent<LookableComponent>();
 	//scene::PLAYERS.push_back(entity);

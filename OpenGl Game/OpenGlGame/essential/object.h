@@ -13,7 +13,9 @@ namespace glg {
 
 		Object(Scene* scene);
 
-		Object(entt::entity entity);
+		Object(entt::entity entity, Scene* scene);
+
+		Object(entt::entity entity, entt::registry& scene);
 
 		Object(const Object& obj);
 

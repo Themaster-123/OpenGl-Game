@@ -12,7 +12,7 @@ void glg::PhysicsSystem::physicsUpdate(Scene* scene)
 	auto view = scene->registry.view<PhysicsComponent, TransformComponent>();
 
 	for (auto entity : view) {
-		Object obj(entity);
+		Object obj(entity, scene);
 		auto [physicsComponent, transformComponent] = obj.get<PhysicsComponent, TransformComponent>();
 		rp3d::Transform physicsTransform = physicsComponent.collisionBody->getTransform();
 		physicsComponent.prevTransform = transformComponent;
@@ -30,7 +30,7 @@ void glg::PhysicsSystem::registerDependencies(Scene* scene)
 
 void glg::PhysicsSystem::onConstruct(entt::registry& registry, entt::entity entity)
 {
-	Object object(entity);
+	Object object(entity, registry);
 	TransformComponent& transformComponent = object.getOrAddComponent<TransformComponent>();
 	PhysicsComponent& physicsComponent = object.get<PhysicsComponent>();
 	physicsComponent.collisionBody->setTransform(transformComponent);
@@ -39,7 +39,7 @@ void glg::PhysicsSystem::onConstruct(entt::registry& registry, entt::entity enti
 
 void glg::PhysicsSystem::onDestroy(entt::registry& registry, entt::entity entity)
 {
-	Object object(entity);
+	Object object(entity, registry);
 	auto& physicsComponent = object.get<PhysicsComponent>();
 	
 	rp3d::RigidBody* rigidbody = dynamic_cast<rp3d::RigidBody*>(physicsComponent.collisionBody);

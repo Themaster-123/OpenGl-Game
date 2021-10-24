@@ -29,7 +29,7 @@ void glg::WorldSystem::update(Scene* scene)
 	auto view = scene->registry.view<WorldComponent>();
 
 	for (auto worldEntity : view) {
-		Object world(worldEntity);
+		Object world(worldEntity, scene);
 
 		auto& worldComponent = world.get<WorldComponent>();
 
@@ -51,7 +51,7 @@ void glg::WorldSystem::update(Scene* scene)
 		auto playerView = scene->registry.view<PlayerComponent, TransformComponent>();
 
 		for (auto entity : playerView) {
-			Object object(entity);
+			Object object(entity, scene);
 
 			const auto& transformComponent = playerView.get<TransformComponent>(entity);
 
@@ -81,7 +81,7 @@ void glg::WorldSystem::registerDependencies(Scene* scene)
 
 void glg::WorldSystem::onDestroy(entt::registry& registry, entt::entity entity)
 {
-	Object object(entity);
+	Object object(entity, registry);
 	auto& worldComponent = object.get<WorldComponent>();
 
 	for (auto [pos, chunkModelObject] : worldComponent.chunkModels) {
@@ -324,10 +324,10 @@ void glg::WorldSystem::chunkLoadLoop()
 			for (auto world : worldView) {
 				auto playerView = scene->registry.view<PlayerComponent>();
 
-				auto& worldComponent = Object(world).get<WorldComponent>();
+				auto& worldComponent = Object(world, scene).get<WorldComponent>();
 
 				for (auto entity : playerView) {
-					Object object(entity);
+					Object object(entity, scene);
 
 					const auto& transformComponent = object.get<TransformComponent>();
 

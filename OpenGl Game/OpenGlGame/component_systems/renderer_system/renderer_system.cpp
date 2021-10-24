@@ -23,7 +23,7 @@ void glg::RendererSystem::draw(Scene* scene)
 
 	int index = 0;
 	for (auto entity : lightView) {
-		Object obj(entity);
+		Object obj(entity, scene);
 
 		auto& lightComponent = obj.get<LightComponent>(lightView);
 		auto& transformComponent = obj.get<TransformComponent>();
@@ -74,7 +74,7 @@ void glg::RendererSystem::draw(Scene* scene)
 	auto cameraView = scene->registry.view<CameraComponent, TransformComponent>();
 
 	for (auto cameraEntity : cameraView) {
-		Object camObj(cameraEntity);
+		Object camObj(cameraEntity, scene);
 
 		auto [cameraComponent, transformComponent] = camObj.get<CameraComponent, TransformComponent>(cameraView);
 
@@ -87,14 +87,14 @@ void glg::RendererSystem::draw(Scene* scene)
 		auto modelView = scene->registry.view<ModelComponent, TransformComponent>(entt::exclude<PhysicsComponent>);
 
 		for (auto entity : modelView) {
-			Object obj(entity);
+			Object obj(entity, scene);
 			drawModel(obj, cameraComponent, transformComponent, frustum);
 		}
 
 		auto physicsModelView = scene->registry.view<ModelComponent, PhysicsComponent, TransformComponent>();
 
 		for (auto entity : physicsModelView) {
-			Object obj(entity);
+			Object obj(entity, scene);
 			RendererSystem::drawPhysicsModel(obj, cameraComponent, transformComponent, frustum);
 		}
 	}
@@ -114,31 +114,31 @@ void glg::RendererSystem::registerDependencies(Scene* scene)
 
 void glg::RendererSystem::onConstruct(entt::registry& registry, entt::entity entity)
 {
-	Object obj(entity);
+	Object obj(entity, registry);
 	obj.getOrAddComponent<TransformComponent>();
 }
 
 void glg::RendererSystem::onCameraConstruct(entt::registry& registry, entt::entity entity)
 {
-	Object obj(entity);
+	Object obj(entity, registry);
 	obj.getOrAddComponent<TransformComponent>();
 }
 
 void glg::RendererSystem::onLightConstruct(entt::registry& registry, entt::entity entity)
 {
-	Object obj(entity);
+	Object obj(entity, registry);
 	obj.getOrAddComponent<LightComponent>();
 }
 
 void glg::RendererSystem::onAttenuationLightConstruct(entt::registry& registry, entt::entity entity)
 {
-	Object obj(entity);
+	Object obj(entity, registry);
 	obj.getOrAddComponent<AttenuationLightComponent>();
 }
 
 void glg::RendererSystem::onLodConstruct(entt::registry& registry, entt::entity entity)
 {
-	Object obj(entity);
+	Object obj(entity, registry);
 	obj.getOrAddComponent<ModelComponent>(models::defaultModel, shaders::defaultShader);
 }
 
